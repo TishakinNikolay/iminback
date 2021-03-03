@@ -1,5 +1,6 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 import { BaseColumnModel } from '../../../_shared/base/base-column.model';
+import { Event } from '../../event.entity'
 
 @Entity('event_location')
 export class EventLocation extends BaseColumnModel {
@@ -15,4 +16,10 @@ export class EventLocation extends BaseColumnModel {
   public long: number;
   @Column({ type: 'decimal', nullable: false })
   public lat: number;
+  @Column({ type: 'int', nullable: false })
+  public eventId: number
+
+  @ManyToOne(() => Event,(event) => event.eventLocation)
+  @JoinColumn({name: 'eventId', referencedColumnName: 'id'})
+  public event: Event
 }
