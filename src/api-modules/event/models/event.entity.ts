@@ -1,9 +1,9 @@
-import { BaseColumnModel } from '../_shared/base/base-column.model'
+import { BaseColumnModel } from '../../_shared/base/base-column.model'
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne } from 'typeorm'
-import { Category } from '../category/category.entity'
-import { EventMember } from './event-modules/event-member/event-member.entity'
-import { EventReaction } from './event-modules/event-reaction/event-reaction.entity'
-import { EventLocation } from './event-modules/event-location/event-location.entity'
+import { Category } from '../../category/category.entity'
+import { EventMember } from '../event-modules/event-member/event-member.entity'
+import { EventReaction } from '../event-modules/event-reaction/event-reaction.entity'
+import { EventLocation } from '../event-modules/event-location/event-location.entity'
 
 @Entity('event')
 export class Event extends BaseColumnModel {

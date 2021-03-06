@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 import { BaseColumnModel } from '../../../_shared/base/base-column.model';
-import { Event } from '../../event.entity'
+import { Event } from '../../models/event.entity'
 
 @Entity('event_location')
 export class EventLocation extends BaseColumnModel {

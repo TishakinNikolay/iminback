@@ -3,22 +3,22 @@
    "host": "localhost",
    "port": 5432,
    "username": "postgres",
-   "password": "xopek",
+   "password": "1",
    "database": "im-in-dev",
    "logging": false,
    "entities": [
-      "**/*.entity.ts",
-      "**/*.entity.ts"
+      "**/*.entity.js",
+      "**/*.entity.js"
    ],
    "migrations": [
-      "src/database/migration/**/*.ts"
+      "build/database/migration/**/*.js"
    ],
    "subscribers": [
-      "src/database/subscriber/**/*.ts"
+      "build/database/subscriber/**/*.js"
    ],
    "cli": {
-      "entitiesDir": "src/database/entity",
-      "migrationsDir": "src/database/migration",
-      "subscribersDir": "src/database/subscriber"
+      "entitiesDir": "build/database/entity",
+      "migrationsDir": "build/database/migration",
+      "subscribersDir": "build/database/subscriber"
    }
 }

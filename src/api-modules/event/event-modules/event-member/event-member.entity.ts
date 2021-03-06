@@ -1,6 +1,6 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
 import { StatusEnum } from './enums/status.enum';
-import { Event } from '../../event.entity'
+import { Event } from '../../models/event.entity'
 import { EventReaction } from '../event-reaction/event-reaction.entity'
 
 @Entity('event_member')
