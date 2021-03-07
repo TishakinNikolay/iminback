@@ -1,6 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 import { BaseColumnDateModelModel } from '../../../_shared/base/base-column-date.model';
-import { Event } from '../../models/event.entity'
+import { Event } from '../../models/event.entity';
+import { User } from '../../../user/user.entity';
+import { EventReactionType } from './enums/event-reaction-type.enum';
 
 @Entity('event_reaction')
 export class EventReaction extends BaseColumnDateModelModel {
@@ -8,10 +10,13 @@ export class EventReaction extends BaseColumnDateModelModel {
   public userId: number;
   @PrimaryColumn()
   public eventId: number;
-  @Column({ type: 'character varying', nullable: false, length: 250 })
-  public type: string;
+  @Column({ type: 'enum', enum: EventReactionType, nullable: false })
+  public reactionType: EventReactionType;
 
-  @ManyToOne(() => Event, (event) => event.eventReaction)
-  @JoinColumn({name: 'eventId', referencedColumnName: 'id'})
+  @ManyToOne(() => Event, event => event.eventReactions)
+  @JoinColumn({ name: 'eventId', referencedColumnName: 'id' })
   public event: Event
+  @ManyToOne(() => Event, user => user.eventReactions)
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
+  public user: User
 }

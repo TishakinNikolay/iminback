@@ -1,13 +1,11 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 import { BaseColumnModel } from '../../../_shared/base/base-column.model';
 import { Event } from '../../models/event.entity'
-
+import { City } from '../../../city/city.entity'
 @Entity('event_location')
 export class EventLocation extends BaseColumnModel {
-  @Column({ type: 'character varying', nullable: false, length: 250 })
-  public country: string;
-  @Column({ type: 'character varying', nullable: false, length: 250 })
-  public city: string;
+  @ManyToOne(type => City, city => city.locations, { nullable: false })
+  public city: City
   @Column({ type: 'character varying', nullable: false, length: 400 })
   public name: string;
   @Column({ type: 'character varying', nullable: false, length: 500 })
@@ -16,10 +14,4 @@ export class EventLocation extends BaseColumnModel {
   public long: number;
   @Column({ type: 'decimal', nullable: false })
   public lat: number;
-  @Column({ type: 'int', nullable: false })
-  public eventId: number
-
-  @ManyToOne(() => Event,(event) => event.eventLocation)
-  @JoinColumn({name: 'eventId', referencedColumnName: 'id'})
-  public event: Event
 }

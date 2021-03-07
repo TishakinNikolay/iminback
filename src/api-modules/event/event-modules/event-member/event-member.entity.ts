@@ -1,7 +1,7 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { StatusEnum } from './enums/status.enum';
-import { Event } from '../../models/event.entity'
-import { EventReaction } from '../event-reaction/event-reaction.entity'
+import { Event } from '../../models/event.entity';
+import { User } from '../../../user/user.entity';
 
 @Entity('event_member')
 export class EventMember extends BaseEntity {
@@ -22,7 +22,10 @@ export class EventMember extends BaseEntity {
   @Column({ type: 'timestamp with time zone', nullable: true })
   public declineDate: Date;
 
-  @ManyToOne(() => Event,(event) => event.eventMember)
-  @JoinColumn({name: 'eventId', referencedColumnName: 'id'})
+  @ManyToOne(() => Event, event => event.eventMembers)
+  @JoinColumn({ name: 'eventId', referencedColumnName: 'id' })
   public event: Event
+  @ManyToOne(() => User, user => user.eventMembers)
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
+  public user: User
 }

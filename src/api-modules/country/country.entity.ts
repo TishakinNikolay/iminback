@@ -4,10 +4,9 @@ import { City } from '../city/city.entity'
 
 @Entity('country')
 export class Country extends BaseColumnModel {
-    @Column({ type: 'character varying', nullable: false, length: 150 })
+    @Column({ type: 'character varying', nullable: false, length: 150, unique: true })
     public name: string
 
-    @OneToMany(() => City, (city) => city.country)
-    @JoinColumn({name: 'id', referencedColumnName: 'countryId'})
+    @OneToMany(type => City, city => city.country)
     public cities?: City[]
 }
