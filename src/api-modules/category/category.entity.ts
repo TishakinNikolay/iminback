@@ -1,7 +1,7 @@
 import { BaseColumnModel } from '../_shared/base/base-column.model';
 import { Column, Entity, JoinTable, ManyToMany, OneToOne, JoinColumn } from 'typeorm';
 import { Event } from '../event/models/event.entity';
-import { Image } from '../image/image.entity';
+import { Image } from '../image/models/image.entity';
 
 @Entity('category')
 export class Category extends BaseColumnModel {

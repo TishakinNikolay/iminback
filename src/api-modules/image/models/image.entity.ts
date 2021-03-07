@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne } from 'typeorm'
-import { BaseColumnModel } from '../_shared/base/base-column.model'
+import { BaseColumnModel } from '../../_shared/base/base-column.model'
 
 @Entity('image')
 export class Image extends BaseColumnModel {

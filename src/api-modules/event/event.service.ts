@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { EventRepository } from "./repositories/eventRepository";
+import { EventRepository } from "./event.repository";
 import { CreateEventDto } from "./models/dto/create-event.dto";
 import { ResponseEventDto } from "./models/dto/response-event.dto"
 import { Event } from "./models/event.entity"
