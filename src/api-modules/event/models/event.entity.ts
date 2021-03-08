@@ -3,8 +3,8 @@ import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany
 import { Category } from '../../category/category.entity'
 import { EventMember } from '../event-modules/event-member/event-member.entity'
 import { EventReaction } from '../event-modules/event-reaction/event-reaction.entity'
-import { EventLocation } from '../event-modules/event-location/event-location.entity'
-import { User } from '../../user/user.entity'
+import { EventLocation } from '../event-modules/event-location/models/event-location.entity'
+import { User } from '../../user/models/user.entity'
 import { Image } from '../../image/models/image.entity'
 
 @Entity('event')

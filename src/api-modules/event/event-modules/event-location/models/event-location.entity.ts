@@ -1,7 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
-import { BaseColumnModel } from '../../../_shared/base/base-column.model';
-import { Event } from '../../models/event.entity'
-import { City } from '../../../city/city.entity'
+import { Column, Entity, ManyToOne } from 'typeorm';
+import { BaseColumnModel } from '../../../../_shared/base/base-column.model';
+import { City } from '../../../../city/city.entity';
 @Entity('event_location')
 export class EventLocation extends BaseColumnModel {
   @ManyToOne(type => City, city => city.locations, { nullable: false })

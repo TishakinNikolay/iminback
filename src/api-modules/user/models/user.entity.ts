@@ -1,11 +1,11 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne, OneToMany } from 'typeorm'
-import { City } from '../city/city.entity'
-import { EventMember } from '../event/event-modules/event-member/event-member.entity'
-import { EventReaction } from '../event/event-modules/event-reaction/event-reaction.entity'
-import { Event } from '../event/models/event.entity'
-import { Image } from '../image/models/image.entity'
-import { BaseColumnModel } from '../_shared/base/base-column.model'
-import { GenderEnum } from './enums/gender.enum'
+import { City } from '../../city/city.entity'
+import { EventMember } from '../../event/event-modules/event-member/event-member.entity'
+import { EventReaction } from '../../event/event-modules/event-reaction/event-reaction.entity'
+import { Event } from '../../event/models/event.entity'
+import { Image } from '../../image/models/image.entity'
+import { BaseColumnModel } from '../../_shared/base/base-column.model'
+import { GenderEnum } from '../enums/gender.enum'
 
 @Entity('user')
 export class User extends BaseColumnModel {
@@ -15,14 +15,14 @@ export class User extends BaseColumnModel {
     public lastName: string
     @Column({ type: 'character varying', nullable: false, length: 25, unique: true })
     public phone: string
-    @OneToOne(type => Image, { nullable: true })
+    @ManyToOne(type => Image, { nullable: true })
     @JoinColumn()
     public profileImage: Image
     @Column({ type: 'timestamp with time zone', nullable: true })
     public dateOfBirth: Date
     @Column({ type: 'enum', enum: GenderEnum, nullable: false })
-    public status: GenderEnum;
-    @ManyToOne(type => City, city => city.users, {nullable: true})
+    public gender: GenderEnum;
+    @ManyToOne(type => City, city => city.users, { nullable: true })
     public city?: City
     @Column({ type: 'character varying', nullable: true, length: 300 })
     public email: string

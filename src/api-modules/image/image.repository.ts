@@ -4,9 +4,7 @@ import { Image } from "./models/image.entity";
 @EntityRepository(Image)
 export class ImageRepository extends Repository<Image>{
 
-    async createImage(publicLink: string): Promise<Image> {
-        const image = new Image();
-        image.uri = publicLink;
+    async createImage(image: Image): Promise<Image> {
         return this.save(image);
     }
 

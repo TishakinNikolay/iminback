@@ -4,9 +4,9 @@ export class CreateEventDto {
     public date: Date,
     public startTime: Date,
     public endTime: Date,
-    public organizerId: number,
+    public owner: EventOwnerDto,
     public description: string,
     public image: string,
     public totalOfPersons: string
-    ){}
+  ) { }
 }

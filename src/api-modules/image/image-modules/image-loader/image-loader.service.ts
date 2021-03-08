@@ -9,15 +9,16 @@ import { join } from 'path';
 
 @Injectable()
 export class ImageLoaderService {
-    private loaderStrategyMap: Map<string, (image: CreateImageDto) => Promise<string>>
-        = new Map<string, (image: CreateImageDto) => Promise<string>>([
-            ['DROPBOX', this._loadToDropBox],
-            ['LOCAL', this._loadToLocalFs]
-        ]);
+    private loaderStrategyMap: Map<string, (image: CreateImageDto) => Promise<string>>;
 
     private loader: (image: CreateImageDto) => Promise<string>;
 
     constructor(private configService: ConfigService) {
+        this.loaderStrategyMap = new Map<string, (image: CreateImageDto) => Promise<string>>([
+            ['DROPBOX', this._loadToDropBox],
+            ['LOCAL', this._loadToLocalFs]
+        ]);
+
         const strategyKey = configService.get('IMAGE_STORAGE_STRATEGY');
         this.loader = this._getLoaderStrategy(strategyKey);
     }

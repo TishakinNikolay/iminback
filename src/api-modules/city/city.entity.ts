@@ -1,8 +1,8 @@
 import { BaseColumnModel } from '../_shared/base/base-column.model';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { Country } from '../country/country.entity';
-import { User } from '../user/user.entity'
-import { EventLocation } from '../event/event-modules/event-location/event-location.entity';
+import { User } from '../user/models/user.entity'
+import { EventLocation } from '../event/event-modules/event-location/models/event-location.entity';
 @Entity('city')
 export class City extends BaseColumnModel {
     @Column({ type: 'character varying', nullable: false, length: 150 })

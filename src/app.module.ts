@@ -8,12 +8,14 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { config } from 'dotenv';
 import { rootPath } from 'get-root-path';
+import { UserModule } from './api-modules/user/user.module';
 config();
 
 @Module({
   imports: [
     EventModule,
     ImageModule,
+    UserModule,
     TypeOrmModule.forRoot(dbConfig),
     ConfigModule.forRoot({
       isGlobal: true,
