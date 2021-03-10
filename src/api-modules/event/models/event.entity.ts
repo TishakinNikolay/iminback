@@ -24,11 +24,11 @@ export class Event extends BaseColumnModel {
     @ManyToOne(type => Image, { nullable: true })
     @JoinColumn()
     public image: Image
-    @OneToOne(() => EventLocation, {cascade : true})
+    @OneToOne(() => EventLocation, { cascade: true })
     @JoinColumn()
     public eventLocation: EventLocation
     @Column({ type: 'int', nullable: false, default: 0 })
-    public totalOfPersons: string
+    public totalOfPersons: number
 
     @OneToMany(type => EventMember, member => member.event)
     @JoinColumn()

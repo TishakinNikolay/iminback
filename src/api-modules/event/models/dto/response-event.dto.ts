@@ -1,11 +1,10 @@
+import { EventImageDto } from "./event-image.dto";
+import { EventLocationDto } from "./event-location.dto";
+import { EventOwnerDto } from "./event-owner.dto";
+
 export class ResponseEventDto {
   constructor(
-    public id: number,
-    public title: string,
-    public date: Date,
-    public startTime: Date,
-    public endTime: Date,
-    public description: string,
-    public totalOfPersons: string
+    public owner: EventOwnerDto,
+    public id: number
   ) { }
 }
