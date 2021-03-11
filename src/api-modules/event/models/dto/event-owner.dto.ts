@@ -1,3 +1,5 @@
 export class EventOwnerDto {
-    constructor(public id: number) { }
+    public id = null;
+    constructor() {
+    }
 }

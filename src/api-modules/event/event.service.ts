@@ -18,7 +18,8 @@ export class EventService {
     public async createEvent(createEventDto: CreateEventDto): Promise<ResponseEventDto> {
         Object.assign(createEventDto.location, await this.eventLocationService.createEventLocation(createEventDto.location));
         const event: Event = Object.assign(new Event(), createEventDto);
-        return this.remapper.remap(ResponseEventDto, await this.eventRepository.createEvent(event));
+        return this.remapper.remap(new ResponseEventDto(), await this.eventRepository.createEvent(event));
+        // return this.remapper.remap(ResponseEventDto, await this.eventRepository.createEvent(event));
     }
     public getAllEvents(): Promise<Event[]> {
         return this.eventRepository.getAllEvents();

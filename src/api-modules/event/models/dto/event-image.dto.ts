@@ -1,4 +1,4 @@
 export class EventImageDto {
-    
-    constructor(public id: number){}
+    public id: number = null;
+    constructor() { }
 }

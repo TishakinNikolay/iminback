@@ -2,16 +2,12 @@ import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class ObjectRemapperService {
-    public remap(targetType: any, source: any, target: any = {}): any {
-        return ObjectRemapperService._remap(targetType, source);
-    }
-    public static _remap(targetType: any, source: any, target: any = {}): any {
-        console.log('in remap');
-        Object.keys(source).forEach(function (key) {
-            const targetKeys: string[] = ObjectRemapperService.getParamNames(targetType);
-            if (targetKeys.includes(key)) {
-                if (source[key] instanceof Object) {
-                    target[key] = ObjectRemapperService._remap(targetType, source[key]);
+
+    public static _remap(target: any, source: any) {
+        Object.keys(source).forEach((key) => {
+            if (key in target) {
+                if (typeof source[key] == 'object') {
+                    target[key] = ObjectRemapperService._remap(target[key], source[key]);
                 } else {
                     target[key] = source[key];
                 }
@@ -19,15 +15,8 @@ export class ObjectRemapperService {
         });
         return target;
     }
-
-    static STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
-    static ARGUMENT_NAMES = /([^\s,]+)/g;
-    static getParamNames(func) {
-        console.log(func.toString());
-        var fnStr = func.toString().replace(ObjectRemapperService.STRIP_COMMENTS, '');
-        var result = fnStr.slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')')).match(ObjectRemapperService.ARGUMENT_NAMES);
-        if (result === null)
-            result = [];
-        return result;
+    public remap(target: any, source: any) {
+        return ObjectRemapperService._remap(target, source);
     }
+
 }

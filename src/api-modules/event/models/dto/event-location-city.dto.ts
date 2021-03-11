@@ -1,4 +1,4 @@
 export class EventLocationCityDto {
-    
-    constructor(public id: number){}
+    public id: number = null;
+    constructor() { }
 }
