@@ -1,4 +1,4 @@
-export class EventOwnerDto {
+export class CreateEventOwnerDto {
     public id = null;
     constructor() {
     }

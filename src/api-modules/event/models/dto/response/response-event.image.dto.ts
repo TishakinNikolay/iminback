@@ -1,4 +1,4 @@
-export class EventLocationCityDto {
+export class ResponseEventImageDto {
     public id: number = null;
     constructor() { }
 }
