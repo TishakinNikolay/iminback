@@ -3,15 +3,17 @@ import { EventLocationRepository } from "./event-location.repository";
 import { CreateEventLocationDto } from "./models/dto/create-event-location.dto";
 import { EventLocation } from "./models/event-location.entity";
 import { ResponseEventLocationDto } from "./models/dto/response-event-location.dto";
+import { scalable } from "../../../_shared/base/remap-decorator";
 
 @Injectable()
 export class EventLocationService {
-    constructor(private eventLocationRepository:  EventLocationRepository) {
+    constructor(private eventLocationRepository: EventLocationRepository) {
 
     }
 
-    createEventLocation(createEventLocationDto: CreateEventLocationDto) : Promise<ResponseEventLocationDto> {
-        const eventLocation : EventLocation = Object.assign(new EventLocation(), createEventLocationDto);
+    @scalable(ResponseEventLocationDto)
+    createEventLocation(createEventLocationDto: CreateEventLocationDto): Promise<EventLocation> {
+        const eventLocation: EventLocation = Object.assign(new EventLocation(), createEventLocationDto);
         return this.eventLocationRepository.createEventLocation(eventLocation);
     }
 }

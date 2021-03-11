@@ -6,7 +6,6 @@ export class ResponseEventDto {
 
   public owner: EventOwnerDto = new EventOwnerDto();
   public image: EventImageDto = new EventImageDto();
-  public location: EventLocationDto = new EventLocationDto();
   constructor(
   ) { }
 }
