@@ -1,3 +1,2 @@
 #!/bin/bash
-heroku run bash
-yarn typeorm:migration:run
+heroku run bash && yarn typeorm:migration:run

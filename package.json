@@ -9,8 +9,8 @@
       "node": ">=0.10.3 <15"
    },
    "scripts": {
-      "prebuild": "rimraf dist",
-      "build": "rm -rf ./build && nest build",
+      "prebuild": "rimraf build",
+      "build": "nest build",
       "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
       "start": "nest start ",
       "start:dev": "nest start --watch",
