@@ -35,7 +35,7 @@ export class ImageLoaderService {
         let publickRawLink: string = null;
         const dropBoxAccessToken: string = this.configService.get('DROPBOX_ACCESS_TOKEN');
         const filetype = this._getFiletypeFromName(image.originalname);
-        const fullDbxImagePath = `/images/${this._generateImageName()}${filetype}`;
+        const fullDbxImagePath = `/images/${this._generateImageName()}.${filetype}`;
         const dbx = new Dropbox({ accessToken: dropBoxAccessToken });
         try {
             const uploadresult = await dbx.filesUpload({ path: fullDbxImagePath, contents: image.buffer });
