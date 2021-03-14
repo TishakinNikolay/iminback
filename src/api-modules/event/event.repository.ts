@@ -24,6 +24,13 @@ export class EventRepository extends Repository<Event>{
             .leftJoin('event.categories', 'event_category')
             .leftJoinAndSelect(subQb => {
                 return subQb
+                    .select('category_junc.eventId, COUNT(*) AS category_num')
+                    .from('event_categories_category', 'category_junc')
+                    .groupBy('category_junc.eventId')
+            }, 'categories_for_total', '\"categories_for_total\".\"eventId\" = \"event\".\"id\"'
+            )
+            .leftJoinAndSelect(subQb => {
+                return subQb
                     .select('event_member.eventId, COUNT(*) as totalApplications')
                     .from(EventMember, 'event_member')
                     .where('event_member.status = :appliedStatus')
@@ -31,6 +38,7 @@ export class EventRepository extends Repository<Event>{
                     .setParameter('appliedStatus', StatusEnum.APPLIED)
             }
                 , 'applications', '\"applications\".\"eventId\" = \"event\".\"id\"')
+
             .where('event.id NOT IN' +
                 eventQb.subQuery().select('event_member.eventId').from(EventMember, 'event_member')
                     .where('event_member.userId = :curUserId').getQuery())
@@ -45,7 +53,13 @@ export class EventRepository extends Repository<Event>{
             eventsQuery = eventsQuery.andWhere('event_category.id IN (:...categoriesId)')
             eventsQuery = eventsQuery.setParameter('categoriesId', categoriesId);
         }
-        eventsQuery.orderBy('')
+
+        eventsQuery = eventsQuery
+            .orderBy('event.startTime', 'ASC')
+            .addOrderBy('COALESCE(applications.totalApplications,0)', 'ASC')
+            .addOrderBy('COALESCE(categories_for_total.category_num,0)', 'DESC')
+            .addOrderBy('event.imageId', 'DESC', 'NULLS LAST')
+            .addOrderBy('event.description', 'DESC', 'NULLS LAST');
         return eventsQuery.getMany();
     }
 }
