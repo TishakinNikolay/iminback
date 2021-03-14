@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { UserRepository } from "./User.repository";
-import { CreateUserDto } from "./models/create-User.dto";
-import { ResponseUserDto } from "./models/response-User.dto";
+import { UserRepository } from "./user.repository";
+import { CreateUserDto } from "./models/create-user.dto";
+import { ResponseUserDto } from "./models/response-user.dto";
 import { scalable } from "../_shared/base/remap-decorator";
 import { User } from "./models/user.entity";
 

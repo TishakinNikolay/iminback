@@ -8,7 +8,7 @@ import { ResponseEventDto } from "./models/dto/response/response-event.dto";
 import { Event } from "./models/event.entity";
 import { FeedRequest } from "./models/dto/feed/feed-request.dto";
 import { UserService } from "../user/user.service";
-import { ResponseUserDto } from "../user/models/response-User.dto";
+import { ResponseUserDto } from "../user/models/response-user.dto";
 
 @Injectable()
 export class EventService {
