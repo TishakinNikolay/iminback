@@ -27,14 +27,15 @@ export class ImageLoaderService {
         return this.loader(image);
     }
 
-    _getLoaderStrategy(loaderStrategyKey: string): (image: CreateImageDto) => Promise<string> {
+    private _getLoaderStrategy(loaderStrategyKey: string): (image: CreateImageDto) => Promise<string> {
         return this.loaderStrategyMap.get(loaderStrategyKey);
     }
 
     async _loadToDropBox(image: CreateImageDto): Promise<string> {
         let publickRawLink: string = null;
         const dropBoxAccessToken: string = this.configService.get('DROPBOX_ACCESS_TOKEN');
-        const fullDbxImagePath = `/images/${this._generateImageName()}`;
+        const filetype = this._getFiletypeFromName(image.originalname);
+        const fullDbxImagePath = `/images/${this._generateImageName()}.${filetype}`;
         const dbx = new Dropbox({ accessToken: dropBoxAccessToken });
         try {
             const uploadresult = await dbx.filesUpload({ path: fullDbxImagePath, contents: image.buffer });
@@ -46,7 +47,7 @@ export class ImageLoaderService {
         return publickRawLink;
     }
 
-    _loadToLocalFs(image: CreateImageDto): Promise<string> {
+    private _loadToLocalFs(image: CreateImageDto): Promise<string> {
         const localImageFolderPath: string = this.configService.get('IMAGE_LOCAL_FOLDER_RELATIVE_PATH');
         const host = this.configService.get('HOST');
 
@@ -59,11 +60,11 @@ export class ImageLoaderService {
         return Promise.resolve(`${host}/${fileName}`);
     }
 
-    _generateImageName(): string {
+    private _generateImageName(): string {
         return nanoid(30);
     }
 
-    _getFiletypeFromName(filename: string): string {
+    private _getFiletypeFromName(filename: string): string {
         const indexOf = filename.lastIndexOf('.');
         return filename.substring(indexOf + 1);
     }

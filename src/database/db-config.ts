@@ -16,17 +16,16 @@ const dbConfig: ConnectionOptions = {
     type: 'postgres',
     url: process.env.DATABASE_URL,
     ssl,
-    entities: [join('src/', '**/', '*.entity.{ts,js}')],
+    entities: [join('build/', '**/', '*.entity.{ts,js}')],
     synchronize: process.env.DB_KEEP_SYNC === 'true',
-    migrations: ['src/database/migrations/*.ts', 'src/database/migrations/*.js'],
+    migrations: [join('build/', '**/', 'migrations/*.{ts,js}')],
     subscribers: ['subscriber/*.js', 'subscriber/*.ts'],
     cli: {
-        migrationsDir: 'src/database/migrations',
-        subscribersDir: 'src/database/subscriber'
+        migrationsDir: join('./src/database/migrations/'),
+        subscribersDir: 'server/subscriber'
     },
-    maxQueryExecutionTime: 5000,
-    logging: ['error']
-
+    maxQueryExecutionTime: 5000
+    , logging: ['error']
 }
 
-export default dbConfig;
+export default dbConfig

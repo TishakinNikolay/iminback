@@ -1,3 +1,3 @@
 export class UserImageDto {
-    public id: number;
+    public id: number = null;
 }

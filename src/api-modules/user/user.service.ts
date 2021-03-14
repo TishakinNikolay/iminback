@@ -1,7 +1,9 @@
 import { Injectable } from "@nestjs/common";
-import { UserRepository } from "./User.repository";
-import { CreateUserDto } from "./models/create-User.dto";
-import { ResponseUserDto } from "./models/response-User.dto";
+import { UserRepository } from "./user.repository";
+import { CreateUserDto } from "./models/create-user.dto";
+import { ResponseUserDto } from "./models/response-user.dto";
+import { scalable } from "../_shared/base/remap-decorator";
+import { User } from "./models/user.entity";
 
 @Injectable()
 export class UserService {
@@ -10,6 +12,11 @@ export class UserService {
     ) {
     }
     public async createUser(createUserDto: CreateUserDto): Promise<ResponseUserDto> {
-        return this.userRepository.createUser(createUserDto);
+        const user: User = Object.assign(new User(), createUserDto);
+        return this.userRepository.createUser(user);
+    }
+    @scalable(ResponseUserDto)
+    public async getUserById(id: number): Promise<ResponseUserDto> {
+        return this.userRepository.getUserById(id);
     }
 }

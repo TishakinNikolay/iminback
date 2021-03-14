@@ -11,11 +11,11 @@ import { Image } from '../../image/models/image.entity'
 export class Event extends BaseColumnModel {
     @Column({ type: 'character varying', nullable: false, length: 350 })
     public title: string
-    @Column({ type: 'timestamp with time zone', nullable: false })
+    @Column({ type: 'date', nullable: false })
     public date: Date
-    @Column({ type: 'time', nullable: false })
+    @Column({ type: 'timestamp', nullable: false })
     public startTime: Date
-    @Column({ type: 'time', nullable: false })
+    @Column({ type: 'timestamp', nullable: false })
     public endTime: Date
     @ManyToOne(type => User, owner => owner.events)
     owner: User
