@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { scalable } from "../_shared/base/remap-decorator";
+import { scalable } from "../_shared/decorators/remap.decorator";
 import { EventLocationService } from "./event-modules/event-location/event-location.service";
 import { EventRepository } from "./event.repository";
 import { CreateEventDto } from "./models/dto/request/create-event.dto";
