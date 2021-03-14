@@ -18,10 +18,10 @@ const dbConfig: ConnectionOptions = {
     ssl,
     entities: [join('build/', '**/', '*.entity.{ts,js}')],
     synchronize: process.env.DB_KEEP_SYNC === 'true',
-    migrations: ['migration/*.js', 'migration/*.ts'],
+    migrations: [join('build/', '**/', 'migrations/*.{ts,js}')],
     subscribers: ['subscriber/*.js', 'subscriber/*.ts'],
     cli: {
-        migrationsDir: 'migration',
+        migrationsDir: join('./src/database/migrations/'),
         subscribersDir: 'server/subscriber'
     },
     maxQueryExecutionTime: 5000

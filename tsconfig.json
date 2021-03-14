@@ -12,6 +12,10 @@
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
       "sourceMap": true,
-      "noImplicitUseStrict": true
+      "noImplicitUseStrict": true,
+      "baseUrl": "./",
+      "paths": {
+         "*": ["*/src"]
+      }
    }
 }
