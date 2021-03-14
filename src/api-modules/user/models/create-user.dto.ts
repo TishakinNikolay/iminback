@@ -8,7 +8,7 @@ export class CreateUserDto {
     public phone: string;
     public profileImage: UserImageDto;
     public dateOfBirth: Date;
-    public status: GenderEnum;
+    public gender: GenderEnum;
     public city?: UserCityDto;
     public email: string
 }

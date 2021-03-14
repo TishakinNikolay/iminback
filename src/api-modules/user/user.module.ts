@@ -10,6 +10,9 @@ import { UserService } from "./User.service";
     providers: [
         UserService,
     ],
+    exports: [
+        UserService
+    ],
     imports: [
         TypeOrmModule.forFeature([UserRepository]),
     ]
