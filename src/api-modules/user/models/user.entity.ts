@@ -24,8 +24,6 @@ export class User extends BaseColumnModel {
     public gender: GenderEnum;
     @ManyToOne(type => City, city => city.users, { nullable: true })
     public city?: City
-    @Column({ type: 'character varying', nullable: true, length: 300 })
-    public email: string
 
     @OneToMany(type => Event, event => event.owner)
     events: Event[]

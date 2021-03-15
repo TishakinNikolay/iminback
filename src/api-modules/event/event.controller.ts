@@ -1,7 +1,11 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post } from "@nestjs/common";
 import { EventService } from "./event.service";
 import { CreateEventDto } from "./models/dto/create/create-event.dto";
+import { CreatedEventsRequest } from "./models/dto/owner-events/created-events-request.dto";
 import { FeedRequest } from "./models/dto/feed/feed-request.dto";
+import { VisitedEventsRequest } from "./models/dto/visited/visited-events-request.dto";
+import { UpcomingEventsRequest } from "./models/dto/upcoming/upcoming-events-request.dto";
+import { HistoryEventsRequest } from "./models/dto/history/history-events-request.dto";
 
 @Controller('event')
 export class EventController {
@@ -11,8 +15,32 @@ export class EventController {
     createEvent(@Body() createEventDto: CreateEventDto) {
         return this.eventService.createEvent(createEventDto);
     }
+
     @Post('/feed')
     getFeedEvents(@Body() feedRequest: FeedRequest) {
         return this.eventService.getFeedEvents(feedRequest);
+    }
+
+    @Post('/created-by-user')
+    getUserCreatedEvents(@Body() createdEventsReq: CreatedEventsRequest) {
+        return this.eventService.getUserCreatedEvents(createdEventsReq);
+    }
+
+    @Post('/visited')
+    getVisitedEvents(@Body() visitedEventsReq: VisitedEventsRequest) {
+        return this.eventService.getVisitedEvents(visitedEventsReq);
+
+    }
+
+    @Post('/upcoming')
+    getUpcomingEvents(@Body() upcomingEventsRequest: UpcomingEventsRequest) {
+        return this.eventService.getUpcomingEvents(upcomingEventsRequest);
+
+    }
+
+    @Post('/history')
+    getHistoryEvents(@Body() historyEventsRequest: HistoryEventsRequest) {
+        return this.eventService.getHistoryEvents(historyEventsRequest);
+
     }
 }

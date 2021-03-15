@@ -5,6 +5,8 @@ import * as moment from 'moment';
 import { StatusEnum } from "./event-modules/event-member/enums/status.enum";
 import { EventLocation } from "./event-modules/event-location/models/event-location.entity";
 import { Category } from "../category/category.entity";
+import { User } from "../user/models/user.entity";
+import { City } from "../city/city.entity";
 
 @EntityRepository(Event)
 export class EventRepository extends Repository<Event>{
@@ -61,5 +63,78 @@ export class EventRepository extends Repository<Event>{
             .addOrderBy('event.imageId', 'DESC', 'NULLS LAST')
             .addOrderBy('event.description', 'DESC', 'NULLS LAST');
         return eventsQuery.getMany();
+    }
+
+    public async getUsersEvents(userId: number): Promise<Event[]> {
+        return this
+            .find({
+                relations: [
+                    'owner',
+                    'image',
+                    'eventLocation',
+                    'eventLocation.city',
+                    'eventMembers',
+                    'categories'
+                ],
+                where: { owner: { id: userId } },
+                order: { startTime: 'DESC' }
+            })
+    }
+
+    public async getVisitedEvents(userId: number): Promise<Event[]> {
+        const currentDate: string = moment().utc().format('YYYY-MM-DD kk:mm:ss');
+        return this
+            .createQueryBuilder('event')
+            .innerJoinAndSelect(EventMember, 'event_member', 'event_member.eventId = event.id')
+            .innerJoinAndSelect(User, 'owner', 'owner.id = event.ownerId')
+            .innerJoinAndSelect(EventLocation, 'event_location', 'event_location.id = event.eventLocationId')
+            .innerJoinAndSelect(City, 'location_city', 'location_city.id = event_location.cityId')
+            .leftJoinAndSelect('event.categories', 'event_category')
+            .where('event_member.status = :approvedStatus')
+            .andWhere('event_member.userId = :currentUserId')
+            .andWhere('event.endTime < :currentDate')
+            .orderBy('event.endTime', 'DESC')
+            .setParameter('approvedStatus', StatusEnum.APPROVED)
+            .setParameter('currentUserId', userId)
+            .setParameter('currentDate', currentDate)
+            .getMany();
+    }
+
+    public async getUpcomingEvents(userId: number): Promise<Event[]> {
+        const currentDate: string = moment().utc().format('YYYY-MM-DD kk:mm:ss');
+        return this
+            .createQueryBuilder('event')
+            .innerJoinAndSelect(EventMember, 'event_member', 'event_member.eventId = event.id')
+            .innerJoinAndSelect(User, 'owner', 'owner.id = event.ownerId')
+            .innerJoinAndSelect(EventLocation, 'event_location', 'event_location.id = event.eventLocationId')
+            .innerJoinAndSelect(City, 'location_city', 'location_city.id = event_location.cityId')
+            .leftJoinAndSelect('event.categories', 'event_category')
+            .where('event_member.status = :approvedStatus')
+            .andWhere('event_member.userId = :currentUserId')
+            .andWhere('event.startTime > :currentDate')
+            .orderBy('event.endTime', 'ASC')
+            .setParameter('approvedStatus', StatusEnum.APPROVED)
+            .setParameter('currentUserId', userId)
+            .setParameter('currentDate', currentDate)
+            .getMany();
+    }
+
+    public async getHistoryEvents(userId: number): Promise<Event[]> {
+        const currentDate: string = moment().utc().format('YYYY-MM-DD kk:mm:ss');
+        return this
+            .createQueryBuilder('event')
+            .innerJoinAndSelect(EventMember, 'event_member', 'event_member.eventId = event.id')
+            .innerJoinAndSelect(User, 'owner', 'owner.id = event.ownerId')
+            .innerJoinAndSelect(EventLocation, 'event_location', 'event_location.id = event.eventLocationId')
+            .innerJoinAndSelect(City, 'location_city', 'location_city.id = event_location.cityId')
+            .leftJoinAndSelect('event.categories', 'event_category')
+            .where('event_member.status IN (:...checkInStatuses)')
+            .andWhere('event_member.userId = :currentUserId')
+            .andWhere('event.endTime < :currentDate')
+            .orderBy('event.endTime', 'DESC')
+            .setParameter('checkInStatuses', [StatusEnum.APPLIED, StatusEnum.DECLINED, StatusEnum.APPROVED])
+            .setParameter('currentUserId', userId)
+            .setParameter('currentDate', currentDate)
+            .getMany();
     }
 }

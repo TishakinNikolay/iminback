@@ -9,6 +9,15 @@ import { Event } from "./models/event.entity";
 import { FeedRequest } from "./models/dto/feed/feed-request.dto";
 import { UserService } from "../user/user.service";
 import { ResponseUserDto } from "../user/models/response-user.dto";
+import { CreatedEventsRequest } from "./models/dto/owner-events/created-events-request.dto";
+import { CreatedEventsCurrentUserDto } from "./models/dto/owner-events/created-event-current-user.dto";
+import { CreatedEventDto } from "./models/dto/owner-events/created-event.dto";
+import { VisitedEventsRequest } from "./models/dto/visited/visited-events-request.dto";
+import { VisitedEventDto } from "./models/dto/visited/visited-event.dto";
+import { UpcomingEventDto } from "./models/dto/upcoming/upcoming-event.dto";
+import { UpcomingEventsRequest } from "./models/dto/upcoming/upcoming-events-request.dto";
+import { HistoryEventsRequest } from "./models/dto/history/history-events-request.dto";
+import { HistoryEventDto } from "./models/dto/history/history-event.dto";
 
 @Injectable()
 export class EventService {
@@ -36,4 +45,26 @@ export class EventService {
         const categoriesId = feedRequest.categories.map(category => category.id);
         return this.eventRepository.getFeedEvents(user.id, user.city.id, categoriesId);
     }
+
+    @scalableBulk(CreatedEventDto)
+    public async getUserCreatedEvents(createdEventsReq: CreatedEventsRequest): Promise<Event[]> {
+        const currentUser: CreatedEventsCurrentUserDto = createdEventsReq.currentUser;
+        return this.eventRepository.getUsersEvents(currentUser.id);
+    }
+
+    @scalableBulk(VisitedEventDto)
+    public async getVisitedEvents(visitedEventsReq: VisitedEventsRequest) {
+        return this.eventRepository.getVisitedEvents(visitedEventsReq.currentUser.id);
+    }
+
+    @scalableBulk(UpcomingEventDto)
+    public async getUpcomingEvents(upcomingEventsRequest: UpcomingEventsRequest) {
+        return this.eventRepository.getUpcomingEvents(upcomingEventsRequest.currentUser.id);
+    }
+
+    @scalableBulk(HistoryEventDto)
+    public async getHistoryEvents(historyEventsRequest: HistoryEventsRequest) {
+        return this.eventRepository.getHistoryEvents(historyEventsRequest.currentUser.id);
+    }
+    
 }
