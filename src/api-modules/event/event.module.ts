@@ -5,10 +5,11 @@ import { EventService } from "./event.service";
 import { EventRepository } from "./event.repository";
 import { EventLocationModule } from "./event-modules/event-location/event-location.module";
 import { UserModule } from "../user/user.module";
+import { EventValidatorService } from "./event-validator.serivce";
 
 @Module({
     controllers: [EventController],
-    providers: [EventService],
+    providers: [EventService, EventValidatorService],
     imports: [
         EventLocationModule,
         UserModule,

@@ -7,6 +7,8 @@ import { EventLocation } from "./event-modules/event-location/models/event-locat
 import { Category } from "../category/category.entity";
 import { User } from "../user/models/user.entity";
 import { City } from "../city/city.entity";
+import { EventReaction } from "./event-modules/event-reaction/event-reaction.entity";
+import { EventReactionType } from "./event-modules/event-reaction/enums/event-reaction-type.enum";
 
 @EntityRepository(Event)
 export class EventRepository extends Repository<Event>{
@@ -16,6 +18,10 @@ export class EventRepository extends Repository<Event>{
 
     public getAllEvents(): Promise<Event[]> {
         return this.find();
+    }
+
+    public async deleteEventById(eventId: number) {
+        return this.delete(eventId);
     }
 
     public async getFeedEvents(userId: number, userCityId: number, categoriesId: number[]): Promise<Event[]> {
@@ -62,6 +68,8 @@ export class EventRepository extends Repository<Event>{
             .addOrderBy('COALESCE(categories_for_total.category_num,0)', 'DESC')
             .addOrderBy('event.imageId', 'DESC', 'NULLS LAST')
             .addOrderBy('event.description', 'DESC', 'NULLS LAST');
+        console.log(eventsQuery.getQueryAndParameters());
+
         return eventsQuery.getMany();
     }
 
@@ -136,5 +144,52 @@ export class EventRepository extends Repository<Event>{
             .setParameter('currentUserId', userId)
             .setParameter('currentDate', currentDate)
             .getMany();
+    }
+
+    public async getFavoriteEvents(userId: number): Promise<Event[]> {
+        return this
+            .createQueryBuilder('event')
+            .innerJoinAndSelect(EventMember, 'event_member', 'event_member.eventId = event.id')
+            .innerJoinAndSelect(EventReaction, 'event_reaction', 'event_reaction.eventId = event.id')
+            .innerJoinAndSelect(User, 'owner', 'owner.id = event.ownerId')
+            .innerJoinAndSelect(EventLocation, 'event_location', 'event_location.id = event.eventLocationId')
+            .innerJoinAndSelect(City, 'location_city', 'location_city.id = event_location.cityId')
+            .leftJoinAndSelect('event.categories', 'event_category')
+            .where('event_reaction.userId = :currentUserId')
+            .andWhere('event_reaction.reactionType = :addToFavoriteType')
+            .orderBy('event_reaction.createdAt', 'DESC')
+            .setParameter('currentUserId', userId)
+            .setParameter('addToFavoriteType', EventReactionType.ADD_TO_FAVORITE)
+            .getMany();
+    }
+
+    public getTimeIntersectedEvents(userId: number, startTime: Date, endTime: Date): Promise<Event[]> {
+        return this
+            .createQueryBuilder('event')
+            .leftJoinAndSelect(EventMember, 'event_member', 'event_member.eventId = event.id')
+            .innerJoinAndSelect(User, 'owner', 'owner.id = event.ownerId')
+            .where('event_member.status = :approvedStatus')
+            .andWhere('event_member.userId = :currentUserId OR event.ownerId = :currentUserId')
+            .andWhere('(event.startTime, event.endTime) OVERLAPS (:startTime, :endTime)')
+            .setParameter('approvedStatus', StatusEnum.APPROVED)
+            .setParameter('currentUserId', userId)
+            .setParameter('startTime', startTime)
+            .setParameter('endTime', endTime)
+            .getMany();
+    }
+
+    public getEventById(eventId: number) {
+        return this
+            .findOne({
+                relations: [
+                    'owner',
+                    'image',
+                    'eventLocation',
+                    'eventLocation.city',
+                    'eventMembers',
+                    'categories'
+                ],
+                where: { id: eventId }
+            });
     }
 }

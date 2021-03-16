@@ -11,8 +11,6 @@ import { Image } from '../../image/models/image.entity'
 export class Event extends BaseColumnModel {
     @Column({ type: 'character varying', nullable: false, length: 350 })
     public title: string
-    @Column({ type: 'date', nullable: false })
-    public date: Date
     @Column({ type: 'timestamp', nullable: false })
     public startTime: Date
     @Column({ type: 'timestamp', nullable: false })
@@ -30,13 +28,13 @@ export class Event extends BaseColumnModel {
     @Column({ type: 'int', nullable: false, default: 0 })
     public totalOfPersons: number
 
-    @OneToMany(type => EventMember, member => member.event)
+    @OneToMany(type => EventMember, member => member.event, { onDelete: 'CASCADE' })
     @JoinColumn()
     public eventMembers: EventMember[]
-    @OneToMany(() => EventReaction, reaction => reaction.event)
+    @OneToMany(() => EventReaction, reaction => reaction.event, { onDelete: 'CASCADE' })
     @JoinColumn()
     public eventReactions: EventReaction[]
-    @ManyToMany(type => Category, category => category.events)
+    @ManyToMany(type => Category, category => category.events, { onDelete: 'CASCADE' })
     @JoinTable()
     public categories: Category[]
 }

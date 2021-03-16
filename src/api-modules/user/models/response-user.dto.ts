@@ -11,4 +11,6 @@ export class ResponseUserDto {
     public dateOfBirth: Date = new Date();
     public gender: GenderEnum = null;
     public city?: UserCityDto = new UserCityDto();
+    public nickname: string = null;
+
 }

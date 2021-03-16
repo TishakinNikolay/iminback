@@ -5,7 +5,6 @@ import { CreatedEventOwnerDto } from "./created-event.owner.dto";
 export class CreatedEventDto {
   public id: number = null;
   public title: string = null;
-  public date: Date = new Date();
   public startTime: Date = new Date()
   public endTime: Date = new Date();
   public owner: CreatedEventOwnerDto = new CreatedEventOwnerDto();

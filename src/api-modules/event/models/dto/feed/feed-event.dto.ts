@@ -5,8 +5,7 @@ import { FeedEventOwnerDto } from "./feed-event.owner.dto";
 export class FeedEventDto {
   public id: number = null;
   public title: string = null;
-  public date: Date = new Date();
-  public startTime: Date = new Date()
+  public startTime: Date = new Date();
   public endTime: Date = new Date();
   public owner: FeedEventOwnerDto = new FeedEventOwnerDto();
   public description: string = null;

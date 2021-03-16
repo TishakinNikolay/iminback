@@ -5,7 +5,6 @@ import { UpcomingEventOwnerDto } from "./upcoming-event.owner.dto";
 export class UpcomingEventDto {
   public id: number = null;
   public title: string = null;
-  public date: Date = new Date();
   public startTime: Date = new Date()
   public endTime: Date = new Date();
   public owner: UpcomingEventOwnerDto = new UpcomingEventOwnerDto();

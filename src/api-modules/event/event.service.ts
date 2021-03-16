@@ -18,11 +18,14 @@ import { UpcomingEventDto } from "./models/dto/upcoming/upcoming-event.dto";
 import { UpcomingEventsRequest } from "./models/dto/upcoming/upcoming-events-request.dto";
 import { HistoryEventsRequest } from "./models/dto/history/history-events-request.dto";
 import { HistoryEventDto } from "./models/dto/history/history-event.dto";
+import { FavoriteEventDto } from "./models/dto/favorite/favorite-event.dto";
+import { EventValidatorService } from "./event-validator.serivce";
 
 @Injectable()
 export class EventService {
     constructor(
         private readonly eventRepository: EventRepository,
+        private readonly eventValidatorSerivce: EventValidatorService,
         private readonly eventLocationService: EventLocationService,
         private readonly userService: UserService
     ) {
@@ -30,6 +33,7 @@ export class EventService {
 
     @scalable(ResponseEventDto)
     public async createEvent(createEventDto: CreateEventDto): Promise<Event> {
+        await this.eventValidatorSerivce.validateEventCreation(createEventDto);
         Object.assign(createEventDto.eventLocation, await this.eventLocationService.createEventLocation(createEventDto.eventLocation));
         const event: Event = Object.assign(new Event(), createEventDto);
         return this.eventRepository.createEvent(event);
@@ -66,5 +70,18 @@ export class EventService {
     public async getHistoryEvents(historyEventsRequest: HistoryEventsRequest) {
         return this.eventRepository.getHistoryEvents(historyEventsRequest.currentUser.id);
     }
-    
+
+    @scalableBulk(FavoriteEventDto)
+    public async getFavoriteEvents(favoriteEventsRequest: HistoryEventsRequest) {
+        return this.eventRepository.getFavoriteEvents(favoriteEventsRequest.currentUser.id);
+    }
+
+    @scalable(ResponseEventDto)
+    public async getEventById(eventId: number) {
+        return this.eventRepository.getEventById(eventId);
+    }
+
+    public async deleteEventById(eventId: number) {
+        return this.eventRepository.deleteEventById(eventId);
+    }
 }

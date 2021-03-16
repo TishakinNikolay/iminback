@@ -10,6 +10,5 @@ export class CreatedEventOwnerDto {
     public dateOfBirth: Date = new Date();
     public gender: GenderEnum = null;
     public city: CreatedEventLocationCityDto = new CreatedEventLocationCityDto();
-    public email: string = null;
     constructor() { }
 }

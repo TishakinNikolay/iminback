@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import { EventService } from "./event.service";
 import { CreateEventDto } from "./models/dto/create/create-event.dto";
 import { CreatedEventsRequest } from "./models/dto/owner-events/created-events-request.dto";
@@ -6,6 +6,7 @@ import { FeedRequest } from "./models/dto/feed/feed-request.dto";
 import { VisitedEventsRequest } from "./models/dto/visited/visited-events-request.dto";
 import { UpcomingEventsRequest } from "./models/dto/upcoming/upcoming-events-request.dto";
 import { HistoryEventsRequest } from "./models/dto/history/history-events-request.dto";
+import { FavoriteEventsRequest } from "./models/dto/favorite/favorite-events-request.dto";
 
 @Controller('event')
 export class EventController {
@@ -42,5 +43,20 @@ export class EventController {
     getHistoryEvents(@Body() historyEventsRequest: HistoryEventsRequest) {
         return this.eventService.getHistoryEvents(historyEventsRequest);
 
+    }
+
+    @Post('/favorite')
+    getFavoriteEvents(@Body() favoriteEventsRequest: FavoriteEventsRequest) {
+        return this.eventService.getFavoriteEvents(favoriteEventsRequest);
+
+    }
+
+    @Get('/:id')
+    getEventById(@Param('id') eventId: number) {
+        return this.eventService.getEventById(eventId);
+    }
+    @Delete('/:id')
+    deleteEventById(@Param('id') eventId: number) {
+        return this.eventService.deleteEventById(eventId);
     }
 }

@@ -10,4 +10,5 @@ export class CreateUserDto {
     public dateOfBirth: Date;
     public gender: GenderEnum;
     public city?: UserCityDto;
+    public nickname: string;
 }
