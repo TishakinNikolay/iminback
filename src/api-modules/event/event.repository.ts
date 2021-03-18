@@ -1,13 +1,13 @@
-import { EntityRepository, Repository, SelectQueryBuilder } from "typeorm";
-import { EventMember } from "./event-modules/event-member/event-member.entity";
-import { Event } from "./models/event.entity";
 import * as moment from 'moment';
-import { StatusEnum } from "./event-modules/event-member/enums/status.enum";
-import { EventLocation } from "./event-modules/event-location/models/event-location.entity";
-import { Category } from "../category/category.entity";
+import { EntityRepository, Repository, SelectQueryBuilder } from 'typeorm';
+import { Category } from '../category/category.entity';
+import { EventLocation } from './event-modules/event-location/models/event-location.entity';
+import { StatusEnum } from './event-modules/event-member/enums/status.enum';
+import { EventMember } from './event-modules/event-member/event-member.entity';
+import { Event } from './models/event.entity';
 
 @EntityRepository(Event)
-export class EventRepository extends Repository<Event>{
+export class EventRepository extends Repository<Event> {
     public createEvent(event: Event): Promise<Event> {
         return this.save(event);
     }
@@ -28,7 +28,7 @@ export class EventRepository extends Repository<Event>{
                     .from(EventMember, 'event_member')
                     .where('event_member.status = :appliedStatus')
                     .groupBy('event_member.eventId')
-                    .setParameter('appliedStatus', StatusEnum.APPLIED)
+                    .setParameter('appliedStatus', StatusEnum.APPLIED);
             }
                 , 'applications', '\"applications\".\"eventId\" = \"event\".\"id\"')
             .where('event.id NOT IN' +
@@ -42,10 +42,10 @@ export class EventRepository extends Repository<Event>{
             .setParameter('todayDate', currentDate)
             .setParameter('userCityId', userCityId);
         if (categoriesId.length > 0) {
-            eventsQuery = eventsQuery.andWhere('event_category.id IN (:...categoriesId)')
+            eventsQuery = eventsQuery.andWhere('event_category.id IN (:...categoriesId)');
             eventsQuery = eventsQuery.setParameter('categoriesId', categoriesId);
         }
-        eventsQuery.orderBy('')
+        eventsQuery.orderBy('');
         return eventsQuery.getMany();
     }
 }

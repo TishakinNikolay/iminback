@@ -1,6 +1,6 @@
-import { GenderEnum } from "../enums/gender.enum";
-import { UserCityDto } from "./user-city.dto";
-import { UserImageDto } from "./user-image.dto";
+import { GenderEnum } from '../enums/gender.enum';
+import { UserCityDto } from './user-city.dto';
+import { UserImageDto } from './user-image.dto';
 
 export class CreateUserDto {
     public firstName: string;
@@ -10,5 +10,5 @@ export class CreateUserDto {
     public dateOfBirth: Date;
     public gender: GenderEnum;
     public city?: UserCityDto;
-    public email: string
+    public email: string;
 }

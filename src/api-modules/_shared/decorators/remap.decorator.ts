@@ -36,4 +36,4 @@ function scalableBulk(type: any) {
         return descriptor;
     };
 }
-export { scalable, scalableBulk }
+export { scalable, scalableBulk };

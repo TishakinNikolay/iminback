@@ -1,23 +1,23 @@
-import {RequestOptions} from 'https'
+import {RequestOptions} from 'https';
 
 export interface IHttpsUtilResponseOptions {
-    json?: boolean
+    json?: boolean;
 }
 
 export interface IResponseData {
-    statusCode: number
-    statusMessage?: string
-    body: any
+    statusCode: number;
+    statusMessage?: string;
+    body: any;
 }
 
 export interface IResponseErrorData {
-    statusCode: number
-    message: string
+    statusCode: number;
+    message: string;
 }
 
 export interface IHttpsUtilOptions {
-    url: string
-    data?: object
-    optionsResponse: IHttpsUtilResponseOptions
-    optionsRequest?: RequestOptions
+    url: string;
+    data?: object;
+    optionsResponse: IHttpsUtilResponseOptions;
+    optionsRequest?: RequestOptions;
 }

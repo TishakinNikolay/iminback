@@ -1,16 +1,16 @@
-import { ConnectionOptions } from 'typeorm';
 import { config } from 'dotenv';
 import { join } from 'path';
+import { ConnectionOptions } from 'typeorm';
 /**
  * DB configuration
  */
 config();
-let ssl
+let ssl;
 if (process.env.DB_SSL === 'true') {
     ssl = {
         rejectUnauthorized: false
-    }
-} else { ssl = false }
+    };
+} else { ssl = false; }
 
 const dbConfig: ConnectionOptions = {
     type: 'postgres',
@@ -26,6 +26,6 @@ const dbConfig: ConnectionOptions = {
     },
     maxQueryExecutionTime: 5000
     , logging: ['error']
-}
+};
 
-export default dbConfig
+export default dbConfig;

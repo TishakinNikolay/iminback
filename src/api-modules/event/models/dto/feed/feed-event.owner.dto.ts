@@ -1,6 +1,6 @@
-import { GenderEnum } from "../../../../user/enums/gender.enum";
-import { FeedEventImageDto } from "./feed-event.image.dto";
-import { FeedEventLocationCityDto } from "./feed-event.location-city.dto";
+import { GenderEnum } from '../../../../user/enums/gender.enum';
+import { FeedEventImageDto } from './feed-event.image.dto';
+import { FeedEventLocationCityDto } from './feed-event.location-city.dto';
 
 export class FeedEventOwnerDto {
     public id: number = null;

@@ -1,7 +1,7 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
-import { StatusEnum } from './enums/status.enum';
-import { Event } from '../../models/event.entity';
 import { User } from '../../../user/models/user.entity';
+import { Event } from '../../models/event.entity';
+import { StatusEnum } from './enums/status.enum';
 
 @Entity('event_member')
 export class EventMember extends BaseEntity {
@@ -24,8 +24,8 @@ export class EventMember extends BaseEntity {
 
   @ManyToOne(() => Event, event => event.eventMembers)
   @JoinColumn({ name: 'eventId', referencedColumnName: 'id' })
-  public event: Event
+  public event: Event;
   @ManyToOne(() => User, user => user.eventMembers)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
-  public user: User
+  public user: User;
 }

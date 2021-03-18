@@ -1,9 +1,9 @@
-import { Injectable } from "@nestjs/common";
-import { ImageLoaderService } from "./image-modules/image-loader/image-loader.service";
-import { ImageRepository } from "./image.repository";
-import { CreateImageDto } from "./models/create-image.dto";
-import { ResponseImageDto } from "./models/response-image.dto";
+import { Injectable } from '@nestjs/common';
+import { ImageLoaderService } from './image-modules/image-loader/image-loader.service';
+import { ImageRepository } from './image.repository';
+import { CreateImageDto } from './models/create-image.dto';
 import { Image } from './models/image.entity';
+import { ResponseImageDto } from './models/response-image.dto';
 
 @Injectable()
 export class ImageService {

@@ -1,6 +1,6 @@
-import { ResponseEventImageDto } from "./response-event.image.dto";
-import { ResponseEventLocationDto } from "./response-event.location.dto";
-import { ResponseEventOwnerDto } from "./response-event.owner.dto";
+import { ResponseEventImageDto } from './response-event.image.dto';
+import { ResponseEventLocationDto } from './response-event.location.dto';
+import { ResponseEventOwnerDto } from './response-event.owner.dto';
 
 export class ResponseEventDto {
 
