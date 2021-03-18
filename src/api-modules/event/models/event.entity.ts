@@ -28,7 +28,7 @@ export class Event extends BaseColumnModel {
     @Column({ type: 'int', nullable: false, default: 0 })
     public totalOfPersons: number
 
-    @OneToMany(type => EventMember, member => member.event, { onDelete: 'CASCADE' })
+    @OneToMany(type => EventMember, member => member.event, { onDelete:  'CASCADE' })
     @JoinColumn()
     public eventMembers: EventMember[]
     @OneToMany(() => EventReaction, reaction => reaction.event, { onDelete: 'CASCADE' })

@@ -34,7 +34,6 @@ function scalableBulk(type: any) {
         const originalFunc = descriptor['value'];
         const proxymapper = async function () {
             const result = await originalFunc.call(this, ...arguments);
-            console.log(JSON.stringify(result));
             return result.map((entity) => {
                 return remap(new type(), entity);
             });

@@ -9,7 +9,7 @@ export class EventValidatorService {
 
     }
 
-    public async validateEventCreation(createEventDto: CreateEventDto) {
+    public async validateEventTime(createEventDto: CreateEventDto) {
         const events: Event[] = await this.eventRepository.getTimeIntersectedEvents(
             createEventDto.owner.id,
             createEventDto.startTime,

@@ -1,4 +1,4 @@
-import { EntityRepository, Repository, SelectQueryBuilder } from "typeorm";
+import { EntityRepository, Repository, SelectQueryBuilder, UpdateResult } from "typeorm";
 import { EventMember } from "./event-modules/event-member/event-member.entity";
 import { Event } from "./models/event.entity";
 import * as moment from 'moment';
@@ -9,6 +9,7 @@ import { User } from "../user/models/user.entity";
 import { City } from "../city/city.entity";
 import { EventReaction } from "./event-modules/event-reaction/event-reaction.entity";
 import { EventReactionType } from "./event-modules/event-reaction/enums/event-reaction-type.enum";
+import { UpdateEventDto } from "./models/dto/update/update-event.dto";
 
 @EntityRepository(Event)
 export class EventRepository extends Repository<Event>{
@@ -68,7 +69,6 @@ export class EventRepository extends Repository<Event>{
             .addOrderBy('COALESCE(categories_for_total.category_num,0)', 'DESC')
             .addOrderBy('event.imageId', 'DESC', 'NULLS LAST')
             .addOrderBy('event.description', 'DESC', 'NULLS LAST');
-        console.log(eventsQuery.getQueryAndParameters());
 
         return eventsQuery.getMany();
     }
@@ -191,5 +191,18 @@ export class EventRepository extends Repository<Event>{
                 ],
                 where: { id: eventId }
             });
+    }
+
+    public async flushEventMembers(createEventDto: UpdateEventDto) {
+        return this.createQueryBuilder()
+            .delete()
+            .from(EventMember)
+            .where("eventId = :id", { id: createEventDto.id })
+            .execute();
+    }
+
+    public async updateEvent(event: Event): Promise<Event> {
+        await this.update({ id: event.id, }, event);
+        return this.getEventById(event.id);
     }
 }

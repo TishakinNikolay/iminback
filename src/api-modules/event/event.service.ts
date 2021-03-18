@@ -20,6 +20,7 @@ import { HistoryEventsRequest } from "./models/dto/history/history-events-reques
 import { HistoryEventDto } from "./models/dto/history/history-event.dto";
 import { FavoriteEventDto } from "./models/dto/favorite/favorite-event.dto";
 import { EventValidatorService } from "./event-validator.serivce";
+import { UpdateEventDto } from "./models/dto/update/update-event.dto";
 
 @Injectable()
 export class EventService {
@@ -33,7 +34,7 @@ export class EventService {
 
     @scalable(ResponseEventDto)
     public async createEvent(createEventDto: CreateEventDto): Promise<Event> {
-        await this.eventValidatorSerivce.validateEventCreation(createEventDto);
+        await this.eventValidatorSerivce.validateEventTime(createEventDto);
         Object.assign(createEventDto.eventLocation, await this.eventLocationService.createEventLocation(createEventDto.eventLocation));
         const event: Event = Object.assign(new Event(), createEventDto);
         return this.eventRepository.createEvent(event);
@@ -83,5 +84,18 @@ export class EventService {
 
     public async deleteEventById(eventId: number) {
         return this.eventRepository.deleteEventById(eventId);
+    }
+    @scalable(ResponseEventDto)
+    public async updateEvent(updateEventDto: UpdateEventDto): Promise<Event> {
+        console.log(updateEventDto);
+        try {
+            await this.eventValidatorSerivce.validateEventTime(updateEventDto);
+        } catch (e: any) {
+            throw e;
+        }
+        if (updateEventDto.startTime || updateEventDto.endTime) {
+            await this.eventRepository.flushEventMembers(updateEventDto);
+        }
+        return this.eventRepository.updateEvent(Object.assign(new Event(), updateEventDto));
     }
 }
