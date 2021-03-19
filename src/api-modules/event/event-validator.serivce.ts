@@ -9,11 +9,11 @@ export class EventValidatorService {
 
     }
 
-    public async validateEventTime(createEventDto: CreateEventDto) {
+    public async validateEventTime(ownerId: number, startTime: Date, endTime: Date): Promise<void> {
         const events: Event[] = await this.eventRepository.getTimeIntersectedEvents(
-            createEventDto.owner.id,
-            createEventDto.startTime,
-            createEventDto.endTime);
+            ownerId,
+            startTime,
+            endTime);
         if (events.length > 0) {
             throw new BadRequestException('Time range of new event already exist')
         }

@@ -1,5 +1,5 @@
 import { EntityRepository, Repository, SelectQueryBuilder, UpdateResult } from "typeorm";
-import { EventMember } from "./event-modules/event-member/event-member.entity";
+import { EventMember } from "./event-modules/event-member/models/event-member.entity";
 import { Event } from "./models/event.entity";
 import * as moment from 'moment';
 import { StatusEnum } from "./event-modules/event-member/enums/status.enum";
@@ -73,7 +73,7 @@ export class EventRepository extends Repository<Event>{
         return eventsQuery.getMany();
     }
 
-    public async getUsersEvents(userId: number): Promise<Event[]> {
+    public async getUserEvents(userId: number): Promise<Event[]> {
         return this
             .find({
                 relations: [
@@ -85,7 +85,7 @@ export class EventRepository extends Repository<Event>{
                     'categories'
                 ],
                 where: { owner: { id: userId } },
-                order: { startTime: 'DESC' }
+                order: { createdAt: 'DESC' }
             })
     }
 
@@ -120,7 +120,7 @@ export class EventRepository extends Repository<Event>{
             .where('event_member.status = :approvedStatus')
             .andWhere('event_member.userId = :currentUserId')
             .andWhere('event.startTime > :currentDate')
-            .orderBy('event.endTime', 'ASC')
+            .orderBy('event.startTime', 'ASC')
             .setParameter('approvedStatus', StatusEnum.APPROVED)
             .setParameter('currentUserId', userId)
             .setParameter('currentDate', currentDate)

@@ -34,7 +34,7 @@ export class EventService {
 
     @scalable(ResponseEventDto)
     public async createEvent(createEventDto: CreateEventDto): Promise<Event> {
-        await this.eventValidatorSerivce.validateEventTime(createEventDto);
+        await this.eventValidatorSerivce.validateEventTime(createEventDto.owner.id, createEventDto.startTime, createEventDto.endTime);
         Object.assign(createEventDto.eventLocation, await this.eventLocationService.createEventLocation(createEventDto.eventLocation));
         const event: Event = Object.assign(new Event(), createEventDto);
         return this.eventRepository.createEvent(event);
@@ -54,7 +54,7 @@ export class EventService {
     @scalableBulk(CreatedEventDto)
     public async getUserCreatedEvents(createdEventsReq: CreatedEventsRequest): Promise<Event[]> {
         const currentUser: CreatedEventsCurrentUserDto = createdEventsReq.currentUser;
-        return this.eventRepository.getUsersEvents(currentUser.id);
+        return this.eventRepository.getUserEvents(currentUser.id);
     }
 
     @scalableBulk(VisitedEventDto)
@@ -89,7 +89,7 @@ export class EventService {
     public async updateEvent(updateEventDto: UpdateEventDto): Promise<Event> {
         console.log(updateEventDto);
         try {
-            await this.eventValidatorSerivce.validateEventTime(updateEventDto);
+            await this.eventValidatorSerivce.validateEventTime(updateEventDto.owner.id, updateEventDto.startTime, updateEventDto.endTime);
         } catch (e: any) {
             throw e;
         }

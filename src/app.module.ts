@@ -9,6 +9,7 @@ import { join } from 'path';
 import { config } from 'dotenv';
 import { rootPath } from 'get-root-path';
 import { UserModule } from './api-modules/user/user.module';
+import { EventMemberModule } from './api-modules/event/event-modules/event-member/event-member.module';
 config();
 
 @Module({

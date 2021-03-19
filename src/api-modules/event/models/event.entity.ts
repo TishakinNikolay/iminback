@@ -1,7 +1,7 @@
 import { BaseColumnModel } from '../../_shared/base/base-column.model'
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne } from 'typeorm'
 import { Category } from '../../category/category.entity'
-import { EventMember } from '../event-modules/event-member/event-member.entity'
+import { EventMember } from '../event-modules/event-member/models/event-member.entity'
 import { EventReaction } from '../event-modules/event-reaction/event-reaction.entity'
 import { EventLocation } from '../event-modules/event-location/models/event-location.entity'
 import { User } from '../../user/models/user.entity'

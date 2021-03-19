@@ -1,7 +1,7 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
-import { StatusEnum } from './enums/status.enum';
-import { Event } from '../../models/event.entity';
-import { User } from '../../../user/models/user.entity';
+import { StatusEnum } from '../enums/status.enum';
+import { Event } from '../../../models/event.entity';
+import { User } from '../../../../user/models/user.entity';
 
 @Entity('event_member')
 export class EventMember extends BaseEntity {
