@@ -87,7 +87,6 @@ export class EventService {
     }
     @scalable(ResponseEventDto)
     public async updateEvent(updateEventDto: UpdateEventDto): Promise<Event> {
-        console.log(updateEventDto);
         try {
             await this.eventValidatorSerivce.validateEventTime(updateEventDto.owner.id, updateEventDto.startTime, updateEventDto.endTime);
         } catch (e: any) {
