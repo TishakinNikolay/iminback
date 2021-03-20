@@ -4,13 +4,15 @@ import {RequestGeocoderSearchDto} from '../../services/2gis/api/geocoder/models/
 import {ResponseSearchListDto} from '../../services/2gis/api/shared/models/response/response-search.list.dto';
 import {RequestSearch} from '../../services/2gis/api/suggest/models/requests/request-search.dto';
 import {DoubleGisService} from '../../services/2gis/double-gis.service';
-import {RequestMapSearchDto} from './models/dto/request/request-map.search.dto';
+import {EventService} from '../event/event.service';
 import {RequestMapPointDto} from './models/dto/request/request-map.point.dto';
+import {RequestMapSearchDto} from './models/dto/request/request-map.search.dto';
 
 @Injectable()
 export class MapService {
     constructor(
-        private readonly doubleGisService: DoubleGisService
+        private readonly doubleGisService: DoubleGisService,
+        private readonly eventService: EventService,
     ) {}
 
     public async searchByAddress(search: RequestMapSearchDto): Promise<any> {
@@ -66,5 +68,9 @@ export class MapService {
 
     public async searchByCords(search: RequestMapPointDto) {
         return await this.doubleGisService.api.geocodeApi.searchOne({lat: search.lat, lon: search.long});
+    }
+
+    public async getEvents() {
+        // return this.eventService.getFeedEvents()
     }
 }
