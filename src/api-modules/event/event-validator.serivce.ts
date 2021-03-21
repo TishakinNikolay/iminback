@@ -30,8 +30,7 @@ export class EventValidatorService {
                 {
                     statusCode: 400,
                     message: "Collision found",
-                    collisedEvent: events,
-                    error: "Bad Request"
+                    error: events
                 });
         }
     }
