@@ -6,7 +6,7 @@ import { EventLocation } from './event-modules/event-location/models/event-locat
 import { StatusEnum } from './event-modules/event-member/enums/status.enum';
 import { EventMember } from './event-modules/event-member/models/event-member.entity';
 import { EventReactionType } from './event-modules/event-reaction/enums/event-reaction-type.enum';
-import { EventReaction } from './event-modules/event-reaction/event-reaction.entity';
+import { EventReaction } from './event-modules/event-reaction/models/event-reaction.entity';
 import { FeedRequestLocation } from './models/dto/feed/feed-request-location.dto';
 import { UpdateEventDto } from './models/dto/update/update-event.dto';
 import { Event } from './models/event.entity';

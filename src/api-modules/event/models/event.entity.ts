@@ -5,7 +5,7 @@ import { User } from '../../user/models/user.entity';
 import { BaseColumnModel } from '../../_shared/base/base-column.model';
 import { EventLocation } from '../event-modules/event-location/models/event-location.entity';
 import { EventMember } from '../event-modules/event-member/models/event-member.entity';
-import { EventReaction } from '../event-modules/event-reaction/event-reaction.entity';
+import { EventReaction } from '../event-modules/event-reaction/models/event-reaction.entity';
 
 @Entity('event')
 export class Event extends BaseColumnModel {

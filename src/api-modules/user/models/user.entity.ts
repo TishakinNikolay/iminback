@@ -1,7 +1,7 @@
+import { EventReaction } from '../../event/event-modules/event-reaction/models/event-reaction.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { City } from '../../city/city.entity';
 import { EventMember } from '../../event/event-modules/event-member/models/event-member.entity';
-import { EventReaction } from '../../event/event-modules/event-reaction/event-reaction.entity';
 import { Event } from '../../event/models/event.entity';
 import { Image } from '../../image/models/image.entity';
 import { BaseColumnModel } from '../../_shared/base/base-column.model';
