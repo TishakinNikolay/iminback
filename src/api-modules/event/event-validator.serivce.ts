@@ -24,15 +24,10 @@ export class EventValidatorService {
             startTime,
             endTime)).map(event => event.id);
         if (events.length > 0) {
-            throw new BadRequestException(
-                {
-                    statusCode: 400,
-                    message: 'Collision found',
-                    collisedEvent: events,
-                    error: 'Bad Request',
-                });
+            throw new BadRequestException({ collisedEvent: events });
         }
     }
+
     public async validateSelfEventApplication(ownerId: number, eventId: number) {
         const targetEvent: ResponseEventDto = await this.eventRepository.getEventById(eventId);
         if (targetEvent.owner.id === ownerId) {

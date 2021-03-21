@@ -1,6 +1,6 @@
-import {Controller, Get} from '@nestjs/common';
-import {User} from '../user/models/user.entity';
-import {CategoryService} from './category.service';
+import { Controller, Get } from '@nestjs/common';
+import { User } from '../user/models/user.entity';
+import { CategoryService } from './category.service';
 
 @Controller('category')
 export class CategoryController {

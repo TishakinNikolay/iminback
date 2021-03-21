@@ -7,8 +7,8 @@ import { StatusEnum } from './event-modules/event-member/enums/status.enum';
 import { EventMember } from './event-modules/event-member/models/event-member.entity';
 import { EventReactionType } from './event-modules/event-reaction/enums/event-reaction-type.enum';
 import { EventReaction } from './event-modules/event-reaction/models/event-reaction.entity';
-import { FeedRequestLocation } from './models/dto/feed/feed-request-location.dto';
-import { UpdateEventDto } from './models/dto/update/update-event.dto';
+import { EventLocationDto } from './models/dto/request/event-location.dto';
+import { UpdateEventDto } from './models/dto/request/update/update-event.dto';
 import { Event } from './models/event.entity';
 
 @EntityRepository(Event)
@@ -25,7 +25,7 @@ export class EventRepository extends Repository<Event> {
         return this.delete(eventId);
     }
 
-    public async getFeedEvents(userId: number, userCityId: number, categoriesId: number[], geo: FeedRequestLocation): Promise<Event[]> {
+    public async getFeedEvents(userId: number, userCityId: number, categoriesId: number[], geo: EventLocationDto): Promise<Event[]> {
         const currentDate: Date = new Date();
         const eventQb: SelectQueryBuilder<Event> = this.createQueryBuilder('event');
         let eventsQuery = eventQb

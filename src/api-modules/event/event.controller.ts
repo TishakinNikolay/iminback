@@ -1,13 +1,13 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { EventService } from './event.service';
-import { CreateEventDto } from './models/dto/create/create-event.dto';
-import { FavoriteEventsRequest } from './models/dto/favorite/favorite-events-request.dto';
-import { FeedRequest } from './models/dto/feed/feed-request.dto';
-import { HistoryEventsRequest } from './models/dto/history/history-events-request.dto';
-import { CreatedEventsRequest } from './models/dto/owner-events/created-events-request.dto';
-import { UpcomingEventsRequest } from './models/dto/upcoming/upcoming-events-request.dto';
-import { UpdateEventDto } from './models/dto/update/update-event.dto';
-import { VisitedEventsRequest } from './models/dto/visited/visited-events-request.dto';
+import { CreateEventDto } from './models/dto/request/create/create-event.dto';
+import { FavoriteEventsRequest } from './models/dto/request/favorite/favorite-events-request.dto';
+import { FeedRequest } from './models/dto/request/feed/feed-request.dto';
+import { HistoryEventsRequest } from './models/dto/request/history/history-event-request.dto';
+import { CreatedEventsRequest } from './models/dto/request/owner-events/created-events-request.dto';
+import { UpcomingEventsRequest } from './models/dto/request/upcoming/upcoming-events-request.dto';
+import { UpdateEventDto } from './models/dto/request/update/update-event.dto';
+import { VisitedEventsRequest } from './models/dto/request/visited/visited-events-request.dto';
 
 @Controller('event')
 export class EventController {
@@ -47,7 +47,6 @@ export class EventController {
     @Post('/favorite')
     async getFavoriteEvents(@Body() favoriteEventsRequest: FavoriteEventsRequest) {
         return this.eventService.getFavoriteEvents(favoriteEventsRequest);
-
     }
 
     @Get('/:id')

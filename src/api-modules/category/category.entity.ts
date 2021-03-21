@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToOne } from 'typ
 import { Event } from '../event/models/event.entity';
 import { Image } from '../image/models/image.entity';
 import { BaseColumnModel } from '../_shared/base/base-column.model';
-import {GenderCategoryEnum} from './enums/gender.enum';
+import { GenderCategoryEnum } from './enums/gender.enum';
 
 @Entity('category')
 export class Category extends BaseColumnModel {

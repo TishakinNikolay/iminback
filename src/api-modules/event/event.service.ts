@@ -5,22 +5,16 @@ import { scalable, scalableBulk } from '../_shared/decorators/remap.decorator';
 import { EventLocationService } from './event-modules/event-location/event-location.service';
 import { EventValidatorService } from './event-validator.serivce';
 import { EventRepository } from './event.repository';
-import { CreateEventDto } from './models/dto/create/create-event.dto';
-import { FavoriteEventDto } from './models/dto/favorite/favorite-event.dto';
-import { FeedEventDto } from './models/dto/feed/feed-event.dto';
-import { FeedRequest } from './models/dto/feed/feed-request.dto';
-import { HistoryEventDto } from './models/dto/history/history-event.dto';
-import { HistoryEventsRequest } from './models/dto/history/history-events-request.dto';
-import { CreatedEventsCurrentUserDto } from './models/dto/owner-events/created-event-current-user.dto';
-import { CreatedEventDto } from './models/dto/owner-events/created-event.dto';
-import { CreatedEventsRequest } from './models/dto/owner-events/created-events-request.dto';
+import { CreateEventDto } from './models/dto/request/create/create-event.dto';
+import { FeedRequest } from './models/dto/request/feed/feed-request.dto';
+import { HistoryEventsRequest } from './models/dto/request/history/history-event-request.dto';
+import { CreatedEventsRequest } from './models/dto/request/owner-events/created-events-request.dto';
 import { ResponseEventDto } from './models/dto/response/response-event.dto';
-import { UpcomingEventDto } from './models/dto/upcoming/upcoming-event.dto';
-import { UpcomingEventsRequest } from './models/dto/upcoming/upcoming-events-request.dto';
-import { UpdateEventDto } from './models/dto/update/update-event.dto';
-import { VisitedEventDto } from './models/dto/visited/visited-event.dto';
-import { VisitedEventsRequest } from './models/dto/visited/visited-events-request.dto';
+import { UpcomingEventsRequest } from './models/dto/request/upcoming/upcoming-events-request.dto';
+import { UpdateEventDto } from './models/dto/request/update/update-event.dto';
+import { VisitedEventsRequest } from './models/dto/request/visited/visited-events-request.dto';
 import { Event } from './models/event.entity';
+import { EventOwnerDto } from './models/dto/request/event-owner.dto';
 
 @Injectable()
 export class EventService {
@@ -44,35 +38,35 @@ export class EventService {
         return this.eventRepository.getAllEvents();
     }
 
-    @scalableBulk(FeedEventDto)
+    @scalableBulk(ResponseEventDto)
     public async getFeedEvents(feedRequest: FeedRequest): Promise<Event[]> {
         const user: ResponseUserDto = await this.userService.getUserById(feedRequest.currentUser.id);
         const categoriesId = feedRequest.categories.map(category => category.id);
         return this.eventRepository.getFeedEvents(user.id, user.city.id, categoriesId, feedRequest.location);
     }
 
-    @scalableBulk(CreatedEventDto)
+    @scalableBulk(ResponseEventDto)
     public async getUserCreatedEvents(createdEventsReq: CreatedEventsRequest): Promise<Event[]> {
-        const currentUser: CreatedEventsCurrentUserDto = createdEventsReq.currentUser;
+        const currentUser: EventOwnerDto = createdEventsReq.currentUser;
         return this.eventRepository.getUserEvents(currentUser.id);
     }
 
-    @scalableBulk(VisitedEventDto)
+    @scalableBulk(ResponseEventDto)
     public async getVisitedEvents(visitedEventsReq: VisitedEventsRequest) {
         return this.eventRepository.getVisitedEvents(visitedEventsReq.currentUser.id);
     }
 
-    @scalableBulk(UpcomingEventDto)
+    @scalableBulk(ResponseEventDto)
     public async getUpcomingEvents(upcomingEventsRequest: UpcomingEventsRequest) {
         return this.eventRepository.getUpcomingEvents(upcomingEventsRequest.currentUser.id);
     }
 
-    @scalableBulk(HistoryEventDto)
+    @scalableBulk(ResponseEventDto)
     public async getHistoryEvents(historyEventsRequest: HistoryEventsRequest) {
         return this.eventRepository.getHistoryEvents(historyEventsRequest.currentUser.id);
     }
 
-    @scalableBulk(FavoriteEventDto)
+    @scalableBulk(ResponseEventDto)
     public async getFavoriteEvents(favoriteEventsRequest: HistoryEventsRequest) {
         return this.eventRepository.getFavoriteEvents(favoriteEventsRequest.currentUser.id);
     }
