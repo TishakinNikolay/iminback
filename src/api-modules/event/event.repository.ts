@@ -29,7 +29,9 @@ export class EventRepository extends Repository<Event> {
         const currentDate: Date = new Date();
         const eventQb: SelectQueryBuilder<Event> = this.createQueryBuilder('event');
         let eventsQuery = eventQb
-            .innerJoinAndSelect(EventLocation, 'event_location', 'event_location.id = event.eventLocationId')
+            .innerJoinAndSelect('event.eventLocation', 'event_location', 'event_location.id = event.eventLocationId')
+            .innerJoinAndSelect('event_location.city', 'city')
+            .innerJoinAndSelect('city.country', 'country')
             .leftJoin('event.categories', 'event_category')
             .leftJoinAndSelect(subQb => {
                 return subQb
@@ -75,6 +77,7 @@ export class EventRepository extends Repository<Event> {
             .addOrderBy('event.imageId', 'DESC', 'NULLS LAST')
             .addOrderBy('event.description', 'DESC', 'NULLS LAST');
         console.log(eventsQuery.getQueryAndParameters());
+
         return eventsQuery.getMany();
     }
 
@@ -99,7 +102,7 @@ export class EventRepository extends Repository<Event> {
         return this
             .createQueryBuilder('event')
             .innerJoinAndSelect(EventMember, 'event_member', 'event_member.eventId = event.id')
-            .innerJoinAndSelect(User, 'owner', 'owner.id = event.ownerId')
+            .innerJoinAndSelect('event.owner', 'owner', 'owner.id = event.ownerId')
             .innerJoinAndSelect(EventLocation, 'event_location', 'event_location.id = event.eventLocationId')
             .innerJoinAndSelect(City, 'location_city', 'location_city.id = event_location.cityId')
             .leftJoinAndSelect('event.categories', 'event_category')
