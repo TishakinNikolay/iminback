@@ -1,6 +1,5 @@
 import * as moment from 'moment';
-import { EntityRepository, Repository, SelectQueryBuilder, UpdateResult } from 'typeorm';
-import { Category } from '../category/category.entity';
+import { EntityRepository, Repository, SelectQueryBuilder } from 'typeorm';
 import { City } from '../city/city.entity';
 import { User } from '../user/models/user.entity';
 import { EventLocation } from './event-modules/event-location/models/event-location.entity';
@@ -8,7 +7,7 @@ import { StatusEnum } from './event-modules/event-member/enums/status.enum';
 import { EventMember } from './event-modules/event-member/models/event-member.entity';
 import { EventReactionType } from './event-modules/event-reaction/enums/event-reaction-type.enum';
 import { EventReaction } from './event-modules/event-reaction/event-reaction.entity';
-import {FeedRequestLocation} from './models/dto/feed/feed-request-location.dto';
+import { FeedRequestLocation } from './models/dto/feed/feed-request-location.dto';
 import { UpdateEventDto } from './models/dto/update/update-event.dto';
 import { Event } from './models/event.entity';
 
@@ -33,25 +32,25 @@ export class EventRepository extends Repository<Event> {
             .innerJoinAndSelect(EventLocation, 'event_location', 'event_location.id = event.eventLocationId')
             .leftJoin('event.categories', 'event_category')
             .leftJoinAndSelect(subQb => {
-                    return subQb
-                        .select('category_junc.eventId, COUNT(*) AS category_num')
-                        .from('event_categories_category', 'category_junc')
-                        .groupBy('category_junc.eventId');
-                }, 'categories_for_total', '\"categories_for_total\".\"eventId\" = \"event\".\"id\"'
+                return subQb
+                    .select('category_junc.eventId, COUNT(*) AS category_num')
+                    .from('event_categories_category', 'category_junc')
+                    .groupBy('category_junc.eventId');
+            }, 'categories_for_total', '\"categories_for_total\".\"eventId\" = \"event\".\"id\"'
             )
             .leftJoinAndSelect(subQb => {
-                    return subQb
-                        .select('event_member.eventId, COUNT(*) as totalApplications')
-                        .from(EventMember, 'event_member')
-                        .where('event_member.status = :appliedStatus')
-                        .groupBy('event_member.eventId')
-                        .setParameter('appliedStatus', StatusEnum.APPLIED);
-                }
+                return subQb
+                    .select('event_member.eventId, COUNT(*) as totalApplications')
+                    .from(EventMember, 'event_member')
+                    .where('event_member.status = :appliedStatus')
+                    .groupBy('event_member.eventId')
+                    .setParameter('appliedStatus', StatusEnum.APPLIED);
+            }
                 , 'applications', '\"applications\".\"eventId\" = \"event\".\"id\"')
             .where('event.id NOT IN' +
                 eventQb.subQuery().select('event_member.eventId').from(EventMember, 'event_member')
                     .where('event_member.userId = :curUserId').getQuery())
-            // .andWhere('event.ownerId != :curUserId')
+            .andWhere('event.ownerId != :curUserId')
             .andWhere('event.endTime > :todayDate')
             .andWhere('event.totalOfPersons > COALESCE(applications.totalApplications,0)')
             .andWhere('event_location.cityId = :userCityId')

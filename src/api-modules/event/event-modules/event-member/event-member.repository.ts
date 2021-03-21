@@ -3,9 +3,6 @@ import { EntityRepository, Repository, UpdateResult } from "typeorm";
 import { StatusEnum } from "./enums/status.enum";
 import { EventMember } from "./models/event-member.entity";
 import { Event } from "../../models/event.entity";
-import { EntityRepository, Repository } from 'typeorm';
-import { StatusEnum } from './enums/status.enum';
-import { EventMember } from './models/event-member.entity';
 
 @EntityRepository(EventMember)
 export class EventMemberRepository extends Repository<EventMember> {

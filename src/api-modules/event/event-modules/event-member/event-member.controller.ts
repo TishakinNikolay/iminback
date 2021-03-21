@@ -1,15 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { EventMemberService } from './event-member.service';
-import { EventMemberApplyDto } from './models/dto/apply/event-member.apply.dto';
-import { EventMemberResponseDto } from './models/dto/response/event-member.response.dto';
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
-import { EventMemberService } from "./event-member.service";
-import { EventMemberApplyDto } from "./models/dto/request/apply/event-member.apply.dto";
 import { EventMemberApproveRequestDto } from "./models/dto/request/approve/event-member.approve.dto";
 import { EventMemberApplyResponseDto } from "./models/dto/response/event-member.apply-response.dto";
 import { EventMemberApproveResponseDto } from "./models/dto/response/event-member.approve-response.dto";
 import { EventMemberDeclineResponseDto } from "./models/dto/response/event-member.decline-response.dto";
-import { EventMemberResponseDto } from "./models/dto/response/event-member.response.dto copy";
+import { EventMemberApplyDto } from './models/dto/request/apply/event-member.apply.dto';
+import { EventMemberResponseDto } from './models/dto/response/event-member.response.dto copy';
 
 @Controller('/event-member')
 export class EventMemberController {
