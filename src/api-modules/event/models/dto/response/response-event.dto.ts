@@ -7,6 +7,8 @@ export class ResponseEventDto {
   public owner: ResponseEventOwnerDto = new ResponseEventOwnerDto();
   public image: ResponseEventImageDto = new ResponseEventImageDto();
   public id: number = null;
+  public startTime: Date = new Date();
+  public endTime: Date = new Date();
   public eventLocation: ResponseEventLocationDto = new ResponseEventLocationDto();
   constructor(
   ) { }

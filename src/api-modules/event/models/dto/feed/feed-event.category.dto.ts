@@ -1,3 +1,3 @@
 export class FeedEventCategory {
-    public id: number;
+    public id: number = null;
 }

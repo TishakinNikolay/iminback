@@ -10,6 +10,5 @@ export class FeedEventOwnerDto {
     public dateOfBirth: Date = new Date();
     public gender: GenderEnum = null;
     public city: FeedEventLocationCityDto = new FeedEventLocationCityDto();
-    public email: string = null;
     constructor() { }
 }

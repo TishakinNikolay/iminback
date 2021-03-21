@@ -4,15 +4,13 @@ import { Image } from '../../image/models/image.entity';
 import { User } from '../../user/models/user.entity';
 import { BaseColumnModel } from '../../_shared/base/base-column.model';
 import { EventLocation } from '../event-modules/event-location/models/event-location.entity';
-import { EventMember } from '../event-modules/event-member/event-member.entity';
+import { EventMember } from '../event-modules/event-member/models/event-member.entity';
 import { EventReaction } from '../event-modules/event-reaction/event-reaction.entity';
 
 @Entity('event')
 export class Event extends BaseColumnModel {
     @Column({ type: 'character varying', nullable: false, length: 350 })
     public title: string;
-    @Column({ type: 'date', nullable: false })
-    public date: Date;
     @Column({ type: 'timestamp', nullable: false })
     public startTime: Date;
     @Column({ type: 'timestamp', nullable: false })
@@ -29,14 +27,16 @@ export class Event extends BaseColumnModel {
     public eventLocation: EventLocation;
     @Column({ type: 'int', nullable: false, default: 0 })
     public totalOfPersons: number;
+    @Column({ nullable: true, type: 'decimal', insert: false, update: false, select: false})
+    public distance?: number;
 
-    @OneToMany(type => EventMember, member => member.event)
+    @OneToMany(type => EventMember, member => member.event, { onDelete:  'CASCADE' })
     @JoinColumn()
     public eventMembers: EventMember[];
-    @OneToMany(() => EventReaction, reaction => reaction.event)
+    @OneToMany(() => EventReaction, reaction => reaction.event, { onDelete: 'CASCADE' })
     @JoinColumn()
     public eventReactions: EventReaction[];
-    @ManyToMany(type => Category, category => category.events)
+    @ManyToMany(type => Category, category => category.events, { onDelete: 'CASCADE' })
     @JoinTable()
     public categories: Category[];
 }

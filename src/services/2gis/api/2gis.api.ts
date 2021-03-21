@@ -1,6 +1,6 @@
 import {IConfigApi} from '../interfaces/IConfig';
-import {SuggestApi} from './suggest/suggest.api';
 import {GeocoderApi} from './geocoder/geocoder.api';
+import {SuggestApi} from './suggest/suggest.api';
 
 export class DoubleGisApi {
     private readonly _config: IConfigApi;

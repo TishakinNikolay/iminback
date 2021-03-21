@@ -17,7 +17,6 @@ const dbConfig: ConnectionOptions = {
     url: process.env.DATABASE_URL,
     ssl,
     entities: [join('build/', '**/', '*.entity.{ts,js}')],
-    synchronize: process.env.DB_KEEP_SYNC === 'true',
     migrations: [join('build/', '**/', 'migrations/*.{ts,js}')],
     subscribers: ['subscriber/*.js', 'subscriber/*.ts'],
     cli: {

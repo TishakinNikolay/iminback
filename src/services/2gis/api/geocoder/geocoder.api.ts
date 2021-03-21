@@ -1,10 +1,10 @@
+import {stringify} from 'querystring';
 import {IConfigApi} from '../../interfaces/IConfig';
+import {ResponseSearchPointDto} from '../shared/models/response/response-search-point.dto';
+import {ResponseSearchDto} from '../shared/models/response/response-search.dto';
 import {ResponseSearchListDto} from '../shared/models/response/response-search.list.dto';
 import {ParentApi} from '../shared/parent.api';
 import {RequestGeocoderSearchDto} from './models/requests/request-geocoder-search.dto';
-import {ResponseSearchDto} from '../shared/models/response/response-search.dto';
-import {ResponseSearchPointDto} from '../shared/models/response/response-search-point.dto';
-import {stringify} from 'querystring';
 
 export class GeocoderApi extends ParentApi {
     constructor(config: IConfigApi) {

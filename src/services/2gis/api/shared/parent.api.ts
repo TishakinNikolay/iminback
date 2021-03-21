@@ -1,7 +1,7 @@
+import {NotFoundException} from '@nestjs/common';
 import {HttpsUtils} from '../../../../utils/https';
 import {IResponseData} from '../../../../utils/https/interfaces/IHttpsUtils';
 import {IConfigApi, IConfigAuth} from '../../interfaces/IConfig';
-import {NotFoundException} from '@nestjs/common';
 
 export class ParentApi {
     private readonly config: IConfigApi;
@@ -72,7 +72,7 @@ export class ParentApi {
         });
 
         if (this.checkOnErrors(result)) {
-            console.log(result)
+            console.log(result);
             throw new NotFoundException(result.body.meta.error);
         }
 

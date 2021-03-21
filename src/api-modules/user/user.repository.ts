@@ -13,6 +13,7 @@ export class UserRepository extends Repository<User> {
     }
     async getUserById(id: number): Promise<User> {
         const r = await this.findOne(id, { relations: ['profileImage', 'city', 'city.country'] });
+        console.log(r)
         return r;
     }
 }
