@@ -18,12 +18,10 @@ export class User extends BaseColumnModel {
     @ManyToOne(type => Image, { nullable: true })
     @JoinColumn()
     public profileImage: Image;
-    @Column({ type: 'timestamp with time zone', nullable: true })
+    @Column({ type: 'timestamp', nullable: true })
     public dateOfBirth: Date;
     @Column({ type: 'enum', enum: GenderEnum, nullable: false })
     public gender: GenderEnum;
-    @Column({ type: 'character varying', nullable: true, length: 300 })
-    public email: string;
     @Column({ type: 'character varying', nullable: false, length: 100, unique: true })
     public nickname: string;
 
