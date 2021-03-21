@@ -16,7 +16,7 @@ export class Event extends BaseColumnModel {
     @Column({ type: 'timestamp', nullable: false })
     public endTime: Date;
     @ManyToOne(type => User, owner => owner.events)
-    owner: User;
+    public owner: User;
     @Column({ type: 'varchar', nullable: false, length: 5000 })
     public description: string;
     @ManyToOne(type => Image, { nullable: true })

@@ -37,13 +37,11 @@ export class EventController {
     @Post('/upcoming')
     async getUpcomingEvents(@Body() upcomingEventsRequest: UpcomingEventsRequest) {
         return this.eventService.getUpcomingEvents(upcomingEventsRequest);
-
     }
 
     @Post('/history')
     async getHistoryEvents(@Body() historyEventsRequest: HistoryEventsRequest) {
         return this.eventService.getHistoryEvents(historyEventsRequest);
-
     }
 
     @Post('/favorite')
