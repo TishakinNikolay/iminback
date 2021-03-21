@@ -1,9 +1,6 @@
-import { User } from "../../../../api-modules/user/models/user.entity";
-import { EntityRepository, Repository, UpdateResult } from "typeorm";
-import { StatusEnum } from "./enums/status.enum";
-import { EventMember } from "./models/event-member.entity";
-import { Event } from "../../models/event.entity";
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, Repository, UpdateResult } from 'typeorm';
+import { User } from '../../../user/models/user.entity';
+import { Event } from '../../models/event.entity';
 import { StatusEnum } from './enums/status.enum';
 import { EventMember } from './models/event-member.entity';
 
@@ -41,8 +38,8 @@ export class EventMemberRepository extends Repository<EventMember> {
     public async getApprovedMembers(eventId: number): Promise<EventMember[]> {
         return this
             .createQueryBuilder('event_member')
-            .innerJoinAndSelect(User, "user", "user.id = event_member.userId")
-            .innerJoinAndSelect(Event, "event", "event.id = event_member.eventId")
+            .innerJoinAndSelect(User, 'user', 'user.id = event_member.userId')
+            .innerJoinAndSelect(Event, 'event', 'event.id = event_member.eventId')
             .where('event_member.eventId = :targetEventId')
             .andWhere('event_member.status = :approvedStatus')
             .orderBy('user.lastName', 'ASC')
@@ -54,7 +51,7 @@ export class EventMemberRepository extends Repository<EventMember> {
     public async flushCollisedApplications(startTime: Date, endTime: Date, userId: number) {
         return this
             .createQueryBuilder('event_member')
-            .innerJoinAndSelect(Event, "event", "event.id = event_member.eventId")
+            .innerJoinAndSelect(Event, 'event', 'event.id = event_member.eventId')
             .andWhere('event_member.userId = :currentUserId')
             .andWhere('event_member.status = :appliedStatus')
             .andWhere('(event.startTime, event.endTime) OVERLAPS (:startTime, :endTime)')
