@@ -1,11 +1,11 @@
-import * as fs from 'fs';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { CreateImageDto } from '../../models/create-image.dto';
 import { Dropbox } from 'dropbox';
-import { nanoid } from 'nanoid';
+import * as fs from 'fs';
 import { rootPath } from 'get-root-path';
+import { nanoid } from 'nanoid';
 import { join } from 'path';
+import { CreateImageDto } from '../../models/create-image.dto';
 
 @Injectable()
 export class ImageLoaderService {

@@ -1,9 +1,9 @@
-import { Injectable } from "@nestjs/common";
-import { EventLocationRepository } from "./event-location.repository";
-import { CreateEventLocationDto } from "./models/dto/create-event-location.dto";
-import { EventLocation } from "./models/event-location.entity";
-import { ResponseEventLocationDto } from "./models/dto/response-event-location.dto";
-import { scalable } from "../../../_shared/base/remap-decorator";
+import { Injectable } from '@nestjs/common';
+import { scalable } from '../../../_shared/decorators/remap.decorator';
+import { EventLocationRepository } from './event-location.repository';
+import { CreateEventLocationDto } from './models/dto/create-event-location.dto';
+import { ResponseEventLocationDto } from './models/dto/response-event-location.dto';
+import { EventLocation } from './models/event-location.entity';
 
 @Injectable()
 export class EventLocationService {

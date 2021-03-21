@@ -1,6 +1,6 @@
-import { UpdateEventImageDto } from "./update-event.image.dto";
-import { UpdateEventLocationDto } from "./update-event.location.dto";
-import { UpdateEventOwnerDto } from "./update-event.owner.dto";
+import { UpdateEventImageDto } from './update-event.image.dto';
+import { UpdateEventLocationDto } from './update-event.location.dto';
+import { UpdateEventOwnerDto } from './update-event.owner.dto';
 
 export class UpdateEventDto {
 

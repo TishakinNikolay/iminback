@@ -1,4 +1,4 @@
-import { CreatedEventLocationCountryDto } from "./created-event.location-country.dto";
+import { CreatedEventLocationCountryDto } from './created-event.location-country.dto';
 
 export class CreatedEventLocationCityDto {
     public id: number = null;

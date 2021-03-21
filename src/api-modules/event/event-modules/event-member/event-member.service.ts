@@ -1,3 +1,13 @@
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { scalable, scalableBulk } from '../../../_shared/decorators/remap.decorator';
+import { EventValidatorService } from '../../event-validator.serivce';
+import { EventService } from '../../event.service';
+import { ResponseEventDto } from '../../models/dto/response/response-event.dto';
+import { StatusEnum } from './enums/status.enum';
+import { EventMemberRepository } from './event-member.repository';
+import { EventMemberApplyDto } from './models/dto/apply/event-member.apply.dto';
+import { EventMemberResponseDto } from './models/dto/response/event-member.response.dto';
+import { EventMember } from './models/event-member.entity';
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import * as moment from 'moment';
 import { scalable, scalableBulk } from "../../../_shared/base/remap-decorator";

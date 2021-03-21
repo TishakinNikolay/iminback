@@ -1,8 +1,8 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
-import { EventRepository } from "./event.repository";
-import { Event } from "./models/event.entity";
-import { CreateEventDto } from "./models/dto/create/create-event.dto";
-import { ResponseEventDto } from "./models/dto/response/response-event.dto";
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { EventRepository } from './event.repository';
+import { CreateEventDto } from './models/dto/create/create-event.dto';
+import { ResponseEventDto } from './models/dto/response/response-event.dto';
+import { Event } from './models/event.entity';
 
 @Injectable()
 export class EventValidatorService {
@@ -16,7 +16,7 @@ export class EventValidatorService {
             startTime,
             endTime)).map(event => event.id);
         if (events.length > 0) {
-            throw new BadRequestException('Time range of new event already exist')
+            throw new BadRequestException('Time range of new event already exist');
         }
     }
 
@@ -29,6 +29,9 @@ export class EventValidatorService {
             throw new BadRequestException(
                 {
                     statusCode: 400,
+                    message: 'Collision found',
+                    collisedEvent: events,
+                    error: 'Bad Request'
                     message: "Collision found",
                     error: events
                 });

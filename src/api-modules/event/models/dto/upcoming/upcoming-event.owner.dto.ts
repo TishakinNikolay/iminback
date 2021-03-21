@@ -1,6 +1,6 @@
-import { GenderEnum } from "../../../../user/enums/gender.enum";
-import { UpcomingEventImageDto } from "./upcoming-event.image.dto";
-import { UpcomingEventLocationCityDto } from "./upcoming-event.location-city.dto";
+import { GenderEnum } from '../../../../user/enums/gender.enum';
+import { UpcomingEventImageDto } from './upcoming-event.image.dto';
+import { UpcomingEventLocationCityDto } from './upcoming-event.location-city.dto';
 
 export class UpcomingEventOwnerDto {
     public id: number = null;

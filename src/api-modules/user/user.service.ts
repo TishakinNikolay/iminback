@@ -1,9 +1,9 @@
-import { Injectable } from "@nestjs/common";
-import { UserRepository } from "./user.repository";
-import { CreateUserDto } from "./models/create-user.dto";
-import { ResponseUserDto } from "./models/response-user.dto";
-import { scalable } from "../_shared/base/remap-decorator";
-import { User } from "./models/user.entity";
+import { Injectable } from '@nestjs/common';
+import { scalable } from '../_shared/decorators/remap.decorator';
+import { CreateUserDto } from './models/create-user.dto';
+import { ResponseUserDto } from './models/response-user.dto';
+import { User } from './models/user.entity';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {

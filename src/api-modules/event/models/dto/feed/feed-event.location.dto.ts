@@ -1,4 +1,4 @@
-import { FeedEventLocationCityDto } from "./feed-event.location-city.dto";
+import { FeedEventLocationCityDto } from './feed-event.location-city.dto';
 
 export class FeedEventLocationDto {
     public id: number = null;

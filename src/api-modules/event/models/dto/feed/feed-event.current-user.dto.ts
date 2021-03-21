@@ -1,5 +1,5 @@
 
 export class FeedEventCurrentUser {
-    public id: number
+    public id: number;
     constructor() { }
 }
