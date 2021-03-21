@@ -32,6 +32,8 @@ export class EventValidatorService {
                     message: 'Collision found',
                     collisedEvent: events,
                     error: 'Bad Request'
+                    message: "Collision found",
+                    error: events
                 });
         }
     }

@@ -5,7 +5,7 @@ import { CreateEventOwnerDto } from './create-event.owner.dto';
 export class CreateEventDto {
   constructor(
     public title: string,
-    public startTime: Date,
+    public startTime: Date, 
     public endTime: Date,
     public owner: CreateEventOwnerDto,
     public description: string,
