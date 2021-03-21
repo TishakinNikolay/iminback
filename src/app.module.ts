@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
 import { rootPath } from 'get-root-path';
 import { join } from 'path';
-import {CategoryModule} from './api-modules/category/category.module';
+import { CategoryModule } from './api-modules/category/category.module';
 import { EventModule } from './api-modules/event/event.module';
 import { ImageModule } from './api-modules/image/image.module';
 import { MapModule } from './api-modules/map/map.module';
