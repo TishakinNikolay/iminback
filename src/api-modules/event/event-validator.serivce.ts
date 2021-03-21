@@ -1,8 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { EventRepository } from './event.repository';
-import { CreateEventDto } from './models/dto/create/create-event.dto';
 import { ResponseEventDto } from './models/dto/response/response-event.dto';
-import { Event } from './models/event.entity';
 
 @Injectable()
 export class EventValidatorService {
@@ -31,7 +29,7 @@ export class EventValidatorService {
                     statusCode: 400,
                     message: 'Collision found',
                     collisedEvent: events,
-                    error: events
+                    error: 'Bad Request',
                 });
         }
     }

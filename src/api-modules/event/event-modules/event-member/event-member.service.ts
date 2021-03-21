@@ -1,19 +1,19 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import * as moment from 'moment';
 import { scalable, scalableBulk } from '../../../_shared/decorators/remap.decorator';
 import { EventValidatorService } from '../../event-validator.serivce';
 import { EventService } from '../../event.service';
 import { ResponseEventDto } from '../../models/dto/response/response-event.dto';
 import { StatusEnum } from './enums/status.enum';
 import { EventMemberRepository } from './event-member.repository';
-import { EventMemberApplyDto } from './models/dto/request/apply/event-member.apply.dto';
-import { EventMemberApproveRequestDto } from './models/dto/request/approve/event-member.approve.dto';
-import { EventMemberDeclineRequestDto } from './models/dto/request/decline/event-member.decline.dto';
-import { EventMemberApplyResponseDto } from './models/dto/response/event-member.apply-response.dto';
-import { EventMemberApproveResponseDto } from './models/dto/response/event-member.approve-response.dto';
-import { EventMemberDeclineResponseDto } from './models/dto/response/event-member.decline-response.dto';
-import { EventMemberResponseDto } from './models/dto/response/event-member.response.dto';
 import { EventMember } from './models/event-member.entity';
+import * as moment from 'moment';
+import { EventMemberApproveRequestDto } from "./models/dto/request/approve/event-member.approve.dto";
+import { EventMemberDeclineRequestDto } from "./models/dto/request/decline/event-member.decline.dto";
+import { EventMemberApplyResponseDto } from "./models/dto/response/event-member.apply-response.dto";
+import { EventMemberApproveResponseDto } from "./models/dto/response/event-member.approve-response.dto";
+import { EventMemberDeclineResponseDto } from "./models/dto/response/event-member.decline-response.dto";
+import { EventMemberApplyDto } from './models/dto/request/apply/event-member.apply.dto';
+import { EventMemberResponseDto } from './models/dto/response/event-member.response.dto copy';
 
 @Injectable()
 export class EventMemberService {

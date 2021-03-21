@@ -1,7 +1,7 @@
-import {ValidationPipe} from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import 'dotenv/config';
-import {AllExceptionsFilter} from './api-modules/_shared/filters/all-exception.fiter';
+import { AllExceptionsFilter } from './api-modules/_shared/filters/all-exception.fiter';
 import { AppModule } from './app.module';
 
 async function bootstrap() {

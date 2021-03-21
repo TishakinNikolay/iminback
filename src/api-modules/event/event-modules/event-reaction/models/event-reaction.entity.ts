@@ -1,8 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
-import { User } from '../../../user/models/user.entity';
-import { BaseColumnDateModelModel } from '../../../_shared/base/base-column-date.model';
-import { Event } from '../../models/event.entity';
-import { EventReactionType } from './enums/event-reaction-type.enum';
+import { BaseColumnDateModelModel } from '../../../../../api-modules/_shared/base/base-column-date.model';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { EventReactionType } from '../enums/event-reaction-type.enum';
+import { User } from '../../../../../api-modules/user/models/user.entity';
+import { Event } from '../../../../event/models/event.entity';
 
 @Entity('event_reaction')
 export class EventReaction extends BaseColumnDateModelModel {

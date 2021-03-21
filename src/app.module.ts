@@ -8,7 +8,7 @@ import { join } from 'path';
 import {CategoryModule} from './api-modules/category/category.module';
 import { EventModule } from './api-modules/event/event.module';
 import { ImageModule } from './api-modules/image/image.module';
-import {MapModule} from './api-modules/map/map.module';
+import { MapModule } from './api-modules/map/map.module';
 import { UserModule } from './api-modules/user/user.module';
 import dbConfig from './database/db-config';
 config();

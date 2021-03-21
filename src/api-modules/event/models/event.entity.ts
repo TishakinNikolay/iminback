@@ -5,7 +5,7 @@ import { User } from '../../user/models/user.entity';
 import { BaseColumnModel } from '../../_shared/base/base-column.model';
 import { EventLocation } from '../event-modules/event-location/models/event-location.entity';
 import { EventMember } from '../event-modules/event-member/models/event-member.entity';
-import { EventReaction } from '../event-modules/event-reaction/event-reaction.entity';
+import { EventReaction } from '../event-modules/event-reaction/models/event-reaction.entity';
 
 @Entity('event')
 export class Event extends BaseColumnModel {
@@ -27,6 +27,8 @@ export class Event extends BaseColumnModel {
     public eventLocation: EventLocation;
     @Column({ type: 'int', nullable: false, default: 0 })
     public totalOfPersons: number;
+    // @Column({ nullable: true, type: 'decimal', insert: false, update: false, select: false})
+    // public distance?: number;
 
     @OneToMany(type => EventMember, member => member.event, { onDelete:  'CASCADE' })
     @JoinColumn()
