@@ -48,8 +48,6 @@ export class EventService {
     public async getFeedEvents(feedRequest: FeedRequest): Promise<Event[]> {
         const user: ResponseUserDto = await this.userService.getUserById(feedRequest.currentUser.id);
         const categoriesId = feedRequest.categories.map(category => category.id);
-        console.log(user)
-        console.log(user.city.id)
         return this.eventRepository.getFeedEvents(user.id, user.city.id, categoriesId, feedRequest.location);
     }
 

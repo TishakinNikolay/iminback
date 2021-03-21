@@ -27,8 +27,8 @@ export class Event extends BaseColumnModel {
     public eventLocation: EventLocation;
     @Column({ type: 'int', nullable: false, default: 0 })
     public totalOfPersons: number;
-    @Column({ nullable: true, type: 'decimal', insert: false, update: false, select: false})
-    public distance?: number;
+    // @Column({ nullable: true, type: 'decimal', insert: false, update: false, select: false})
+    // public distance?: number;
 
     @OneToMany(type => EventMember, member => member.event, { onDelete:  'CASCADE' })
     @JoinColumn()

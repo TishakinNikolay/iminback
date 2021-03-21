@@ -61,8 +61,9 @@ export class EventRepository extends Repository<Event> {
             eventsQuery = eventsQuery.andWhere('event_category.id IN (:...categoriesId)');
             eventsQuery = eventsQuery.setParameter('categoriesId', categoriesId);
         }
+        console.log('geo', geo);
         if (geo) {
-            eventsQuery.addSelect(`ROUND((earth_distance(ll_to_earth(event_location.lat, event_location.long), ll_to_earth(${geo.lat}, ${geo.long}))/1000)::NUMERIC, 2)`,
+            eventsQuery = eventsQuery.addSelect(`ROUND((earth_distance(ll_to_earth(event_location.lat, event_location.long), ll_to_earth(${geo.lat}, ${geo.long}))/1000)::NUMERIC, 2)`,
                 'distance');
         }
 
@@ -73,7 +74,7 @@ export class EventRepository extends Repository<Event> {
             .addOrderBy('COALESCE(categories_for_total.category_num,0)', 'DESC')
             .addOrderBy('event.imageId', 'DESC', 'NULLS LAST')
             .addOrderBy('event.description', 'DESC', 'NULLS LAST');
-
+        console.log(eventsQuery.getQueryAndParameters());
         return eventsQuery.getMany();
     }
 
