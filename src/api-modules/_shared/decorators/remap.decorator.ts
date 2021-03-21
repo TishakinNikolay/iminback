@@ -1,13 +1,19 @@
 function remap(target: any, source: any) {
-    Object.keys(source).forEach((key) => {
-        if (key in target) {
-            if (typeof source[key] == 'object' && source[key] != null && source[key] != undefined) {
-                target[key] = remap(target[key], source[key]);
-            } else {
-                target[key] = source[key];
+    if (source) {
+        Object.keys(source).forEach((key) => {
+            if (key in target) {
+                if (typeof source[key] == 'object' && source[key] != null && source[key] != undefined) {
+                    if (source[key] instanceof Date) {
+                        target[key] = source[key];
+                    } else {
+                        target[key] = remap(target[key], source[key]);
+                    }
+                } else {
+                    target[key] = source[key];
+                }
             }
-        }
-    });
+        });
+    }
     return target;
 }
 
@@ -36,4 +42,4 @@ function scalableBulk(type: any) {
         return descriptor;
     };
 }
-export { scalable, scalableBulk };
+export { scalable, scalableBulk }

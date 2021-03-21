@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { User } from '../../../user/models/user.entity';
 import { BaseColumnDateModelModel } from '../../../_shared/base/base-column-date.model';
 import { Event } from '../../models/event.entity';
