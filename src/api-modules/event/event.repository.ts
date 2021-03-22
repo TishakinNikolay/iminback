@@ -10,6 +10,7 @@ import { EventReaction } from './event-modules/event-reaction/models/event-react
 import { EventLocationDto } from './models/dto/request/event-location.dto';
 import { UpdateEventDto } from './models/dto/request/update/update-event.dto';
 import { Event } from './models/event.entity';
+import { LessThan } from "typeorm";
 
 @EntityRepository(Event)
 export class EventRepository extends Repository<Event> {
@@ -26,7 +27,7 @@ export class EventRepository extends Repository<Event> {
     }
 
     public async getFeedEvents(userId: number, userCityId: number, categoriesId: number[], geo: EventLocationDto): Promise<Event[]> {
-        const currentDate: Date = new Date();
+        const currentDate: string = moment().utc().format('YYYY-MM-DD kk:mm:ss');
         const eventQb: SelectQueryBuilder<Event> = this.createQueryBuilder('event');
         let eventsQuery = eventQb
             .innerJoinAndSelect('event.eventLocation', 'event_location', 'event_location.id = event.eventLocationId')
@@ -46,7 +47,7 @@ export class EventRepository extends Repository<Event> {
                     .from(EventMember, 'event_member')
                     .where('event_member.status = :appliedStatus')
                     .groupBy('event_member.eventId')
-                    .setParameter('appliedStatus', StatusEnum.APPLIED);
+                    .setParameter('appliedStatus', StatusEnum.APPROVED);
             }
                 , 'applications', '\"applications\".\"eventId\" = \"event\".\"id\"')
             .where('event.id NOT IN' +
@@ -72,9 +73,10 @@ export class EventRepository extends Repository<Event> {
         eventsQuery = eventsQuery
             .orderBy(`distance`, 'ASC')
             .addOrderBy('event.startTime', 'ASC')
-            .addOrderBy('COALESCE(applications.totalApplications,0)', 'ASC')
-            .addOrderBy('COALESCE(categories_for_total.category_num,0)', 'DESC')
+            .addOrderBy('(event.totalOfPersons - COALESCE(applications.totalApplications,0))', 'ASC')
+            .addOrderBy('event.totalOfPersons', 'ASC')
             .addOrderBy('event.imageId', 'DESC', 'NULLS LAST')
+            .addOrderBy('COALESCE(categories_for_total.category_num,0)', 'DESC')
             .addOrderBy('event.description', 'DESC', 'NULLS LAST');
         console.log(eventsQuery.getQueryAndParameters());
 
@@ -93,7 +95,27 @@ export class EventRepository extends Repository<Event> {
                     'categories'
                 ],
                 where: { owner: { id: userId } },
-                order: { createdAt: 'DESC' }
+                order: { endTime: 'DESC' }
+            });
+    }
+
+    public async getUserPassedEvents(userId: number): Promise<Event[]> {
+        const currentDate: string = moment().utc().format('YYYY-MM-DD kk:mm:ss');
+        return this
+            .find({
+                relations: [
+                    'owner',
+                    'image',
+                    'eventLocation',
+                    'eventLocation.city',
+                    'eventMembers',
+                    'categories'
+                ],
+                where: {
+                    owner: { id: userId },
+                    endTime: LessThan(currentDate)
+                },
+                order: { endTime: 'DESC' }
             });
     }
 
@@ -125,11 +147,11 @@ export class EventRepository extends Repository<Event> {
             .innerJoinAndSelect(EventLocation, 'event_location', 'event_location.id = event.eventLocationId')
             .innerJoinAndSelect(City, 'location_city', 'location_city.id = event_location.cityId')
             .leftJoinAndSelect('event.categories', 'event_category')
-            .where('event_member.status = :approvedStatus')
+            .where('event_member.status = IN (:...fitStatuses)')
             .andWhere('event_member.userId = :currentUserId')
             .andWhere('event.startTime > :currentDate')
             .orderBy('event.startTime', 'ASC')
-            .setParameter('approvedStatus', StatusEnum.APPROVED)
+            .setParameter('fitStatuses', [StatusEnum.APPROVED, StatusEnum.APPLIED])
             .setParameter('currentUserId', userId)
             .setParameter('currentDate', currentDate)
             .getMany();

@@ -63,7 +63,10 @@ export class EventService {
 
     @scalableBulk(ResponseEventDto)
     public async getHistoryEvents(historyEventsRequest: HistoryEventsRequest) {
-        return this.eventRepository.getHistoryEvents(historyEventsRequest.currentUser.id);
+        return (await Promise.all([
+            this.eventRepository.getHistoryEvents(historyEventsRequest.currentUser.id),
+            this.eventRepository.getUserPassedEvents(historyEventsRequest.currentUser.id)
+        ])).flat();
     }
 
     @scalableBulk(ResponseEventDto)
