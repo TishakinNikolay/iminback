@@ -9,18 +9,11 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
         const response = ctx.getResponse();
         const request = ctx.getRequest();
 
-        const status =
+        const statusCode =
             exception instanceof HttpException
                 ? exception.getStatus()
                 : HttpStatus.INTERNAL_SERVER_ERROR;
 
-        console.log(exception)
-
-        response.status(status).json({
-            statusCode: status,
-            timestamp: new Date().toISOString(),
-            path: request.url,
-            errors: exception.response
-        });
+        response.status(status).json(exception);
     }
 }

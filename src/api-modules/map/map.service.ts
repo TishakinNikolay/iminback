@@ -4,8 +4,10 @@ import {RequestGeocoderSearchDto} from '../../services/2gis/api/geocoder/models/
 import {ResponseSearchListDto} from '../../services/2gis/api/shared/models/response/response-search.list.dto';
 import {RequestSearch} from '../../services/2gis/api/suggest/models/requests/request-search.dto';
 import {DoubleGisService} from '../../services/2gis/double-gis.service';
+import {ErrorMapSearchModel} from '../_shared/errors/map/error-map-search.model';
 import {RequestMapPointDto} from './models/dto/request/request-map.point.dto';
 import {RequestMapSearchDto} from './models/dto/request/request-map.search.dto';
+import {ErrorsMapEnum} from '../_shared/enums/erros/errors-map.enum';
 
 @Injectable()
 export class MapService {
@@ -26,6 +28,7 @@ export class MapService {
             if (e.status === 404) {
                 pageSizeSuggest = page_size;
             } else {
+                console.log(e);
                 throw e;
             }
         }
@@ -44,8 +47,12 @@ export class MapService {
                 sortByPoint
             ));
         } catch (e) {
-            if (resultsGeocode.total < 0) {
-                throw e;
+            if (resultsGeocode.total <= 0) {
+                throw new ErrorMapSearchModel([{
+                    message: 'Results Not Found',
+                    type: ErrorsMapEnum.SEARCH_NOT_FOUND,
+                    details: 'Not found address by phrase: ' + search.phrase
+                }]);
             }
         }
 
