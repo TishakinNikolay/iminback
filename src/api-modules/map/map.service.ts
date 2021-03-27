@@ -28,7 +28,6 @@ export class MapService {
             if (e.status === 404) {
                 pageSizeSuggest = page_size;
             } else {
-                console.log(e);
                 throw e;
             }
         }
@@ -48,11 +47,12 @@ export class MapService {
             ));
         } catch (e) {
             if (resultsGeocode.total <= 0) {
-                throw new ErrorMapSearchModel([{
-                    message: 'Results Not Found',
-                    type: ErrorsMapEnum.SEARCH_NOT_FOUND,
-                    details: 'Not found address by phrase: ' + search.phrase
-                }]);
+                throw new ErrorMapSearchModel([
+                    {
+                        type: ErrorsMapEnum.SEARCH_NOT_FOUND,
+                        object: 'Not found address by phrase: ' + search.phrase
+                    }
+                ]);
             }
         }
 
