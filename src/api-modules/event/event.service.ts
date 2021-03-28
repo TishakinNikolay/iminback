@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ResponseUserDto } from '../user/models/response-user.dto';
+import { ResponseUserDto } from '../user/models/dto/response/response-user.dto';
 import { UserService } from '../user/user.service';
 import { scalable, scalableBulk } from '../_shared/decorators/remap.decorator';
 import { EventLocationService } from './event-modules/event-location/event-location.service';

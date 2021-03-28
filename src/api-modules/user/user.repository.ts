@@ -1,5 +1,8 @@
-import { EntityRepository, Repository } from 'typeorm';
-import { User } from './models/user.entity';
+import {EntityRepository, FindConditions, FindOneOptions, Repository} from 'typeorm';
+import {User} from './models/user.entity';
+import {UpdateUserDto} from './models/dto/request/update-user.dto';
+import {UserFindError} from './errors/user-find.error';
+import {UserErrorEnum} from './enums/user-error.enum';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -12,8 +15,27 @@ export class UserRepository extends Repository<User> {
         return this.find();
     }
     async getUserById(id: number): Promise<User> {
-        const r = await this.findOne(id, { relations: ['profileImage', 'city', 'city.country'] });
-        console.log(r)
-        return r;
+        return await this.findOne(id, {relations: ['profileImage', 'city', 'city.country']});
+    }
+
+    async findOneByWhere(conditions: FindConditions<User>): Promise<User> {
+        return await this.findOne(conditions, {relations: ['profileImage', 'city', 'city.country']});
+    }
+
+    async updateUser(newUser: UpdateUserDto, id: number): Promise<User> {
+        const user = await this.findOne(id, {relations: ['profileImage', 'city', 'city.country']});
+
+        if (user) {
+           throw new UserFindError([
+               {
+                   type: UserErrorEnum.NOT_FOUND,
+                   details: 'Not found user by id: ' + id
+               }
+           ]);
+        }
+
+        const updateUser = Object.assign(user, newUser);
+
+        return updateUser.save();
     }
 }

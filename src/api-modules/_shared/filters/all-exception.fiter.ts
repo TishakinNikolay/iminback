@@ -15,6 +15,6 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
                 ? exception.getStatus()
                 : HttpStatus.INTERNAL_SERVER_ERROR;
 
-        response.status(exception.statusCode ? exception.statusCode : exception.status).json(exception);
+        response.status(exception.statusCode ? exception.statusCode : statusCode).json(exception);
     }
 }

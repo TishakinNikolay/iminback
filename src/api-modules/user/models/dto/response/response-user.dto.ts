@@ -1,6 +1,6 @@
-import { GenderEnum } from '../enums/gender.enum';
-import { UserCityDto } from './user-city.dto';
-import { UserImageDto } from './user-image.dto';
+import { GenderEnum } from '../../../enums/gender.enum';
+import { UserCityDto } from '../user-city.dto';
+import { UserImageDto } from '../user-image.dto';
 
 export class ResponseUserDto {
     public id: number = null;
