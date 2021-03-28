@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { Category } from '../../category/category.entity';
 import { Image } from '../../image/models/image.entity';
 import { User } from '../../user/models/user.entity';
@@ -27,8 +27,10 @@ export class Event extends BaseColumnModel {
     public eventLocation: EventLocation;
     @Column({ type: 'int', nullable: false, default: 0 })
     public totalOfPersons: number;
+    @DeleteDateColumn()
+    deletedAt?: Date;
 
-    @OneToMany(type => EventMember, member => member.event, { onDelete:  'CASCADE' })
+    @OneToMany(type => EventMember, member => member.event, { onDelete: 'CASCADE' })
     @JoinColumn()
     public eventMembers: EventMember[];
     @OneToMany(() => EventReaction, reaction => reaction.event, { onDelete: 'CASCADE' })

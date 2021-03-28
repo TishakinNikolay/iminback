@@ -28,7 +28,7 @@ export class EventRepository extends Repository<Event> {
     }
 
     public async deleteEventById(eventId: number) {
-        return this.delete(eventId);
+        return this.softDelete(eventId);
     }
 
     public async getFeedEvents(userId: number, userCityId: number, categoriesId: number[], geo: EventLocationDto, targetDate: Date): Promise<Event[]> {

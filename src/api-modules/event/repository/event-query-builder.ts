@@ -18,9 +18,9 @@ export class EventQueryBuilder {
         const currentDate: string = moment().utc().format('YYYY-MM-DD kk:mm:ss');
         const eventQb: SelectQueryBuilder<Event> = new SelectQueryBuilder(this.queryBuilder);
         let eventsQuery = eventQb
+            .innerJoinAndSelect('event.eventLocation', 'event_location', 'event_location.id = event.eventLocationId')
             .innerJoinAndSelect('event_location.city', 'city')
             .innerJoinAndSelect('city.country', 'country')
-            .innerJoinAndSelect('event.eventLocation', 'event_location', 'event_location.id = event.eventLocationId')
             .leftJoinAndSelect('event.eventMembers', 'event_member', 'event_member.eventId = event.id')
             .leftJoinAndSelect('event.image', 'event_image', 'event_image.id = event.imageId')
             .leftJoinAndSelect('event.categories', 'event_category')
