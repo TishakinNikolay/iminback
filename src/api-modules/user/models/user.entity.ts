@@ -1,5 +1,5 @@
 import { EventReaction } from '../../event/event-modules/event-reaction/models/event-reaction.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { City } from '../../city/city.entity';
 import { EventMember } from '../../event/event-modules/event-member/models/event-member.entity';
 import { Event } from '../../event/models/event.entity';
@@ -24,6 +24,8 @@ export class User extends BaseColumnModel {
     public gender: GenderEnum;
     @Column({ type: 'character varying', nullable: false, length: 100, unique: true })
     public nickname: string;
+    @DeleteDateColumn()
+    deletedAt?: Date;
 
     @ManyToOne(type => City, city => city.users, { nullable: true })
     public city?: City;
