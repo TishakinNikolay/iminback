@@ -5,8 +5,8 @@ import { EventLocationModule } from './event-modules/event-location/event-locati
 import { EventMemberModule } from './event-modules/event-member/event-member.module';
 import { EventReactionModule } from './event-modules/event-reaction/event-reaction.module';
 import { EventValidatorService } from './event-validator.serivce';
-import { EventController } from './event.controller';
-import { EventRepository } from './event.repository';
+import { EventController } from './controller/event.controller';
+import { EventRepository } from './repository/event.repository';
 import { EventService } from './event.service';
 
 @Module({

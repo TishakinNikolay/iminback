@@ -14,7 +14,7 @@ if (process.env.DB_SSL === 'true') {
 
 const dbConfig: ConnectionOptions = {
     type: 'postgres',
-    url: process.env.DATABASE_URL,
+    url: process.env.DATABASE_CONNECTION_URL,
     ssl,
     entities: [join('build/', '**/', '*.entity.{ts,js}')],
     migrations: [join('build/', '**/', 'migrations/*.{ts,js}')],
@@ -26,5 +26,7 @@ const dbConfig: ConnectionOptions = {
     maxQueryExecutionTime: 5000
     , logging: ['error']
 };
+console.log(dbConfig);
+
 
 export default dbConfig;

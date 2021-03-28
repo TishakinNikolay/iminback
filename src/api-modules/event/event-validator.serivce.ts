@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { EventRepository } from './event.repository';
+import { EventRepository } from './repository/event.repository';
 import { ResponseEventDto } from './models/dto/response/response-event.dto';
 
 @Injectable()
