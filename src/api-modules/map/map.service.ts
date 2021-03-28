@@ -50,7 +50,7 @@ export class MapService {
                 throw new ErrorMapSearchModel([
                     {
                         type: ErrorsMapEnum.SEARCH_NOT_FOUND,
-                        object: 'Not found address by phrase: ' + search.phrase
+                        details: 'Not found address by phrase: ' + search.phrase
                     }
                 ]);
             }

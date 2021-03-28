@@ -11,7 +11,7 @@ export abstract class ResponseError {
         this.errorDetails
             .filter(i => errorParams.some(e => e.type === i.type))
             .map((i) => {
-                const details = errorParams.find(e => e.type === i.type).object;
+                const details = errorParams.find(e => e.type === i.type).details;
                 if (details) {
                     i.details = details;
                     return i;
@@ -22,6 +22,8 @@ export abstract class ResponseError {
     }
 
     init(errorParams?: IErrorParams[]) {
-        this.setErrorDetails(errorParams);
+        if (errorParams) {
+            this.setErrorDetails(errorParams);
+        }
     }
 }
