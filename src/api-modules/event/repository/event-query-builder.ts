@@ -1,39 +1,29 @@
 import * as moment from 'moment';
-import { EntityRepository, Repository, SelectQueryBuilder } from 'typeorm';
-import { City } from '../city/city.entity';
-import { User } from '../user/models/user.entity';
-import { EventLocation } from './event-modules/event-location/models/event-location.entity';
-import { StatusEnum } from './event-modules/event-member/enums/status.enum';
-import { EventMember } from './event-modules/event-member/models/event-member.entity';
-import { EventReactionType } from './event-modules/event-reaction/enums/event-reaction-type.enum';
-import { EventReaction } from './event-modules/event-reaction/models/event-reaction.entity';
-import { EventLocationDto } from './models/dto/request/event-location.dto';
-import { UpdateEventDto } from './models/dto/request/update/update-event.dto';
-import { Event } from './models/event.entity';
-import { LessThan } from "typeorm";
+import { City } from "../../../api-modules/city/city.entity";
+import { QueryBuilder, SelectQueryBuilder } from "typeorm";
+import { EventLocation } from "../event-modules/event-location/models/event-location.entity";
+import { StatusEnum } from "../event-modules/event-member/enums/status.enum";
+import { EventMember } from "../event-modules/event-member/models/event-member.entity";
+import { EventLocationDto } from "../models/dto/request/event-location.dto";
+import { Event } from "../models/event.entity";
+import { User } from '../../../api-modules/user/models/user.entity';
+import { EventReactionType } from '../event-modules/event-reaction/enums/event-reaction-type.enum';
+import { EventReaction } from '../event-modules/event-reaction/models/event-reaction.entity';
 
-@EntityRepository(Event)
-export class EventRepository extends Repository<Event> {
-    public createEvent(event: Event): Promise<Event> {
-        return this.save(event);
-    }
+export class EventQueryBuilder {
 
-    public getAllEvents(): Promise<Event[]> {
-        return this.find();
-    }
+    public constructor(private readonly queryBuilder: QueryBuilder<Event>) { }
 
-    public async deleteEventById(eventId: number) {
-        return this.delete(eventId);
-    }
-
-    public async getFeedEvents(userId: number, userCityId: number, categoriesId: number[], geo: EventLocationDto): Promise<Event[]> {
+    public getFeedQuery(userId: number, userCityId: number, categoriesId: number[], geo: EventLocationDto, targetDate: Date): SelectQueryBuilder<Event> {
         const currentDate: string = moment().utc().format('YYYY-MM-DD kk:mm:ss');
-        const eventQb: SelectQueryBuilder<Event> = this.createQueryBuilder('event');
+        const eventQb: SelectQueryBuilder<Event> = new SelectQueryBuilder(this.queryBuilder);
         let eventsQuery = eventQb
-            .innerJoinAndSelect('event.eventLocation', 'event_location', 'event_location.id = event.eventLocationId')
             .innerJoinAndSelect('event_location.city', 'city')
             .innerJoinAndSelect('city.country', 'country')
-            .leftJoin('event.categories', 'event_category')
+            .innerJoinAndSelect('event.eventLocation', 'event_location', 'event_location.id = event.eventLocationId')
+            .leftJoinAndSelect('event.eventMembers', 'event_member', 'event_member.eventId = event.id')
+            .leftJoinAndSelect('event.image', 'event_image', 'event_image.id = event.imageId')
+            .leftJoinAndSelect('event.categories', 'event_category')
             .leftJoinAndSelect(subQb => {
                 return subQb
                     .select('category_junc.eventId, COUNT(*) AS category_num')
@@ -64,10 +54,20 @@ export class EventRepository extends Repository<Event> {
             eventsQuery = eventsQuery.andWhere('event_category.id IN (:...categoriesId)');
             eventsQuery = eventsQuery.setParameter('categoriesId', categoriesId);
         }
-        console.log('geo', geo);
         if (geo) {
             eventsQuery = eventsQuery.addSelect(`ROUND((earth_distance(ll_to_earth(event_location.lat, event_location.long), ll_to_earth(${geo.lat}, ${geo.long}))/1000)::NUMERIC, 2)`,
                 'distance');
+        }
+        if (targetDate) {
+            const dayStart = new Date(targetDate);
+            dayStart.setHours(0, 0, 0, 0);
+            const dayEnd = new Date(targetDate);
+            dayEnd.setHours(23, 59, 59, 59);
+            eventsQuery = eventsQuery
+                .andWhere('event.startTime <= :dayEnd')
+                .andWhere('event.startTime >= :dayStart')
+                .setParameter('dayStart', dayStart)
+                .setParameter('dayEnd', dayEnd)
         }
 
         eventsQuery = eventsQuery
@@ -78,51 +78,13 @@ export class EventRepository extends Repository<Event> {
             .addOrderBy('event.imageId', 'DESC', 'NULLS LAST')
             .addOrderBy('COALESCE(categories_for_total.category_num,0)', 'DESC')
             .addOrderBy('event.description', 'DESC', 'NULLS LAST');
-        console.log(eventsQuery.getQueryAndParameters());
-
-        return eventsQuery.getMany();
+        return eventsQuery;
     }
 
-    public async getUserEvents(userId: number): Promise<Event[]> {
-        return this
-            .find({
-                relations: [
-                    'owner',
-                    'image',
-                    'eventLocation',
-                    'eventLocation.city',
-                    'eventMembers',
-                    'categories'
-                ],
-                where: { owner: { id: userId } },
-                order: { endTime: 'DESC' }
-            });
-    }
-
-    public async getUserPassedEvents(userId: number): Promise<Event[]> {
+    public getVisitedQuery(userId: number): SelectQueryBuilder<Event> {
         const currentDate: string = moment().utc().format('YYYY-MM-DD kk:mm:ss');
-        return this
-            .find({
-                relations: [
-                    'owner',
-                    'image',
-                    'eventLocation',
-                    'eventLocation.city',
-                    'eventMembers',
-                    'categories'
-                ],
-                where: {
-                    owner: { id: userId },
-                    endTime: LessThan(currentDate)
-                },
-                order: { endTime: 'DESC' }
-            });
-    }
-
-    public async getVisitedEvents(userId: number): Promise<Event[]> {
-        const currentDate: string = moment().utc().format('YYYY-MM-DD kk:mm:ss');
-        return this
-            .createQueryBuilder('event')
+        const eventQb: SelectQueryBuilder<Event> = new SelectQueryBuilder(this.queryBuilder);
+        return eventQb
             .innerJoinAndSelect(EventMember, 'event_member', 'event_member.eventId = event.id')
             .innerJoinAndSelect('event.owner', 'owner', 'owner.id = event.ownerId')
             .innerJoinAndSelect(EventLocation, 'event_location', 'event_location.id = event.eventLocationId')
@@ -135,13 +97,12 @@ export class EventRepository extends Repository<Event> {
             .setParameter('approvedStatus', StatusEnum.APPROVED)
             .setParameter('currentUserId', userId)
             .setParameter('currentDate', currentDate)
-            .getMany();
     }
 
-    public async getUpcomingEvents(userId: number): Promise<Event[]> {
+    public getUpcomingQuery(userId: number): SelectQueryBuilder<Event> {
         const currentDate: string = moment().utc().format('YYYY-MM-DD kk:mm:ss');
-        return this
-            .createQueryBuilder('event')
+        const eventQb: SelectQueryBuilder<Event> = new SelectQueryBuilder(this.queryBuilder);
+        return eventQb
             .innerJoinAndSelect(EventMember, 'event_member', 'event_member.eventId = event.id')
             .innerJoinAndSelect(User, 'owner', 'owner.id = event.ownerId')
             .innerJoinAndSelect(EventLocation, 'event_location', 'event_location.id = event.eventLocationId')
@@ -154,13 +115,12 @@ export class EventRepository extends Repository<Event> {
             .setParameter('fitStatuses', [StatusEnum.APPROVED, StatusEnum.APPLIED])
             .setParameter('currentUserId', userId)
             .setParameter('currentDate', currentDate)
-            .getMany();
     }
 
-    public async getHistoryEvents(userId: number): Promise<Event[]> {
+    public getHistoryQuery(userId: number): SelectQueryBuilder<Event> {
         const currentDate: string = moment().utc().format('YYYY-MM-DD kk:mm:ss');
-        return this
-            .createQueryBuilder('event')
+        const eventQb: SelectQueryBuilder<Event> = new SelectQueryBuilder(this.queryBuilder);
+        return eventQb
             .innerJoinAndSelect(EventMember, 'event_member', 'event_member.eventId = event.id')
             .innerJoinAndSelect(User, 'owner', 'owner.id = event.ownerId')
             .innerJoinAndSelect(EventLocation, 'event_location', 'event_location.id = event.eventLocationId')
@@ -173,12 +133,10 @@ export class EventRepository extends Repository<Event> {
             .setParameter('checkInStatuses', [StatusEnum.APPLIED, StatusEnum.DECLINED, StatusEnum.APPROVED])
             .setParameter('currentUserId', userId)
             .setParameter('currentDate', currentDate)
-            .getMany();
     }
-
-    public async getFavoriteEvents(userId: number): Promise<Event[]> {
-        return this
-            .createQueryBuilder('event')
+    public getFavoriteQuery(userId: number): SelectQueryBuilder<Event> {
+        const eventQb: SelectQueryBuilder<Event> = new SelectQueryBuilder(this.queryBuilder);
+        return eventQb
             .innerJoinAndSelect(EventMember, 'event_member', 'event_member.eventId = event.id')
             .innerJoinAndSelect(EventReaction, 'event_reaction', 'event_reaction.eventId = event.id')
             .innerJoinAndSelect(User, 'owner', 'owner.id = event.ownerId')
@@ -190,12 +148,23 @@ export class EventRepository extends Repository<Event> {
             .orderBy('event_reaction.createdAt', 'DESC')
             .setParameter('currentUserId', userId)
             .setParameter('addToFavoriteType', EventReactionType.ADD_TO_FAVORITE)
-            .getMany();
+    }
+    public getCreatedQuery(userId: number): SelectQueryBuilder<Event> {
+        const eventQb: SelectQueryBuilder<Event> = new SelectQueryBuilder(this.queryBuilder);
+        return eventQb
+            .leftJoinAndSelect(EventMember, 'event_member', 'event_member.eventId = event.id')
+            .innerJoinAndSelect(User, 'owner', 'owner.id = event.ownerId')
+            .innerJoinAndSelect(EventLocation, 'event_location', 'event_location.id = event.eventLocationId')
+            .innerJoinAndSelect(City, 'location_city', 'location_city.id = event_location.cityId')
+            .leftJoinAndSelect('event.categories', 'event_category')
+            .where('event.ownerId = :currentUserId')
+            .orderBy('event.endTime', 'DESC')
+            .setParameter('currentUserId', userId)
     }
 
-    public getTimeIntersectedEvents(userId: number, startTime: Date, endTime: Date): Promise<Event[]> {
-        return this
-            .createQueryBuilder('event')
+    public getTimeIntersectedQuery(userId: number, startTime: Date, endTime: Date): SelectQueryBuilder<Event> {
+        const eventQb: SelectQueryBuilder<Event> = new SelectQueryBuilder(this.queryBuilder);
+        return eventQb
             .leftJoinAndSelect(EventMember, 'event_member', 'event_member.eventId = event.id')
             .innerJoinAndSelect(User, 'owner', 'owner.id = event.ownerId')
             .where('event_member.status = :approvedStatus')
@@ -205,42 +174,5 @@ export class EventRepository extends Repository<Event> {
             .setParameter('currentUserId', userId)
             .setParameter('startTime', startTime)
             .setParameter('endTime', endTime)
-            .getMany();
-    }
-
-    public getEventById(eventId: number) {
-        return this
-            .findOne({
-                relations: [
-                    'owner',
-                    'image',
-                    'eventLocation',
-                    'eventLocation.city',
-                    'eventMembers',
-                    'categories'
-                ],
-                where: { id: eventId }
-            });
-    }
-
-    public async flushEventMembers(createEventDto: UpdateEventDto) {
-        return this.createQueryBuilder()
-            .delete()
-            .from(EventMember)
-            .where('eventId = :id', { id: createEventDto.id })
-            .execute();
-    }
-
-    public async updateEvent(event: Event): Promise<Event> {
-        await this.update({ id: event.id, }, event);
-        return this.getEventById(event.id);
-    }
-
-    public async getEventsByCityId(cityId: number): Promise<Event[]> {
-        return await this.find({
-            where: {
-                cityId
-            }
-        });
     }
 }

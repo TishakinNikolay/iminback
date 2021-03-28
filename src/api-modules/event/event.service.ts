@@ -4,7 +4,7 @@ import { UserService } from '../user/user.service';
 import { scalable, scalableBulk } from '../_shared/decorators/remap.decorator';
 import { EventLocationService } from './event-modules/event-location/event-location.service';
 import { EventValidatorService } from './event-validator.serivce';
-import { EventRepository } from './event.repository';
+import { EventRepository } from './repository/event.repository';
 import { CreateEventDto } from './models/dto/request/create/create-event.dto';
 import { FeedRequest } from './models/dto/request/feed/feed-request.dto';
 import { HistoryEventsRequest } from './models/dto/request/history/history-event-request.dto';
@@ -42,7 +42,7 @@ export class EventService {
     public async getFeedEvents(feedRequest: FeedRequest): Promise<Event[]> {
         const user: ResponseUserDto = await this.userService.getUserById(feedRequest.currentUser.id);
         const categoriesId = feedRequest.categories.map(category => category.id);
-        return this.eventRepository.getFeedEvents(user.id, user.city.id, categoriesId, feedRequest.location);
+        return this.eventRepository.getFeedEvents(user.id, user.city.id, categoriesId, feedRequest.location, feedRequest.targetDate);
     }
 
     @scalableBulk(ResponseEventDto)
@@ -82,6 +82,7 @@ export class EventService {
     public async deleteEventById(eventId: number) {
         return this.eventRepository.deleteEventById(eventId);
     }
+
     @scalable(ResponseEventDto)
     public async updateEvent(updateEventDto: UpdateEventDto): Promise<Event> {
         try {
@@ -93,5 +94,10 @@ export class EventService {
             await this.eventRepository.flushEventMembers(updateEventDto);
         }
         return this.eventRepository.updateEvent(Object.assign(new Event(), updateEventDto));
+    }
+
+    @scalableBulk(ResponseEventDto)
+    public async searchEventsByTitle(searchScope: string, title: string, searchRequest: any): Promise<Event[]> {
+        return this.eventRepository.searchEventsByTitle(searchScope, title, searchRequest);
     }
 }
