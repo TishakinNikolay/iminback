@@ -12,7 +12,7 @@ export class ImageService {
         private imageLoaderService: ImageLoaderService
     ) {
     }
-    public async createImage(createImageDto: CreateImageDto): Promise<ResponseImageDto> {
+    public async createImage(createImageDto: CreateImageDto): Promise<Image> {
         const publicLink = await this.imageLoaderService.loadImage(createImageDto);
         const image = new Image();
         image.uri = publicLink;

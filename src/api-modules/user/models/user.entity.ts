@@ -1,7 +1,8 @@
-import { EventReaction } from '../../event/event-modules/event-reaction/models/event-reaction.entity';
+import * as bcrypt from 'bcrypt';
 import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { City } from '../../city/city.entity';
 import { EventMember } from '../../event/event-modules/event-member/models/event-member.entity';
+import { EventReaction } from '../../event/event-modules/event-reaction/models/event-reaction.entity';
 import { Event } from '../../event/models/event.entity';
 import { Image } from '../../image/models/image.entity';
 import { BaseColumnModel } from '../../_shared/base/base-column.model';
@@ -24,8 +25,16 @@ export class User extends BaseColumnModel {
     public gender: GenderEnum;
     @Column({ type: 'character varying', nullable: false, length: 100, unique: true })
     public nickname: string;
+    @Column({ type: 'character varying', nullable: true, length: 500 })
+    public code: string;
     @DeleteDateColumn()
     deletedAt?: Date;
+
+    async validatePassword(code: number): Promise<boolean> {
+        const hash = await bcrypt.hash(code, process.env.HASH_SALT_PHONE_CODE);
+        return hash === this.code;
+    }
+
 
     @ManyToOne(type => City, city => city.users, { nullable: true })
     public city?: City;

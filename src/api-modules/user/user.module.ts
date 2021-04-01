@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import {AuthModule} from './user-modules/auth/auth.module';
 import { UserController } from './user.controller';
 import { UserRepository } from './user.repository';
 import { UserService } from './user.service';
@@ -10,11 +11,12 @@ import { UserService } from './user.service';
     providers: [
         UserService,
     ],
+    imports: [
+        AuthModule,
+        TypeOrmModule.forFeature([UserRepository])
+    ],
     exports: [
         UserService
-    ],
-    imports: [
-        TypeOrmModule.forFeature([UserRepository]),
     ]
 })
 export class UserModule { }

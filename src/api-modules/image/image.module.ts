@@ -14,6 +14,9 @@ import { ImageService } from './image.service';
     imports: [
         TypeOrmModule.forFeature([ImageRepository]),
         ImageLoaderModule
+    ],
+    exports: [
+        ImageService
     ]
 })
 export class ImageModule { }
