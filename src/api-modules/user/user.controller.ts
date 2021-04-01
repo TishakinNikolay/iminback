@@ -1,8 +1,9 @@
-import {Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query} from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query, UseGuards} from '@nestjs/common';
 import { CreateUserDto } from './models/dto/request/create-user.dto';
-import { ResponseUserDto } from './models/dto/response/response-user.dto';
-import { UserService } from './user.service';
 import {UpdateUserDto} from './models/dto/request/update-user.dto';
+import { ResponseUserDto } from './models/dto/response/response-user.dto';
+import {LocalGuard} from './user-modules/auth/guards/local.guard';
+import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
@@ -19,6 +20,7 @@ export class UserController {
     }
 
     @Put('/:id')
+    @UseGuards(LocalGuard)
     updateUser(@Body() newUser: UpdateUserDto, @Param('id') id: number): Promise<ResponseUserDto> {
         return this.userService.updateUser(newUser, id);
     }
@@ -29,6 +31,7 @@ export class UserController {
     }
 
     @Delete('/:id')
+    @UseGuards(LocalGuard)
     @HttpCode(204)
     async deleteUserById(@Param('id') id: number): Promise<void> {
         await this.userService.deleteUser(id);

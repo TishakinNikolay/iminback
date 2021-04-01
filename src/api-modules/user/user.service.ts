@@ -5,12 +5,14 @@ import { ResponseUserDto } from './models/dto/response/response-user.dto';
 import { User } from './models/user.entity';
 import { UserRepository } from './user.repository';
 import {UpdateUserDto} from './models/dto/request/update-user.dto';
+import {getConnection} from 'typeorm';
 
 @Injectable()
 export class UserService {
     constructor(
         private readonly userRepository: UserRepository,
     ) {
+        this.userRepository = getConnection().getCustomRepository(UserRepository);
     }
 
     public async createUser(createUserDto: CreateUserDto): Promise<ResponseUserDto> {
