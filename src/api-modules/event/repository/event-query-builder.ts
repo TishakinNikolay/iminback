@@ -82,7 +82,7 @@ export class EventQueryBuilder {
         eventsQuery = eventsQuery
             .addOrderBy('event.startTime', 'ASC')
             .addOrderBy('(event.totalOfPersons - COALESCE(applications.totalApplications,0))', 'ASC')
-            .addOrderBy('event.totalOfPersons', 'ASC')
+            .addOrderBy('event.totalOfPersons', 'DESC')
             .addOrderBy('event.imageId', 'DESC', 'NULLS LAST')
             .addOrderBy('COALESCE(categories_for_total.category_num,0)', 'DESC')
             .addOrderBy('event.description', 'DESC', 'NULLS LAST');
