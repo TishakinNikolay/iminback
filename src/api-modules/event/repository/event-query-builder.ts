@@ -182,7 +182,6 @@ export class EventQueryBuilder {
             .where('event_member.status IN (:...fitStatuses)')
             .andWhere('event_member.userId = :currentUserId')
             .orWhere('event.ownerId = :currentUserId')
-            .andWhere('event.endTime > :currentDate')
             .andWhere('(event.startTime, event.endTime) OVERLAPS (:startTime, :endTime)')
             .setParameter('fitStatuses', [StatusEnum.APPROVED, StatusEnum.APPLIED])
             .setParameter('currentUserId', userId)
