@@ -20,7 +20,7 @@ export class AuthService {
     ) {}
 
     public async login(creds: RequestLoginDto) {
-        console.log(creds)
+        console.log(creds);
         const user = await User.findOne({phone: creds.phone});
 
         if (!user) {
@@ -70,6 +70,7 @@ export class AuthService {
     }
 
     private async hashPhoneCode(code: number): Promise<string> {
+        console.log(process.env['HASH_SALT_PHONE_CODE ']);
         return bcrypt.hash(code.toString(), process.env.HASH_SALT_PHONE_CODE);
     }
 

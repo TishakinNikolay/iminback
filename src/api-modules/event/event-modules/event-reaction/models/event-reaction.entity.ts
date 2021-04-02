@@ -16,7 +16,7 @@ export class EventReaction extends BaseColumnDateModelModel {
   @ManyToOne(() => Event, event => event.eventReactions)
   @JoinColumn({ name: 'eventId', referencedColumnName: 'id' })
   public event: Event;
-  @ManyToOne(() => Event, user => user.eventReactions)
+  @ManyToOne(() => User, user => user.eventReactions)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   public user: User;
 }

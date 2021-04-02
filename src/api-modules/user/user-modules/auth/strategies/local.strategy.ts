@@ -13,8 +13,8 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'jwt') {
     }
 
     public async validate(payload) {
-        const {id} = payload;
-        const user = await User.findOne(id);
+        const {userId: id} = payload.context;
+        const user = await User.findOne(id, {relations: ['city', 'city.country']});
 
         if (user) {
             return user;

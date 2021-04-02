@@ -6,5 +6,4 @@ export class EventReactionRepository extends Repository<EventReaction> {
     public async addEventReaction(eventReactinon: EventReaction): Promise<EventReaction> {
         return this.save(eventReactinon);
     }
-    
 }

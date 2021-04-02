@@ -40,9 +40,10 @@ export class EventService {
 
     @scalableBulk(ResponseEventDto)
     public async getFeedEvents(feedRequest: FeedRequest): Promise<Event[]> {
-        const user: ResponseUserDto = await this.userService.getUserById(feedRequest.currentUser.id);
-        const categoriesId = feedRequest.categories.map(category => category.id);
-        return this.eventRepository.getFeedEvents(user.id, user.city.id, categoriesId, feedRequest.location, feedRequest.targetDate);
+        const userId = feedRequest.currentUser.id;
+        const cityId = feedRequest.currentUser.city.id;
+        const categoriesId = feedRequest.categories ? feedRequest.categories.map(category => category.id) : null ;
+        return this.eventRepository.getFeedEvents(userId, cityId, categoriesId, feedRequest.location, feedRequest.targetDate);
     }
 
     @scalableBulk(ResponseEventDto)
@@ -63,10 +64,7 @@ export class EventService {
 
     @scalableBulk(ResponseEventDto)
     public async getHistoryEvents(historyEventsRequest: HistoryEventsRequest) {
-        return (await Promise.all([
-            this.eventRepository.getHistoryEvents(historyEventsRequest.currentUser.id),
-            this.eventRepository.getUserPassedEvents(historyEventsRequest.currentUser.id)
-        ])).flat();
+        return this.eventRepository.getHistoryEvents(historyEventsRequest.currentUser.id);
     }
 
     @scalableBulk(ResponseEventDto)

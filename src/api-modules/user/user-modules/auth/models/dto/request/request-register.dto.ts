@@ -1,6 +1,6 @@
-import { UserCityDto } from 'src/api-modules/user/models/dto/user-city.dto';
 import { CreateImageDto } from '../../../../../../image/models/create-image.dto';
 import { GenderEnum } from '../../../../../enums/gender.enum';
+import {UserCityDto} from '../../../../../models/dto/user-city.dto';
 
 export class RequestRegisterDto {
     firstName: string;

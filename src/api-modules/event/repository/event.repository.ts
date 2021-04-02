@@ -1,5 +1,6 @@
 import * as moment from 'moment';
 import { createQueryBuilder, EntityRepository, Repository, SelectQueryBuilder } from 'typeorm';
+import {DatetimeService} from '../../_shared/datetime.service';
 import { EventMember } from '../event-modules/event-member/models/event-member.entity';
 import { EventLocationDto } from '../models/dto/request/event-location.dto';
 import { UpdateEventDto } from '../models/dto/request/update/update-event.dto';
@@ -31,7 +32,11 @@ export class EventRepository extends Repository<Event> {
         return this.softDelete(eventId);
     }
 
-    public async getFeedEvents(userId: number, userCityId: number, categoriesId: number[], geo: EventLocationDto, targetDate: Date): Promise<Event[]> {
+    public async getFeedEvents(userId: number,
+                               userCityId: number,
+                               categoriesId: number[],
+                               geo: EventLocationDto,
+                               targetDate: Date): Promise<Event[]> {
         return this.eventQueryBuilder.getFeedQuery(userId, userCityId, categoriesId, geo, targetDate).getMany();
     }
 
@@ -40,7 +45,7 @@ export class EventRepository extends Repository<Event> {
     }
 
     public async getUserPassedEvents(userId: number): Promise<Event[]> {
-        const currentDate: string = moment().utc().format('YYYY-MM-DD kk:mm:ss');
+        const currentDate: string = DatetimeService.nowString();
         return this
             .find({
                 relations: [

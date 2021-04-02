@@ -14,7 +14,7 @@ export class EventValidatorService {
             startTime,
             endTime)).map(event => event.id);
         if (events.length > 0) {
-            throw new BadRequestException({ggwp:'Time range of new event already exist'});
+            throw new BadRequestException;
         }
     }
 

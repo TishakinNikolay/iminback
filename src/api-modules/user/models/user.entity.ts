@@ -25,14 +25,17 @@ export class User extends BaseColumnModel {
     public gender: GenderEnum;
     @Column({ type: 'character varying', nullable: false, length: 100, unique: true })
     public nickname: string;
+    @Column({ type: 'character varying', nullable: true, length: 1000 })
+    public description: string;
     @Column({ type: 'character varying', nullable: true, length: 500 })
     public code: string;
     @DeleteDateColumn()
     deletedAt?: Date;
 
     async validatePassword(code: number): Promise<boolean> {
-        const hash = await bcrypt.hash(code, process.env.HASH_SALT_PHONE_CODE);
-        return hash === this.code;
+        console.log(process.env.HASH_SALT_PHONE_CODE);
+        const hash = await bcrypt.hash(code.toString(), process.env.HASH_SALT_PHONE_CODE);
+        return hash === this.code.toString();
     }
 
 

@@ -1,12 +1,26 @@
+import {DatetimeService} from '../datetime.service';
+
 function remap(target: any, source: any) {
     if (source) {
         Object.keys(source).forEach((key) => {
             if (key in target) {
                 if (typeof source[key] == 'object' && source[key] != null && source[key] != undefined) {
                     if (source[key] instanceof Date) {
-                        target[key] = source[key];
+                        target[key] = DatetimeService.formatDateString(source[key]);
                     } else {
-                        target[key] = remap(target[key], source[key]);
+                        if(Array.isArray(source[key])) {
+                            if(source[key].length > 0) {
+                                target[key] = [...source[key].map( elem => {
+                                    const result = remap(target[key][0], elem);
+                                    console.log(result);
+                                    return result;
+                                })];
+                            } else {
+                                delete target[key];
+                            }
+                        } else {
+                            target[key] = remap(target[key], source[key]);
+                        }
                     }
                 } else {
                     target[key] = source[key];

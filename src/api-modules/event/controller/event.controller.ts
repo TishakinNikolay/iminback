@@ -1,6 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request } from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UseGuards} from '@nestjs/common';
+import {LocalGuard} from '../../user/user-modules/auth/guards/local.guard';
 import { EventService } from '../event.service';
 import { CreateEventDto } from '../models/dto/request/create/create-event.dto';
+import {EventOwnerDto} from '../models/dto/request/event-owner.dto';
 import { FavoriteEventsRequest } from '../models/dto/request/favorite/favorite-events-request.dto';
 import { FeedRequest } from '../models/dto/request/feed/feed-request.dto';
 import { HistoryEventsRequest } from '../models/dto/request/history/history-event-request.dto';
@@ -15,61 +17,84 @@ export class EventController {
     constructor(private eventService: EventService) { }
 
     @Post('/create')
-    async createEvent(@Body() createEventDto: CreateEventDto) {
+    @UseGuards(LocalGuard)
+    async createEvent(@Request() req, @Body() createEventDto: CreateEventDto) {
+        createEventDto.owner = Object.assign(new EventOwnerDto(), req.user);
         return this.eventService.createEvent(createEventDto);
     }
 
     @Post('/feed')
-    async getFeedEvents(@Body() feedRequest: FeedRequest) {
+    @UseGuards(LocalGuard)
+    async getFeedEvents(@Request() req, @Body() feedRequest: FeedRequest) {
+        feedRequest.currentUser = Object.assign(new EventOwnerDto(), req.user);
         return this.eventService.getFeedEvents(feedRequest);
     }
 
-    @Post('/created-by-user')
-    async getUserCreatedEvents(@Body() createdEventsReq: CreatedEventsRequest) {
+    @Get('/created-by-user')
+    @UseGuards(LocalGuard)
+    async getUserCreatedEvents(@Request() req) {
+        const createdEventsReq: CreatedEventsRequest = new CreatedEventsRequest();
+        createdEventsReq.currentUser = Object.assign(new EventOwnerDto(), req.user);
         return this.eventService.getUserCreatedEvents(createdEventsReq);
     }
 
-    @Post('/visited')
-    async getVisitedEvents(@Body() visitedEventsReq: VisitedEventsRequest) {
+    @Get('/visited')
+    @UseGuards(LocalGuard)
+    async getVisitedEvents(@Request() req) {
+        const visitedEventsReq: VisitedEventsRequest = new VisitedEventsRequest();
+        visitedEventsReq.currentUser = Object.assign(new EventOwnerDto(), req.user);
         return this.eventService.getVisitedEvents(visitedEventsReq);
-
     }
 
-    @Post('/upcoming')
-    async getUpcomingEvents(@Body() upcomingEventsRequest: UpcomingEventsRequest) {
+    @Get('/upcoming')
+    @UseGuards(LocalGuard)
+    async getUpcomingEvents(@Request() req) {
+        const upcomingEventsRequest: UpcomingEventsRequest = new UpcomingEventsRequest();
+        upcomingEventsRequest.currentUser = Object.assign(new EventOwnerDto(), req.user);
         return this.eventService.getUpcomingEvents(upcomingEventsRequest);
     }
 
-    @Post('/history')
-    async getHistoryEvents(@Body() historyEventsRequest: HistoryEventsRequest) {
+    @Get('/history')
+    @UseGuards(LocalGuard)
+    async getHistoryEvents(@Request() req) {
+        const historyEventsRequest: HistoryEventsRequest = new HistoryEventsRequest();
+        historyEventsRequest.currentUser = Object.assign(new EventOwnerDto(), req.user);
         return this.eventService.getHistoryEvents(historyEventsRequest);
     }
 
-    @Post('/favorite')
-    async getFavoriteEvents(@Body() favoriteEventsRequest: FavoriteEventsRequest) {
+    @Get('/favorite')
+    @UseGuards(LocalGuard)
+    async getFavoriteEvents(@Request() req) {
+        const favoriteEventsRequest: FavoriteEventsRequest = new FavoriteEventsRequest();
+        favoriteEventsRequest.currentUser = Object.assign(new EventOwnerDto(), req.user);
         return this.eventService.getFavoriteEvents(favoriteEventsRequest);
     }
 
     @Get('/:id')
+    @UseGuards(LocalGuard)
     async getEventById(@Param('id') eventId: number) {
         return this.eventService.getEventById(eventId);
     }
 
     @Delete('/:id')
+    @UseGuards(LocalGuard)
     async deleteEventById(@Param('id') eventId: number) {
         await this.eventService.deleteEventById(eventId);
     }
 
     @Put('/:id')
+    @UseGuards(LocalGuard)
     async updateEvent(@Body() updateEventDto: UpdateEventDto, @Param('id') eventId: number) {
         updateEventDto.id = eventId;
         return this.eventService.updateEvent(updateEventDto);
     }
+
     @Post(eventControllerRegexes.searchRoute)
+    @UseGuards(LocalGuard)
     async searchEvents(@Body() searchRequest: any, @Request() request) {
         const searchScope: string = this.parseSearchScope(request.url);
         const searchKeyword: string = this.parseSearchKeyword(request.url);
-        console.log(searchRequest);
+        searchRequest.currentUser = Object.assign(new EventOwnerDto(), request.user);
         return this.eventService.searchEventsByTitle(searchScope, searchKeyword, searchRequest);
     }
 
