@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import { City } from "../../../api-modules/city/city.entity";
 import { QueryBuilder, SelectQueryBuilder } from "typeorm";
 import {DatetimeService} from '../../_shared/datetime.service';
@@ -172,17 +173,21 @@ export class EventQueryBuilder {
             .setParameter('currentUserId', userId);
     }
 
-    public getTimeIntersectedQuery(userId: number, startTime: Date, endTime: Date): SelectQueryBuilder<Event> {
+    public getTimeCollidedQuery(startTime: Date, endTime: Date, userId: number): SelectQueryBuilder<Event> {
+        const currentDate: string = DatetimeService.nowString();
         const eventQb: SelectQueryBuilder<Event> = new SelectQueryBuilder(this.queryBuilder);
         return eventQb
             .leftJoinAndSelect(EventMember, 'event_member', 'event_member.eventId = event.id')
             .innerJoinAndSelect(User, 'owner', 'owner.id = event.ownerId')
             .where('event_member.status IN (:...fitStatuses)')
-            .andWhere('event_member.userId = :currentUserId OR event.ownerId = :currentUserId')
+            .andWhere('event_member.userId = :currentUserId')
+            .orWhere('event.ownerId = :currentUserId')
+            .andWhere('event.endTime > :currentDate')
             .andWhere('(event.startTime, event.endTime) OVERLAPS (:startTime, :endTime)')
             .setParameter('fitStatuses', [StatusEnum.APPROVED, StatusEnum.APPLIED])
             .setParameter('currentUserId', userId)
             .setParameter('startTime', startTime)
             .setParameter('endTime', endTime)
+            .setParameter('currentDate', currentDate);
     }
 }

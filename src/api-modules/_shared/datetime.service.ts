@@ -8,6 +8,12 @@ export class DatetimeService {
     static nowString(): string {
         return DatetimeService.formatDateString(new Date(Date.now()));
     }
+    static now(): Date {
+        const date: Date = new Date();
+        const now_utc: number =  Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
+            date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+        return new Date(now_utc);
+    }
     static dayStartString(date: Date): string {
         date.setUTCHours(0, 0, 0, 0);
         return this.formatDateString(date);

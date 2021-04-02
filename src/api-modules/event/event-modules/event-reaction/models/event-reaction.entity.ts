@@ -10,7 +10,7 @@ export class EventReaction extends BaseColumnDateModelModel {
   public userId: number;
   @PrimaryColumn()
   public eventId: number;
-  @Column({ type: 'enum', enum: EventReactionType, nullable: false })
+  @PrimaryColumn({ type: 'enum', enum: EventReactionType, nullable: false })
   public reactionType: EventReactionType;
 
   @ManyToOne(() => Event, event => event.eventReactions)

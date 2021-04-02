@@ -82,7 +82,7 @@ export class EventRepository extends Repository<Event> {
 
     public getTimeIntersectedEvents(userId: number, startTime: Date, endTime: Date): Promise<Event[]> {
         return this
-            .eventQueryBuilder.getTimeIntersectedQuery(userId, startTime, endTime)
+            .eventQueryBuilder.getTimeCollidedQuery(startTime, endTime, userId)
             .getMany();
     }
 

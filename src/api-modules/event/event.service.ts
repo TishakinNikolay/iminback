@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ResponseUserDto } from '../user/models/dto/response/response-user.dto';
 import { UserService } from '../user/user.service';
 import { scalable, scalableBulk } from '../_shared/decorators/remap.decorator';
+import {EventNotFoundError} from './errors/event-not-found.error';
 import { EventLocationService } from './event-modules/event-location/event-location.service';
 import { EventValidatorService } from './event-validator.serivce';
 import { EventRepository } from './repository/event.repository';
@@ -74,6 +75,10 @@ export class EventService {
 
     @scalable(ResponseEventDto)
     public async getEventById(eventId: number) {
+        const result: Event = await this.eventRepository.getEventById(eventId);
+        if(!result) {
+            throw new EventNotFoundError();
+        }
         return this.eventRepository.getEventById(eventId);
     }
 
@@ -83,12 +88,8 @@ export class EventService {
 
     @scalable(ResponseEventDto)
     public async updateEvent(updateEventDto: UpdateEventDto): Promise<Event> {
-        try {
-            await this.eventValidatorSerivce.validateEventTime(updateEventDto.owner.id, updateEventDto.startTime, updateEventDto.endTime);
-        } catch (e: any) {
-            throw e;
-        }
         if (updateEventDto.startTime || updateEventDto.endTime) {
+            await this.eventValidatorSerivce.validateEventTime(updateEventDto.owner.id, updateEventDto.startTime, updateEventDto.endTime);
             await this.eventRepository.flushEventMembers(updateEventDto);
         }
         return this.eventRepository.updateEvent(Object.assign(new Event(), updateEventDto));

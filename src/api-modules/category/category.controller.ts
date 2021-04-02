@@ -1,5 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
-import { User } from '../user/models/user.entity';
+import {Controller, Get, Request, UseGuards} from '@nestjs/common';
+import {LocalGuard} from '../user/user-modules/auth/guards/local.guard';
 import { CategoryService } from './category.service';
 
 @Controller('category')
@@ -10,9 +10,9 @@ export class CategoryController {
     }
 
     @Get()
-    public async getCategories() {
-        const user = await User.findOne();
-
+    @UseGuards(LocalGuard)
+    public async getCategories(@Request() req) {
+        const user = req.user;
         return this.categoryService.getCategoriesByGender(user.gender.valueOf());
     }
 }

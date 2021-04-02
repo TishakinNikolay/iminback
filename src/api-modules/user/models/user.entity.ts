@@ -34,6 +34,9 @@ export class User extends BaseColumnModel {
 
     async validatePassword(code: number): Promise<boolean> {
         console.log(process.env.HASH_SALT_PHONE_CODE);
+        if(!this.code) {
+            return false;
+        }
         const hash = await bcrypt.hash(code.toString(), process.env.HASH_SALT_PHONE_CODE);
         return hash === this.code.toString();
     }

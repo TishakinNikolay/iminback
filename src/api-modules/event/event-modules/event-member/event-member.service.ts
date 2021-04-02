@@ -1,5 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import * as moment from 'moment';
+import {DatetimeService} from '../../../_shared/datetime.service';
 import { scalable, scalableBulk } from '../../../_shared/decorators/remap.decorator';
 import { EventValidatorService } from '../../event-validator.serivce';
 import { EventService } from '../../event.service';
@@ -32,6 +33,7 @@ export class EventMemberService {
         await this.eventValidatorService.validateApplicationEventTime(eventMemberApply.userId, targetEvent.startTime, targetEvent.endTime);
         const eventMember: EventMember = Object.assign(new EventMember(), eventMemberApply);
         eventMember.status = StatusEnum.APPLIED;
+        eventMember.applicationDate = DatetimeService.now();
         return this.eventMemberRepository.applyMemberToEvent(eventMember);
     }
 
@@ -56,19 +58,19 @@ export class EventMemberService {
         await this.eventMemberRepository.flushCollisedApplications(startTime, endTime, approveRequest.userId);
 
         const partialEventMember: EventMember = Object.assign(new EventMember(), approveRequest);
-        partialEventMember.approvalDate = moment().utc().toDate();
+        partialEventMember.approvalDate = DatetimeService.now();
 
         await this.eventMemberRepository.approveEventMember(partialEventMember);
 
-        return this.eventMemberRepository.getEventMember(approveRequest.eventId, approveRequest.userId);
+        return partialEventMember;
     }
 
     @scalable(EventMemberDeclineResponseDto)
     public async declineEventMember(declineRequest: EventMemberDeclineRequestDto): Promise<EventMember> {
         const partialEventMember: EventMember = Object.assign(new EventMember(), declineRequest);
-        partialEventMember.declineDate = moment().utc().toDate();
+        partialEventMember.declineDate = DatetimeService.now();
         await this.eventMemberRepository.declineEventMember(partialEventMember);
-        return this.eventMemberRepository.getEventMember(declineRequest.eventId, declineRequest.userId);
+        return partialEventMember;
     }
 
 }

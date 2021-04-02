@@ -84,7 +84,8 @@ export class EventController {
 
     @Put('/:id')
     @UseGuards(LocalGuard)
-    async updateEvent(@Body() updateEventDto: UpdateEventDto, @Param('id') eventId: number) {
+    async updateEvent(@Request() req, @Body() updateEventDto: UpdateEventDto, @Param('id') eventId: number) {
+        updateEventDto.owner = Object.assign(new EventOwnerDto(), req.user);
         updateEventDto.id = eventId;
         return this.eventService.updateEvent(updateEventDto);
     }

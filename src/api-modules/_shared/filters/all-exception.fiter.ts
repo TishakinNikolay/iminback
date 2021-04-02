@@ -4,7 +4,6 @@ import { BaseExceptionFilter } from '@nestjs/core';
 @Catch()
 export class AllExceptionsFilter extends BaseExceptionFilter {
     catch(exception: any, host: ArgumentsHost) {
-       console.log(exception)
 
         const ctx = host.switchToHttp();
         const response = ctx.getResponse();

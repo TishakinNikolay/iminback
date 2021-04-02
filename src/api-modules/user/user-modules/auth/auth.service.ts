@@ -33,6 +33,8 @@ export class AuthService {
         }
 
         if (await user.validatePassword(creds.code)) {
+            user.code = null;
+            await user.save();
             return this.jwtService.tokensByUser(user);
         } else {
             throw new AuthNotValidCodeError();

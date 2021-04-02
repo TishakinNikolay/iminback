@@ -59,7 +59,7 @@ export class EventMemberRepository extends Repository<EventMember> {
             .setParameter('appliedStatus', StatusEnum.APPLIED)
             .setParameter('startTime', startTime)
             .setParameter('endTime', endTime)
-            .getMany();
+            .delete();
     }
 
     public async approveEventMember(partialEventMember: EventMember): Promise<UpdateResult> {
