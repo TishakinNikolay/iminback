@@ -40,9 +40,9 @@ export class EventQueryBuilder {
                 return subQb
                     .select('event_member.eventId, COUNT(*) as totalApplications')
                     .from(EventMember, 'event_member')
-                    .where('event_member.status = :appliedStatus')
+                    .where('event_member.status = :approvedStatus')
                     .groupBy('event_member.eventId')
-                    .setParameter('appliedStatus', StatusEnum.APPROVED);
+                    .setParameter('approvedStatus', StatusEnum.APPROVED);
             }
                 , 'applications', '\"applications\".\"eventId\" = \"event\".\"id\"')
             .where('event.id NOT IN' +
