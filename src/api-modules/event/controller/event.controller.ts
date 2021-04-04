@@ -1,7 +1,9 @@
 import {Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UseGuards} from '@nestjs/common';
+import {DatetimeService} from '../../_shared/datetime.service';
 import {LocalGuard} from '../../user/user-modules/auth/guards/local.guard';
 import { EventService } from '../event.service';
 import { CreateEventDto } from '../models/dto/request/create/create-event.dto';
+import {EventLocationDto} from '../models/dto/request/event-location.dto';
 import {EventOwnerDto} from '../models/dto/request/event-owner.dto';
 import { FavoriteEventsRequest } from '../models/dto/request/favorite/favorite-events-request.dto';
 import { FeedRequest } from '../models/dto/request/feed/feed-request.dto';
@@ -23,9 +25,25 @@ export class EventController {
         return this.eventService.createEvent(createEventDto);
     }
 
-    @Post('/feed')
+    @Get('/feed')
     @UseGuards(LocalGuard)
-    async getFeedEvents(@Request() req, @Body() feedRequest: FeedRequest) {
+    async getFeedEvents(@Request() req, @Query() query) {
+        const feedRequest: FeedRequest = new FeedRequest();
+        if (query.categories) {
+            feedRequest.categories = JSON.parse(query.categories);
+        }
+        if (query.targetDate) {
+            console.log(typeof query.targetDate);
+            feedRequest.targetDate = DatetimeService.parseDate(query.targetDate);
+        }
+        if (query.location) {
+            console.log(query.location);
+            const coords = JSON.parse(query.location);
+            const locationDto: EventLocationDto = new EventLocationDto();
+            locationDto.long = coords.long;
+            locationDto.lat = coords.lat;
+            feedRequest.location = locationDto;
+        }
         feedRequest.currentUser = Object.assign(new EventOwnerDto(), req.user);
         return this.eventService.getFeedEvents(feedRequest);
     }
@@ -90,13 +108,16 @@ export class EventController {
         return this.eventService.updateEvent(updateEventDto);
     }
 
-    @Post(eventControllerRegexes.searchRoute)
+    @Get('/search/:searchMode/:target')
     @UseGuards(LocalGuard)
-    async searchEvents(@Body() searchRequest: any, @Request() request) {
-        const searchScope: string = this.parseSearchScope(request.url);
-        const searchKeyword: string = this.parseSearchKeyword(request.url);
-        searchRequest.currentUser = Object.assign(new EventOwnerDto(), request.user);
-        return this.eventService.searchEventsByTitle(searchScope, searchKeyword, searchRequest);
+    async searchEvents(@Request() request, @Param('searchMode') searchMode: string, @Param('target') target: string, @Query() query) {
+        const searchReq = {currentUser : {}, location: {}};
+        if (query.location) {
+            const coords = JSON.parse(query.location);
+            searchReq.location = coords;
+        }
+        searchReq.currentUser = Object.assign(new EventOwnerDto(), request.user);
+        return this.eventService.searchEventsByTitle(searchMode, target, searchReq);
     }
 
     private parseSearchScope(url): string {

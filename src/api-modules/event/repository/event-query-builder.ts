@@ -1,4 +1,3 @@
-import * as moment from 'moment';
 import { City } from "../../../api-modules/city/city.entity";
 import { QueryBuilder, SelectQueryBuilder } from "typeorm";
 import {DatetimeService} from '../../_shared/datetime.service';
@@ -9,7 +8,6 @@ import { EventLocationDto } from "../models/dto/request/event-location.dto";
 import { Event } from "../models/event.entity";
 import { User } from '../../../api-modules/user/models/user.entity';
 import { EventReactionType } from '../event-modules/event-reaction/enums/event-reaction-type.enum';
-import { EventReaction } from '../event-modules/event-reaction/models/event-reaction.entity';
 
 export class EventQueryBuilder {
 
@@ -69,7 +67,7 @@ export class EventQueryBuilder {
                 .setParameter('userCityId', userCityId);
         }
         if (targetDate) {
-            const date = DatetimeService.parseDate(targetDate as unknown as string);
+            const date = targetDate;
             const dayStart: string = DatetimeService.dayStartString(date);
             const dayEnd: string = DatetimeService.dayEndString(date);
             eventsQuery = eventsQuery

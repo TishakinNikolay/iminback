@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { City } from '../../../../city/city.entity';
+import {City} from '../../../../city/city.entity';
 import { BaseColumnModel } from '../../../../_shared/base/base-column.model';
 @Entity('event_location')
 export class EventLocation extends BaseColumnModel {
@@ -7,7 +7,7 @@ export class EventLocation extends BaseColumnModel {
   public city: City;
   @Column({ type: 'character varying', nullable: false, length: 400 })
   public name: string;
-  @Column({ type: 'character varying', nullable: false, length: 500 })
+  @Column({ type: 'character varying', nullable: false, length: 500, unique: true })
   public address: string;
   @Column({ type: 'decimal', nullable: false })
   public long: number;

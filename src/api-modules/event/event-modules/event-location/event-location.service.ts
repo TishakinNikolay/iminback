@@ -12,8 +12,12 @@ export class EventLocationService {
     }
 
     @scalable(ResponseEventLocationDto)
-    createEventLocation(createEventLocationDto: CreateEventLocationDto): Promise<EventLocation> {
+    async createEventLocation(createEventLocationDto: CreateEventLocationDto): Promise<EventLocation> {
         const eventLocation: EventLocation = Object.assign(new EventLocation(), createEventLocationDto);
+        const existingLocation = await this.eventLocationRepository.getLocationByAddress(eventLocation);
+        if (existingLocation) {
+            return existingLocation;
+        }
         return this.eventLocationRepository.createEventLocation(eventLocation);
     }
 }

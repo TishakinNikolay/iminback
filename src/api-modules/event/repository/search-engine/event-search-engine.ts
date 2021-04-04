@@ -1,4 +1,5 @@
 import { SelectQueryBuilder } from "typeorm";
+import {SearchModeEnum} from '../../enums/search-mode.enum';
 import { Event } from "../../models/event.entity";
 import { EventQueryBuilder } from "../event-query-builder";
 import { SearchCreatedEventsStrategy } from "./search-strategies/created-search.strategy";
@@ -13,17 +14,18 @@ export class EventSearchEngine {
     private searchStrategiesMap;
     public constructor(protected readonly eventQueryBuilder: EventQueryBuilder) {
         this.searchStrategiesMap = new Map<String, EventSearchStrategy>([
-            ['feed', new SearchFeedEventsStrategy(eventQueryBuilder)],
-            ['created', new SearchCreatedEventsStrategy(eventQueryBuilder)],
-            ['upcoming', new SearchUpcomingEventsStrategy(eventQueryBuilder)],
-            ['history', new SearchHistoryEventsStrategy(eventQueryBuilder)],
-            ['favorite', new SearchFavoriteEventsStrategy(eventQueryBuilder)],
-            ['visited', new SearchVisitedEventsStrategy(eventQueryBuilder)]
-        ])
+            [SearchModeEnum.FEED, new SearchFeedEventsStrategy(eventQueryBuilder)],
+            [SearchModeEnum.CREATED, new SearchCreatedEventsStrategy(eventQueryBuilder)],
+            [SearchModeEnum.UPCOMING, new SearchUpcomingEventsStrategy(eventQueryBuilder)],
+            [SearchModeEnum.HISTORY, new SearchHistoryEventsStrategy(eventQueryBuilder)],
+            [SearchModeEnum.FAVORITE, new SearchFavoriteEventsStrategy(eventQueryBuilder)],
+            [SearchModeEnum.VISITED, new SearchVisitedEventsStrategy(eventQueryBuilder)]
+        ]);
     }
 
     public getSearchByTitleQuery(searchScope: string, title: string, searchRequest: any) : SelectQueryBuilder<Event> {
         const searchQuery: SelectQueryBuilder<Event> = this.searchStrategiesMap.get(searchScope).getSearchQuery(searchRequest);
+        console.log(title);
         return searchQuery.andWhere('event.title LIKE :targetTitle').setParameter('targetTitle', `%${title}%`);
     }
 }

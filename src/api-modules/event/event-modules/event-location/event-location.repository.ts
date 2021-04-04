@@ -6,4 +6,7 @@ export class EventLocationRepository extends Repository<EventLocation> {
     createEventLocation(eventLocation: EventLocation): Promise<EventLocation> {
         return this.save(eventLocation);
     }
+    getLocationByAddress(eventLocation: EventLocation): Promise<EventLocation> {
+        return this.findOne({address: eventLocation.address});
+    }
 }
