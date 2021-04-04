@@ -23,7 +23,7 @@ export class EventMemberController {
     @UseGuards(LocalGuard)
     public async deleteEventMemberApplication(@Param('eventId') eventId: number, @Request() req): Promise<void> {
         const userId = req.user.id;
-        await this.eventMemberService.deleteEventMemberApplitacion({eventId: eventId, userId : userId});
+        await this.eventMemberService.deleteEventMemberApplication({eventId: eventId, userId : userId});
     }
 
     @Get('/applied/:eventId')

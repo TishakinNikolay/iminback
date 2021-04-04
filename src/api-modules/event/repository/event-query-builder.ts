@@ -27,6 +27,7 @@ export class EventQueryBuilder {
             .leftJoinAndSelect('event.eventMembers', 'event_member', 'event_member.eventId = event.id')
             .leftJoinAndSelect('event.image', 'event_image', 'event_image.id = event.imageId')
             .leftJoinAndSelect('event.categories', 'event_category')
+            .leftJoinAndSelect('event.eventReactions', 'event_reaction', 'event_reaction.eventId = event.id')
             .leftJoinAndSelect(subQb => {
                 return subQb
                     .select('category_junc.eventId, COUNT(*) AS category_num')
@@ -49,7 +50,10 @@ export class EventQueryBuilder {
             .andWhere('event.ownerId != :curUserId')
             .andWhere('event.endTime > :todayDate')
             .andWhere('event.totalOfPersons > COALESCE(applications.totalApplications,0)')
+            .andWhere('event_reaction.userId = :curUserId')
+            .andWhere('event_reaction.reactionType = :reactionType')
             .setParameter('curUserId', userId)
+            .setParameter('reactionType', EventReactionType.ADD_TO_FAVORITE)
             .setParameter('todayDate', currentDate);
 
         if (categoriesId) {
@@ -171,7 +175,7 @@ export class EventQueryBuilder {
             .setParameter('currentUserId', userId);
     }
 
-    public getTimeCollidedQuery(startTime: Date, endTime: Date, userId: number): SelectQueryBuilder<Event> {
+    public getTimeCollidedQuery(startTime: Date, endTime: Date, userId: number, memberStatuses: StatusEnum[]): SelectQueryBuilder<Event> {
         const currentDate: string = DatetimeService.nowString();
         const eventQb: SelectQueryBuilder<Event> = new SelectQueryBuilder(this.queryBuilder);
         return eventQb
@@ -181,7 +185,7 @@ export class EventQueryBuilder {
             .andWhere('event_member.userId = :currentUserId')
             .orWhere('event.ownerId = :currentUserId')
             .andWhere('(event.startTime, event.endTime) OVERLAPS (:startTime, :endTime)')
-            .setParameter('fitStatuses', [StatusEnum.APPROVED, StatusEnum.APPLIED])
+            .setParameter('fitStatuses', memberStatuses)
             .setParameter('currentUserId', userId)
             .setParameter('startTime', startTime)
             .setParameter('endTime', endTime)

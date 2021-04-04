@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import {EventErrors} from './enums/event-errors.enum';
 import {EventCreationTimeOverlapError} from './errors/creation-event-time-overlap.error';
 import {EventMembeErrorEnum} from './event-modules/event-member/enums/event-membe-error.enum';
+import {StatusEnum} from './event-modules/event-member/enums/status.enum';
 import {ApplyTimeOverlapError} from './event-modules/event-member/errors/apply-time-overlap.error';
 import {SelfApplicationError} from './event-modules/event-member/errors/self-application.error';
 import { EventRepository } from './repository/event.repository';
@@ -15,9 +16,8 @@ export class EventValidatorService {
 
     public async validateEventTime(ownerId: number, startTime: Date, endTime: Date): Promise<void> {
         const events: number[] = (await this.eventRepository.getTimeIntersectedEvents(
-            ownerId,
-            startTime,
-            endTime)).map(event => event.id);
+            ownerId, startTime, endTime, [StatusEnum.APPROVED, StatusEnum.APPLIED]
+            )).map(event => event.id);
         if (events.length > 0) {
             throw new EventCreationTimeOverlapError([{
                 type : EventErrors.EVENT_CREATION_TIME_OVERLAP,
@@ -28,12 +28,11 @@ export class EventValidatorService {
 
     public async validateApplicationEventTime(ownerId: number, startTime: Date, endTime: Date): Promise<void> {
         const events: number[] = (await this.eventRepository.getTimeIntersectedEvents(
-            ownerId,
-            startTime,
-            endTime)).map(event => event.id);
+            ownerId, startTime, endTime, [StatusEnum.APPROVED]
+        )).map(event => event.id);
         if (events.length > 0) {
             throw new ApplyTimeOverlapError([{
-                type : EventMembeErrorEnum.SELF_EVENT_APPLICATION_ERROR,
+                type : EventMembeErrorEnum.APPLICATION__EVENT_TIME_OVERLAP_ERROR,
                 details: events
             }]);
         }

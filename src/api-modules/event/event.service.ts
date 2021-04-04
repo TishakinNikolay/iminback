@@ -4,7 +4,7 @@ import { UserService } from '../user/user.service';
 import { scalable, scalableBulk } from '../_shared/decorators/remap.decorator';
 import {EventNotFoundError} from './errors/event-not-found.error';
 import { EventLocationService } from './event-modules/event-location/event-location.service';
-import { EventValidatorService } from './event-validator.serivce';
+import { EventValidatorService } from './event-validator.service';
 import { EventRepository } from './repository/event.repository';
 import { CreateEventDto } from './models/dto/request/create/create-event.dto';
 import { FeedRequest } from './models/dto/request/feed/feed-request.dto';

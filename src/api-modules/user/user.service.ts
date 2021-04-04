@@ -3,6 +3,7 @@ import { scalable } from '../_shared/decorators/remap.decorator';
 import { CreateUserDto } from './models/dto/request/create-user.dto';
 import { ResponseUserDto } from './models/dto/response/response-user.dto';
 import { User } from './models/user.entity';
+import {UserValidatorService} from './user-validator.service';
 import { UserRepository } from './user.repository';
 import {UpdateUserDto} from './models/dto/request/update-user.dto';
 import {getConnection} from 'typeorm';
@@ -11,6 +12,7 @@ import {getConnection} from 'typeorm';
 export class UserService {
     constructor(
         private readonly userRepository: UserRepository,
+        private readonly userValidatorService: UserValidatorService,
     ) {
         this.userRepository = getConnection().getCustomRepository(UserRepository);
     }
@@ -36,6 +38,9 @@ export class UserService {
 
     @scalable(ResponseUserDto)
     public async updateUser(newUser: UpdateUserDto, id: number): Promise<ResponseUserDto> {
-        return this.userRepository.updateUser(newUser, id);
+        await this.userValidatorService.validateUserById(id);
+        await this.userValidatorService.validateSameUserByPhoneAndNickname(newUser.phone, newUser.nickname);
+        newUser.id = id;
+        return this.userRepository.updateUser(newUser);
     }
 }

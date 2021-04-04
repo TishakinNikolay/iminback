@@ -4,10 +4,13 @@ import {UserImageDto} from '../user-image.dto';
 import {IsNotEmpty} from 'class-validator';
 
 export class UpdateUserDto {
+    public id: number;
     @IsNotEmpty()
     public firstName: string;
     @IsNotEmpty()
     public lastName: string;
+    @IsNotEmpty()
+    public phone: string;
     @IsNotEmpty()
     public dateOfBirth: Date;
     @IsNotEmpty()

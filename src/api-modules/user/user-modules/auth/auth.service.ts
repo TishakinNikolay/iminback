@@ -3,9 +3,9 @@ import * as bcrypt from 'bcrypt';
 import {ImageService} from '../../../image/image.service';
 import {CreateImageDto} from '../../../image/models/create-image.dto';
 import {UserErrorEnum} from '../../enums/user-error.enum';
-import {UserAlreadyExistsError} from '../../errors/user-already-exists.error';
 import {UserFindError} from '../../errors/user-find.error';
 import {User} from '../../models/user.entity';
+import {UserValidatorService} from '../../user-validator.service';
 import {AuthNotValidCodeError} from './errors/auth-not-valid-code.error';
 import {JwtService} from './jwt.service';
 import {RequestLoginDto} from './models/dto/request/request-login.dto';
@@ -17,6 +17,7 @@ export class AuthService {
         private readonly jwtService: JwtService,
         @Inject(forwardRef(() => ImageService))
         private readonly imageService: ImageService,
+        private readonly userValidatorService: UserValidatorService,
     ) {}
 
     public async login(creds: RequestLoginDto) {
@@ -42,22 +43,8 @@ export class AuthService {
     }
 
     public async register(registerDto: RequestRegisterDto, image?: CreateImageDto) {
-        let user = await User.findOne({
-            where: [
-                {
-                    phone: registerDto.phone
-                },
-                {
-                    nickname: registerDto.nickname
-                }
-            ]
-        });
-
-        if (user) {
-            throw new UserAlreadyExistsError();
-        }
-
-        user = Object.assign(new User(), registerDto);
+        await this.userValidatorService.validateSameUserByPhoneAndNickname(registerDto.phone, registerDto.nickname);
+        const user = Object.assign(new User(), registerDto);
 
         if (image) {
             user.profileImage = await this.imageService.createImage(image);

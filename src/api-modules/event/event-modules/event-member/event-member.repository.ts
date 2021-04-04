@@ -69,17 +69,5 @@ export class EventMemberRepository extends Repository<EventMember> {
     public async declineEventMember(partialEventMember: EventMember): Promise<UpdateResult> {
         return this.update({ eventId: partialEventMember.eventId, userId: partialEventMember.userId }, partialEventMember);
     }
-    public async getEventMember(eventId: number, userId: number): Promise<EventMember> {
-        return this
-            .findOne({
-                relations: [
-                    'user',
-                ],
-                where: {
-                    eventId: eventId,
-                    userId: userId,
-                }
-            });
-    }
 
 }
