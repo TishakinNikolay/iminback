@@ -44,48 +44,60 @@ export class EventController {
             locationDto.lat = coords.lat;
             feedRequest.location = locationDto;
         }
+        const page = query.page;
+        const pageSize =  query.pageSize;
         feedRequest.currentUser = Object.assign(new EventOwnerDto(), req.user);
-        return this.eventService.getFeedEvents(feedRequest);
+        return this.eventService.getFeedEvents(feedRequest, page, pageSize);
     }
 
     @Get('/created-by-user')
     @UseGuards(LocalGuard)
-    async getUserCreatedEvents(@Request() req) {
+    async getUserCreatedEvents(@Request() req, @Query() query) {
         const createdEventsReq: CreatedEventsRequest = new CreatedEventsRequest();
         createdEventsReq.currentUser = Object.assign(new EventOwnerDto(), req.user);
-        return this.eventService.getUserCreatedEvents(createdEventsReq);
+        const page = query.page;
+        const pageSize =  query.pageSize;
+        return this.eventService.getUserCreatedEvents(createdEventsReq, page, pageSize);
     }
 
     @Get('/visited')
     @UseGuards(LocalGuard)
-    async getVisitedEvents(@Request() req) {
+    async getVisitedEvents(@Request() req, @Query() query) {
         const visitedEventsReq: VisitedEventsRequest = new VisitedEventsRequest();
         visitedEventsReq.currentUser = Object.assign(new EventOwnerDto(), req.user);
-        return this.eventService.getVisitedEvents(visitedEventsReq);
+        const page = query.page;
+        const pageSize =  query.pageSize;
+        return this.eventService.getVisitedEvents(visitedEventsReq, page, pageSize);
     }
 
     @Get('/upcoming')
     @UseGuards(LocalGuard)
-    async getUpcomingEvents(@Request() req) {
+    async getUpcomingEvents(@Request() req, @Query() query) {
         const upcomingEventsRequest: UpcomingEventsRequest = new UpcomingEventsRequest();
         upcomingEventsRequest.currentUser = Object.assign(new EventOwnerDto(), req.user);
-        return this.eventService.getUpcomingEvents(upcomingEventsRequest);
+        const page = query.page;
+        const pageSize =  query.pageSize;
+        return this.eventService.getUpcomingEvents(upcomingEventsRequest, page, pageSize);
     }
 
     @Get('/history')
     @UseGuards(LocalGuard)
-    async getHistoryEvents(@Request() req) {
+    async getHistoryEvents(@Request() req, @Query() query) {
         const historyEventsRequest: HistoryEventsRequest = new HistoryEventsRequest();
         historyEventsRequest.currentUser = Object.assign(new EventOwnerDto(), req.user);
-        return this.eventService.getHistoryEvents(historyEventsRequest);
+        const page = query.page;
+        const pageSize =  query.pageSize;
+        return this.eventService.getHistoryEvents(historyEventsRequest, page, pageSize);
     }
 
     @Get('/favorite')
     @UseGuards(LocalGuard)
-    async getFavoriteEvents(@Request() req) {
+    async getFavoriteEvents(@Request() req, @Query() query) {
         const favoriteEventsRequest: FavoriteEventsRequest = new FavoriteEventsRequest();
         favoriteEventsRequest.currentUser = Object.assign(new EventOwnerDto(), req.user);
-        return this.eventService.getFavoriteEvents(favoriteEventsRequest);
+        const page = query.page;
+        const pageSize =  query.pageSize;
+        return this.eventService.getFavoriteEvents(favoriteEventsRequest, page, pageSize);
     }
 
     @Get('/:id')
@@ -116,16 +128,9 @@ export class EventController {
             const coords = JSON.parse(query.location);
             searchReq.location = coords;
         }
+        const page = query.page;
+        const pageSize =  query.pageSize;
         searchReq.currentUser = Object.assign(new EventOwnerDto(), request.user);
-        return this.eventService.searchEventsByTitle(searchMode, target, searchReq);
-    }
-
-    private parseSearchScope(url): string {
-        const firstSlashRemoval = url.substring(0, url.lastIndexOf('/'));
-        return firstSlashRemoval.substring(firstSlashRemoval.lastIndexOf('/') + 1);
-    }
-
-    private parseSearchKeyword(url): string {
-        return url.substring(url.lastIndexOf('/') + 1);
+        return this.eventService.searchEventsByTitle(searchMode, target, searchReq, page, pageSize);
     }
 }

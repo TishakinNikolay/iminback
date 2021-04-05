@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {forwardRef, Inject, Injectable} from '@nestjs/common';
 import {UserErrorEnum} from './enums/user-error.enum';
 import {UserAlreadyExistsError} from './errors/user-already-exists.error';
 import {UserFindError} from './errors/user-find.error';
@@ -7,7 +7,7 @@ import {UserRepository} from './user.repository';
 
 @Injectable()
 export class UserValidatorService {
-    constructor(
+    constructor(@Inject(forwardRef(() => UserRepository))
         private readonly userRepository: UserRepository
     ) {
 

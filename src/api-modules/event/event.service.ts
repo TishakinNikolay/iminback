@@ -36,42 +36,39 @@ export class EventService {
         return this.eventRepository.createEvent(event);
     }
 
-    public getAllEvents(): Promise<Event[]> {
-        return this.eventRepository.getAllEvents();
-    }
-
     @scalableBulk(ResponseEventDto)
-    public async getFeedEvents(feedRequest: FeedRequest): Promise<Event[]> {
+    public async getFeedEvents(feedRequest: FeedRequest, page, pageSize): Promise<Event[]> {
         const userId = feedRequest.currentUser.id;
         const cityId = feedRequest.currentUser.city.id;
         const categoriesId = feedRequest.categories ? feedRequest.categories.map(category => category.id) : null ;
-        return this.eventRepository.getFeedEvents(userId, cityId, categoriesId, feedRequest.location, feedRequest.targetDate);
+        return this.eventRepository.getFeedEvents(userId, cityId, categoriesId,
+            feedRequest.location, feedRequest.targetDate, page, pageSize);
     }
 
     @scalableBulk(ResponseEventDto)
-    public async getUserCreatedEvents(createdEventsReq: CreatedEventsRequest): Promise<Event[]> {
+    public async getUserCreatedEvents(createdEventsReq: CreatedEventsRequest, page, pageSize): Promise<Event[]> {
         const currentUser: EventOwnerDto = createdEventsReq.currentUser;
-        return this.eventRepository.getUserEvents(currentUser.id);
+        return this.eventRepository.getUserEvents(currentUser.id, page, pageSize);
     }
 
     @scalableBulk(ResponseEventDto)
-    public async getVisitedEvents(visitedEventsReq: VisitedEventsRequest) {
-        return this.eventRepository.getVisitedEvents(visitedEventsReq.currentUser.id);
+    public async getVisitedEvents(visitedEventsReq: VisitedEventsRequest, page, pageSize) {
+        return this.eventRepository.getVisitedEvents(visitedEventsReq.currentUser.id, page, pageSize);
     }
 
     @scalableBulk(ResponseEventDto)
-    public async getUpcomingEvents(upcomingEventsRequest: UpcomingEventsRequest) {
-        return this.eventRepository.getUpcomingEvents(upcomingEventsRequest.currentUser.id);
+    public async getUpcomingEvents(upcomingEventsRequest: UpcomingEventsRequest, page, pageSize) {
+        return this.eventRepository.getUpcomingEvents(upcomingEventsRequest.currentUser.id, page, pageSize);
     }
 
     @scalableBulk(ResponseEventDto)
-    public async getHistoryEvents(historyEventsRequest: HistoryEventsRequest) {
-        return this.eventRepository.getHistoryEvents(historyEventsRequest.currentUser.id);
+    public async getHistoryEvents(historyEventsRequest: HistoryEventsRequest, page, pageSize) {
+        return this.eventRepository.getHistoryEvents(historyEventsRequest.currentUser.id, page, pageSize);
     }
 
     @scalableBulk(ResponseEventDto)
-    public async getFavoriteEvents(favoriteEventsRequest: HistoryEventsRequest) {
-        return this.eventRepository.getFavoriteEvents(favoriteEventsRequest.currentUser.id);
+    public async getFavoriteEvents(favoriteEventsRequest: HistoryEventsRequest, page, pageSize) {
+        return this.eventRepository.getFavoriteEvents(favoriteEventsRequest.currentUser.id, page, pageSize);
     }
 
     @scalable(ResponseEventDto)
@@ -102,7 +99,7 @@ export class EventService {
     }
 
     @scalableBulk(ResponseEventDto)
-    public async searchEventsByTitle(searchScope: string, title: string, searchRequest: any): Promise<Event[]> {
-        return this.eventRepository.searchEventsByTitle(searchScope, title, searchRequest);
+    public async searchEventsByTitle(searchScope: string, title: string, searchRequest: any, page, pageSize): Promise<Event[]> {
+        return this.eventRepository.searchEventsByTitle(searchScope, title, searchRequest, page, pageSize);
     }
 }

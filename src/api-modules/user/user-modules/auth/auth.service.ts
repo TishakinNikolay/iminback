@@ -17,6 +17,7 @@ export class AuthService {
         private readonly jwtService: JwtService,
         @Inject(forwardRef(() => ImageService))
         private readonly imageService: ImageService,
+        @Inject(forwardRef(() => UserValidatorService))
         private readonly userValidatorService: UserValidatorService,
     ) {}
 

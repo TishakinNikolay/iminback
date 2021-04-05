@@ -19,7 +19,8 @@ import { UserService } from './user.service';
     ],
     exports: [
         UserService,
-        UserValidatorService
+        UserValidatorService,
+        TypeOrmModule.forFeature([UserRepository])
     ]
 })
 export class UserModule { }

@@ -37,12 +37,21 @@ export class EventRepository extends Repository<Event> {
                                userCityId: number,
                                categoriesId: number[],
                                geo: EventLocationDto,
-                               targetDate: Date): Promise<Event[]> {
-        return this.eventQueryBuilder.getFeedQuery(userId, userCityId, categoriesId, geo, targetDate).getMany();
+                               targetDate: Date,
+                               page: number,
+                               pageSize: number): Promise<Event[]> {
+        return this.eventQueryBuilder
+            .getFeedQuery(userId, userCityId, categoriesId, geo, targetDate)
+            .skip(page * pageSize)
+            .take(pageSize)
+            .getMany();
     }
 
-    public async getUserEvents(userId: number): Promise<Event[]> {
-        return this.eventQueryBuilder.getCreatedQuery(userId).getMany();
+    public async getUserEvents(userId: number, page, pageSize): Promise<Event[]> {
+        return this.eventQueryBuilder.getCreatedQuery(userId)
+            .skip(page * pageSize)
+            .take(pageSize)
+            .getMany();
     }
 
     public async getUserPassedEvents(userId: number): Promise<Event[]> {
@@ -65,20 +74,32 @@ export class EventRepository extends Repository<Event> {
             });
     }
 
-    public async getVisitedEvents(userId: number): Promise<Event[]> {
-        return this.eventQueryBuilder.getVisitedQuery(userId).getMany();
+    public async getVisitedEvents(userId: number, page: number, pageSize: number): Promise<Event[]> {
+        return this.eventQueryBuilder.getVisitedQuery(userId)
+            .skip(page * pageSize)
+            .take(pageSize)
+            .getMany();
     }
 
-    public async getUpcomingEvents(userId: number): Promise<Event[]> {
-        return this.eventQueryBuilder.getUpcomingQuery(userId).getMany();
+    public async getUpcomingEvents(userId: number, page: number, pageSize: number): Promise<Event[]> {
+        return this.eventQueryBuilder.getUpcomingQuery(userId)
+            .skip(page * pageSize)
+            .take(pageSize)
+            .getMany();
     }
 
-    public async getHistoryEvents(userId: number): Promise<Event[]> {
-        return this.eventQueryBuilder.getHistoryQuery(userId).getMany();
+    public async getHistoryEvents(userId: number, page: number, pageSize: number): Promise<Event[]> {
+        return this.eventQueryBuilder.getHistoryQuery(userId)
+            .skip(page * pageSize)
+            .take(pageSize)
+            .getMany();
     }
 
-    public async getFavoriteEvents(userId: number): Promise<Event[]> {
-        return this.eventQueryBuilder.getFavoriteQuery(userId).getMany();
+    public async getFavoriteEvents(userId: number, page: number, pageSize: number): Promise<Event[]> {
+        return this.eventQueryBuilder.getFavoriteQuery(userId)
+            .skip(page * pageSize)
+            .take(pageSize)
+            .getMany();
     }
 
     public getTimeIntersectedEvents(userId: number, startTime: Date, endTime: Date, memberStatuses: StatusEnum[]): Promise<Event[]> {
@@ -115,7 +136,14 @@ export class EventRepository extends Repository<Event> {
         return this.getEventById(event.id);
     }
 
-    public async searchEventsByTitle(searchScope: string, title: string, searchRequest: any): Promise<Event[]> {
-        return this.searchEngine.getSearchByTitleQuery(searchScope, title, searchRequest).getMany();
+    public async searchEventsByTitle(searchScope: string,
+                                     title: string,
+                                     searchRequest: any,
+                                     page: number,
+                                     pageSize: number): Promise<Event[]> {
+        return this.searchEngine.getSearchByTitleQuery(searchScope, title, searchRequest)
+            .skip(page * pageSize)
+            .take(pageSize)
+            .getMany();
     }
 }
