@@ -49,4 +49,9 @@ export class EventMemberController {
     public async declineEventMember(@Body() declineRequest: EventMemberApproveRequestDto): Promise<EventMemberDeclineResponseDto> {
         return this.eventMemberService.declineEventMember(declineRequest);
     }
+    @Put('/accept-all/:id')
+    @UseGuards(LocalGuard)
+    public async acceptAllMembers(@Param('eventId') eventId: number) {
+        return this.eventMemberService.acceptAll(eventId);
+    }
 }

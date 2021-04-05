@@ -3,14 +3,14 @@ import {IErrorParams} from '../../_shared/interfaces/IErrorParams';
 import {ResponseError} from '../../_shared/models/response-error.model';
 import {EventErrors} from '../enums/event-errors.enum';
 
-export class EventNotFoundError extends ResponseError {
+export class EventStartTimeError extends ResponseError {
     public readonly message = 'Event not found';
-    public readonly statusCode = 404;
-    public readonly typeError: string = EventErrors.EVENT_NOT_FOUND;
+    public readonly statusCode = 400;
+    public readonly typeError: string = EventErrors.EVENT_START_TIME_LESS_THAN_TODAY;
     public errorDetails: IError[] = [
         {
-            message: 'Event not found',
-            type: EventErrors.EVENT_NOT_FOUND,
+            message: 'Event start time must be more or equal than today',
+            type: EventErrors.EVENT_START_TIME_LESS_THAN_TODAY,
             details: []
         }
     ];

@@ -69,6 +69,10 @@ export class EventMemberRepository extends Repository<EventMember> {
     public async declineEventMember(partialEventMember: EventMember): Promise<UpdateResult> {
         return this.update({ eventId: partialEventMember.eventId, userId: partialEventMember.userId }, partialEventMember);
     }
+
+    public acceptAll(eventMembers) {
+        this.save(eventMembers);
+    }
     public async getEventMember(eventId: number, userId: number): Promise<EventMember> {
         return this
             .findOne({
@@ -81,5 +85,6 @@ export class EventMemberRepository extends Repository<EventMember> {
                 }
             });
     }
+
 
 }

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import {DatetimeService} from '../_shared/datetime.service';
 import { ResponseUserDto } from '../user/models/dto/response/response-user.dto';
 import { UserService } from '../user/user.service';
 import { scalable, scalableBulk } from '../_shared/decorators/remap.decorator';
@@ -88,7 +89,12 @@ export class EventService {
 
     @scalable(ResponseEventDto)
     public async updateEvent(updateEventDto: UpdateEventDto): Promise<Event> {
-        if (updateEventDto.startTime || updateEventDto.endTime) {
+        const oldEvent = await this.eventRepository.getEventById(updateEventDto.id);
+        if (!oldEvent) {
+            throw new EventNotFoundError();
+        }
+        if(DatetimeService.formatDateString(oldEvent.startTime) != DatetimeService.formatDateString(updateEventDto.startTime) ||
+            DatetimeService.formatDateString(oldEvent.endTime) != DatetimeService.formatDateString(updateEventDto.endTime)) {
             await this.eventValidatorSerivce.validateEventTime(updateEventDto.owner.id, updateEventDto.startTime, updateEventDto.endTime);
             await this.eventRepository.flushEventMembers(updateEventDto);
         }
