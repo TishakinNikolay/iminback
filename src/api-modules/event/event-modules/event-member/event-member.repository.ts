@@ -1,8 +1,8 @@
-import { User } from "../../../../api-modules/user/models/user.entity";
-import { EntityRepository, Repository, UpdateResult } from "typeorm";
-import { StatusEnum } from "./enums/status.enum";
-import { EventMember } from "./models/event-member.entity";
-import { Event } from "../../models/event.entity";
+import {EntityRepository, Repository, UpdateResult} from 'typeorm';
+import {User} from '../../../user/models/user.entity';
+import {StatusEnum} from './enums/status.enum';
+import {EventMember} from './models/event-member.entity';
+
 
 @EntityRepository(EventMember)
 export class EventMemberRepository extends Repository<EventMember> {
@@ -69,7 +69,6 @@ export class EventMemberRepository extends Repository<EventMember> {
     public async declineEventMember(partialEventMember: EventMember): Promise<UpdateResult> {
         return this.update({ eventId: partialEventMember.eventId, userId: partialEventMember.userId }, partialEventMember);
     }
-
     public acceptAll(eventMembers) {
         this.save(eventMembers);
     }
@@ -85,6 +84,4 @@ export class EventMemberRepository extends Repository<EventMember> {
                 }
             });
     }
-
-
 }

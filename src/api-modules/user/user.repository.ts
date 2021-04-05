@@ -3,6 +3,7 @@ import {User} from './models/user.entity';
 import {UpdateUserDto} from './models/dto/request/update-user.dto';
 import {UserFindError} from './errors/user-find.error';
 import {UserErrorEnum} from './enums/user-error.enum';
+import {UserValidatorService} from './user-validator.service';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -14,6 +15,7 @@ export class UserRepository extends Repository<User> {
     getAllUsers(): Promise<User[]> {
         return this.find();
     }
+
     async getUserById(id: number): Promise<User> {
         return await this.findOne(id, {relations: ['profileImage', 'city', 'city.country']});
     }
@@ -22,20 +24,8 @@ export class UserRepository extends Repository<User> {
         return await this.findOne(conditions, {relations: ['profileImage', 'city', 'city.country']});
     }
 
-    async updateUser(newUser: UpdateUserDto, id: number): Promise<User> {
-        const user = await this.findOne(id, {relations: ['profileImage', 'city', 'city.country']});
-
-        if (user) {
-           throw new UserFindError([
-               {
-                   type: UserErrorEnum.NOT_FOUND,
-                   details: 'Not found user by id: ' + id
-               }
-           ]);
-        }
-
-        const updateUser = Object.assign(user, newUser);
-
+    async updateUser(newUser: UpdateUserDto): Promise<User> {
+        const updateUser = Object.assign(new User(), newUser);
         return updateUser.save();
     }
 }

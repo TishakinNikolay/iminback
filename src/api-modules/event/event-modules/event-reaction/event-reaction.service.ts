@@ -14,13 +14,10 @@ export class EventReactionService {
     public async addFavoriteReaction(eventFavoriteReactionDto: EventReactionCreateDto): Promise<EventReaction> {
         eventFavoriteReactionDto.reactionType = EventReactionType.ADD_TO_FAVORITE;
         const reaction: EventReaction = Object.assign(new EventReaction(), eventFavoriteReactionDto);
-        console.log(reaction);
         return this.eventReactionRepository.addEventReaction(reaction);
     }
 
     public async removeFromFavorite(eventFavoriteReactionDto: EventReactionCreateDto) {
-        eventFavoriteReactionDto.reactionType = EventReactionType.ADD_TO_FAVORITE;
-        const reaction: EventReaction = Object.assign(new EventReaction(), eventFavoriteReactionDto);
-        await this.eventReactionRepository.removeEventReaction(reaction);
+        await this.eventReactionRepository.removeEventReaction(eventFavoriteReactionDto.eventId, eventFavoriteReactionDto.user.id);
     }
 }

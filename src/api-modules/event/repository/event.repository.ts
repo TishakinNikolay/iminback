@@ -1,6 +1,7 @@
 import * as moment from 'moment';
 import { createQueryBuilder, EntityRepository, Repository, SelectQueryBuilder } from 'typeorm';
 import {DatetimeService} from '../../_shared/datetime.service';
+import {StatusEnum} from '../event-modules/event-member/enums/status.enum';
 import { EventMember } from '../event-modules/event-member/models/event-member.entity';
 import { EventLocationDto } from '../models/dto/request/event-location.dto';
 import { UpdateEventDto } from '../models/dto/request/update/update-event.dto';
@@ -80,9 +81,9 @@ export class EventRepository extends Repository<Event> {
         return this.eventQueryBuilder.getFavoriteQuery(userId).getMany();
     }
 
-    public getTimeIntersectedEvents(userId: number, startTime: Date, endTime: Date): Promise<Event[]> {
+    public getTimeIntersectedEvents(userId: number, startTime: Date, endTime: Date, memberStatuses: StatusEnum[]): Promise<Event[]> {
         return this
-            .eventQueryBuilder.getTimeCollidedQuery(startTime, endTime, userId)
+            .eventQueryBuilder.getTimeCollidedQuery(startTime, endTime, userId, memberStatuses)
             .getMany();
     }
 
@@ -112,14 +113,6 @@ export class EventRepository extends Repository<Event> {
     public async updateEvent(event: Event): Promise<Event> {
         await this.update({ id: event.id, }, event);
         return this.getEventById(event.id);
-    }
-
-    public async getEventsByCityId(cityId: number): Promise<Event[]> {
-        return await this.find({
-            where: {
-                cityId
-            }
-        });
     }
 
     public async searchEventsByTitle(searchScope: string, title: string, searchRequest: any): Promise<Event[]> {

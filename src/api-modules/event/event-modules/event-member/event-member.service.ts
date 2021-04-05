@@ -2,7 +2,7 @@ import {forwardRef, Inject, Injectable} from '@nestjs/common';
 import {UpdateResult} from 'typeorm';
 import {DatetimeService} from '../../../_shared/datetime.service';
 import {scalable, scalableBulk} from '../../../_shared/decorators/remap.decorator';
-import {EventValidatorService} from '../../event-validator.serivce';
+import {EventValidatorService} from '../../event-validator.service';
 import {EventService} from '../../event.service';
 import {Event} from '../../models/event.entity';
 import {StatusEnum} from './enums/status.enum';
@@ -38,7 +38,7 @@ export class EventMemberService {
         return this.eventMemberRepository.applyMemberToEvent(eventMember);
     }
 
-    public async deleteEventMemberApplitacion(eventMemberDto: EventMemberApplyDto): Promise<void> {
+    public async deleteEventMemberApplication(eventMemberDto: EventMemberApplyDto): Promise<void> {
         const eventMember: EventMember = Object.assign(new EventMember(), eventMemberDto);
         await this.eventMemberRepository.deleteEventMemberApplitacion(eventMember);
     }
@@ -59,6 +59,7 @@ export class EventMemberService {
         await this.eventMemberRepository.flushCollisedApplications(startTime, endTime, approveRequest.userId);
 
         const partialEventMember: EventMember = Object.assign(new EventMember(), approveRequest);
+        partialEventMember.status = StatusEnum.APPROVED;
         partialEventMember.approvalDate = DatetimeService.now();
 
         await this.eventMemberRepository.approveEventMember(partialEventMember);
@@ -69,6 +70,7 @@ export class EventMemberService {
     @scalable(EventMemberDeclineResponseDto)
     public async declineEventMember(declineRequest: EventMemberDeclineRequestDto): Promise<EventMember> {
         const partialEventMember: EventMember = Object.assign(new EventMember(), declineRequest);
+        partialEventMember.status = StatusEnum.DECLINED;
         partialEventMember.declineDate = DatetimeService.now();
         await this.eventMemberRepository.declineEventMember(partialEventMember);
         return partialEventMember;
