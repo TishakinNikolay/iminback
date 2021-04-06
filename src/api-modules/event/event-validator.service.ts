@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {DatetimeService} from '../_shared/datetime.service';
 import {EventErrors} from './enums/event-errors.enum';
 import {EventCreationTimeOverlapError} from './errors/creation-event-time-overlap.error';
@@ -8,8 +8,7 @@ import {EventMembeErrorEnum} from './event-modules/event-member/enums/event-memb
 import {StatusEnum} from './event-modules/event-member/enums/status.enum';
 import {ApplyTimeOverlapError} from './event-modules/event-member/errors/apply-time-overlap.error';
 import {SelfApplicationError} from './event-modules/event-member/errors/self-application.error';
-import { EventRepository } from './repository/event.repository';
-import { ResponseEventDto } from './models/dto/response/response-event.dto';
+import {EventRepository} from './repository/event.repository';
 
 @Injectable()
 export class EventValidatorService {
@@ -17,26 +16,25 @@ export class EventValidatorService {
 
     }
 
-    public async validateEventTime(ownerId: number, startTime: Date, endTime: Date): Promise<void> {
-        if (startTime < DatetimeService.now()) {
+    public async validateEventTime(ownerId: number, startTime, endTime): Promise<void> {
+        if (DatetimeService.parseDate(startTime) < DatetimeService.now()) {
             throw new EventStartTimeError([{
                 type: EventErrors.EVENT_START_TIME_LESS_THAN_TODAY,
-                details : `${DatetimeService.formatDateString(startTime)} < ${DatetimeService.nowString()}`
+                details: `startTime is ${startTime} lower than now ${DatetimeService.serializeToString(DatetimeService.now())}`
             }]);
         }
-
-        if (endTime <= startTime) {
+        if (DatetimeService.parseDate(endTime) <= DatetimeService.parseDate(startTime)) {
             throw new EventEndTimeError([{
                 type: EventErrors.EVENT_END_TIME_LESS_OR_QUAL_THAN_START_TIME,
-                details: `${endTime} <= ${startTime}`
+                details: `endtime  is ${endTime} lower than ${startTime}`
             }]);
         }
         const events: number[] = (await this.eventRepository.getTimeIntersectedEvents(
             ownerId, startTime, endTime, [StatusEnum.APPROVED, StatusEnum.APPLIED]
-            )).map(event => event.id);
+        )).map(event => event.id);
         if (events.length > 0) {
             throw new EventCreationTimeOverlapError([{
-                type : EventErrors.EVENT_CREATION_TIME_OVERLAP,
+                type: EventErrors.EVENT_CREATION_TIME_OVERLAP,
                 details: events
             }]);
         }
@@ -48,7 +46,7 @@ export class EventValidatorService {
         )).map(event => event.id);
         if (events.length > 0) {
             throw new ApplyTimeOverlapError([{
-                type : EventMembeErrorEnum.APPLICATION__EVENT_TIME_OVERLAP_ERROR,
+                type: EventMembeErrorEnum.APPLICATION__EVENT_TIME_OVERLAP_ERROR,
                 details: events
             }]);
         }

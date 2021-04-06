@@ -10,6 +10,6 @@ export class RequestGeocoderSearchDto {
     }
 
     public toQueryParamsString(): string {
-        return stringify({ ...(this as any) });
+        return stringify({...(this as any)});
     }
 }

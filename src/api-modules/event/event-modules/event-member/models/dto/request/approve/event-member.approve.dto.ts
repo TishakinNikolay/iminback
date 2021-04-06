@@ -1,4 +1,4 @@
-import { StatusEnum } from "../../../../enums/status.enum";
+import {StatusEnum} from '../../../../enums/status.enum';
 
 export class EventMemberApproveRequestDto {
     public eventId: number;

@@ -1,16 +1,16 @@
-import {Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Put, Request, UseGuards} from '@nestjs/common';
 import {LocalGuard} from '../../../user/user-modules/auth/guards/local.guard';
-import { EventMemberService } from './event-member.service';
-import { EventMemberApplyDto } from './models/dto/request/apply/event-member.apply.dto';
-import { EventMemberApproveRequestDto } from './models/dto/request/approve/event-member.approve.dto';
-import { EventMemberApplyResponseDto } from './models/dto/response/event-member.apply-response.dto';
-import { EventMemberApproveResponseDto } from './models/dto/response/event-member.approve-response.dto';
-import { EventMemberDeclineResponseDto } from './models/dto/response/event-member.decline-response.dto';
-import { EventMemberResponseDto } from './models/dto/response/event-member.response.dto';
+import {EventMemberService} from './event-member.service';
+import {EventMemberApproveRequestDto} from './models/dto/request/approve/event-member.approve.dto';
+import {EventMemberApplyResponseDto} from './models/dto/response/event-member.apply-response.dto';
+import {EventMemberApproveResponseDto} from './models/dto/response/event-member.approve-response.dto';
+import {EventMemberDeclineResponseDto} from './models/dto/response/event-member.decline-response.dto';
+import {EventMemberResponseDto} from './models/dto/response/event-member.response.dto';
 
 @Controller('/event-member')
 export class EventMemberController {
-    constructor(private readonly eventMemberService: EventMemberService) { }
+    constructor(private readonly eventMemberService: EventMemberService) {
+    }
 
     @Put('/apply/:eventId')
     @UseGuards(LocalGuard)
@@ -23,7 +23,7 @@ export class EventMemberController {
     @UseGuards(LocalGuard)
     public async deleteEventMemberApplication(@Param('eventId') eventId: number, @Request() req): Promise<void> {
         const userId = req.user.id;
-        await this.eventMemberService.deleteEventMemberApplication({eventId: eventId, userId : userId});
+        await this.eventMemberService.deleteEventMemberApplication({eventId: eventId, userId: userId});
     }
 
     @Get('/applied/:eventId')
@@ -49,7 +49,8 @@ export class EventMemberController {
     public async declineEventMember(@Body() declineRequest: EventMemberApproveRequestDto): Promise<EventMemberDeclineResponseDto> {
         return this.eventMemberService.declineEventMember(declineRequest);
     }
-    @Put('/accept-all/:id')
+
+    @Put('/accept-all/:eventId')
     @UseGuards(LocalGuard)
     public async acceptAllMembers(@Param('eventId') eventId: number) {
         return this.eventMemberService.acceptAll(eventId);

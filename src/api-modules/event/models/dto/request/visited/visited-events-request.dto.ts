@@ -1,7 +1,9 @@
-import { EventOwnerDto } from "../event-owner.dto";
+import {EventOwnerDto} from '../event-owner.dto';
 
 
 export class VisitedEventsRequest {
     public currentUser: EventOwnerDto;
-    constructor() { }
+
+    constructor() {
+    }
 }

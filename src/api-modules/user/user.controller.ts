@@ -1,13 +1,14 @@
 import {Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query, UseGuards} from '@nestjs/common';
-import { CreateUserDto } from './models/dto/request/create-user.dto';
+import {CreateUserDto} from './models/dto/request/create-user.dto';
 import {UpdateUserDto} from './models/dto/request/update-user.dto';
-import { ResponseUserDto } from './models/dto/response/response-user.dto';
+import {ResponseUserDto} from './models/dto/response/response-user.dto';
 import {LocalGuard} from './user-modules/auth/guards/local.guard';
-import { UserService } from './user.service';
+import {UserService} from './user.service';
 
 @Controller('user')
 export class UserController {
-    constructor(private userService: UserService) { }
+    constructor(private userService: UserService) {
+    }
 
     @Post('/create')
     createUser(@Body() user: CreateUserDto): Promise<ResponseUserDto> {

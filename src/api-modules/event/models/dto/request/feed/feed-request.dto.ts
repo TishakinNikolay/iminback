@@ -1,6 +1,6 @@
-import { EventCategoryDto } from "../event-category.dto";
-import { EventLocationDto } from "../event-location.dto";
-import { EventOwnerDto } from "../event-owner.dto";
+import {EventCategoryDto} from '../event-category.dto';
+import {EventLocationDto} from '../event-location.dto';
+import {EventOwnerDto} from '../event-owner.dto';
 
 
 export class FeedRequest {
@@ -8,5 +8,7 @@ export class FeedRequest {
     public categories?: EventCategoryDto[];
     public location?: EventLocationDto;
     public targetDate?: Date;
-    constructor() { }
+
+    constructor() {
+    }
 }

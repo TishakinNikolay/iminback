@@ -8,7 +8,7 @@ import {UserRepository} from './user.repository';
 @Injectable()
 export class UserValidatorService {
     constructor(@Inject(forwardRef(() => UserRepository))
-        private readonly userRepository: UserRepository
+                private readonly userRepository: UserRepository
     ) {
 
     }

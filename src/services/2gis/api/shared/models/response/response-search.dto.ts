@@ -10,5 +10,5 @@ export class ResponseSearchDto {
     public name: string;
     public point: ResponseSearchPointDto;
     public purpose_name: string;
-    public  type: string;
+    public type: string;
 }

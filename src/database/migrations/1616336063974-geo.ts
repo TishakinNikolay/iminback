@@ -1,7 +1,7 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import {MigrationInterface, QueryRunner} from 'typeorm';
 
 export class geo1616336063974 implements MigrationInterface {
-    name = 'geo1616336063974'
+    name = 'geo1616336063974';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "user" DROP COLUMN "email"`);

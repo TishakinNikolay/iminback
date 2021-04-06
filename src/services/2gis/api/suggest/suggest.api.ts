@@ -9,7 +9,6 @@ export class SuggestApi extends ParentApi {
     }
 
     public async suggestsByAddress(request: RequestSearch): Promise<ResponseSearchListDto> {
-        console.log(`?${request.toQueryParamsString()}`);
         const result = await this.get(`?${request.toQueryParamsString()}&fields=items.point,items.geometry.centroid`);
 
         return result.body.result;

@@ -1,4 +1,4 @@
-import { EventLocationCityDto } from "./event-location-city.dto";
+import {EventLocationCityDto} from './event-location-city.dto';
 
 export class EventLocationDto {
     public city: EventLocationCityDto;
@@ -6,5 +6,7 @@ export class EventLocationDto {
     public address: string;
     public long: number;
     public lat: number;
-    constructor() { }
+
+    constructor() {
+    }
 }

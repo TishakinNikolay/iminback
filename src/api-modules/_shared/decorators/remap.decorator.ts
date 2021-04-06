@@ -6,16 +6,20 @@ function remap(target: any, source: any) {
             if (key in target) {
                 if (typeof source[key] == 'object' && source[key] != null && source[key] != undefined) {
                     if (source[key] instanceof Date) {
-                        target[key] = DatetimeService.formatDateString(source[key]);
+                        target[key] = DatetimeService.serializeToString(DatetimeService.asUTC(source[key]));
+                        console.log(target[key]);
                     } else {
                         if(Array.isArray(source[key])) {
                             if(source[key].length > 0) {
+                                console.log('lenghts of ' + key);
+                                console.log(source[key].length);
                                 target[key] = [...source[key].map( elem => {
-                                    const result = remap(target[key][0], elem);
-                                    console.log(result);
+                                    const result = remap(new target[key][0].constructor(), elem);
                                     return result;
                                 })];
                             } else {
+                                console.log('lenghts of ' + key);
+                                console.log(source[key].length);
                                 delete target[key];
                             }
                         } else {

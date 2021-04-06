@@ -13,6 +13,7 @@ export class CategoryController {
     @UseGuards(LocalGuard)
     public async getCategories(@Request() req) {
         const user = req.user;
+        console.log(this.categoryService);
         return this.categoryService.getCategoriesByGender(user.gender.valueOf());
     }
 }

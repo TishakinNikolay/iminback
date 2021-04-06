@@ -1,5 +1,5 @@
 import {PassportStrategy} from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
+import {ExtractJwt, Strategy} from 'passport-jwt';
 import {UserErrorEnum} from '../../../enums/user-error.enum';
 import {UserFindError} from '../../../errors/user-find.error';
 import {User} from '../../../models/user.entity';

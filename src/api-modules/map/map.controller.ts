@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Post} from '@nestjs/common';
+import {Body, Controller, Post} from '@nestjs/common';
 import {RequestSeacrhPointDto} from '../../services/2gis/api/suggest/models/requests/request-seacrh.point.dto';
 import {MapService} from './map.service';
 import {RequestMapSearchDto} from './models/dto/request/request-map.search.dto';

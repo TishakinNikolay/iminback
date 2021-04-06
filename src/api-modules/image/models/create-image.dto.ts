@@ -5,6 +5,7 @@ export class CreateImageDto {
     public mimetype: string;
     public buffer: Buffer;
     public size: number;
-    constructor(
-    ) { }
+
+    constructor() {
+    }
 }

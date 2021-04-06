@@ -1,15 +1,16 @@
-import {Body, Controller, Delete, Param, Post, Put, Request, UseGuards} from '@nestjs/common';
+import {Controller, Delete, Param, Post, Request, UseGuards} from '@nestjs/common';
 import {LocalGuard} from '../../../user/user-modules/auth/guards/local.guard';
-import { EventReactionService } from "./event-reaction.service";
-import { EventReactionCreateDto } from "./models/dto/request/event-reaction.create.dto";
-import { EventReactionResponseDto } from "./models/dto/response/event-reaction.response.dto";
+import {EventReactionService} from './event-reaction.service';
+import {EventReactionCreateDto} from './models/dto/request/event-reaction.create.dto';
+import {EventReactionResponseDto} from './models/dto/response/event-reaction.response.dto';
 
 @Controller('/event-reaction')
 export class EventReactionController {
-    constructor(private readonly eventReactionService: EventReactionService) { }
+    constructor(private readonly eventReactionService: EventReactionService) {
+    }
 
 
-    @Post('/favourite/:eventId')
+    @Post('/favorite/:eventId')
     @UseGuards(LocalGuard)
     public async addToFavorite(@Request() req, @Param('eventId') eventId: number): Promise<EventReactionResponseDto> {
         const createReactionDto: EventReactionCreateDto = new EventReactionCreateDto();
@@ -18,7 +19,7 @@ export class EventReactionController {
         return this.eventReactionService.addFavoriteReaction(createReactionDto);
     }
 
-    @Delete('/favourite/:eventId')
+    @Delete('/favorite/:eventId')
     @UseGuards(LocalGuard)
     public async removeFromFavorite(@Request() req, @Param('eventId') eventId: number): Promise<void> {
         const createReactionDto: EventReactionCreateDto = new EventReactionCreateDto();

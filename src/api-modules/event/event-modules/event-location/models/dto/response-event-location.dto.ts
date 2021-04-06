@@ -1,5 +1,10 @@
-import { LocationCityDto } from './location-city.dto';
+import {LocationCityDto} from './location-city.dto';
 
 export class ResponseEventLocationDto {
-    id: number;
+    public id: number = null;
+    public city: LocationCityDto = new LocationCityDto();
+    public name: string = null;
+    public address: string = null;
+    public long: number = null;
+    public lat: number = null;
 }

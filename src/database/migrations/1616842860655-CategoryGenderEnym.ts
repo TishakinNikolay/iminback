@@ -1,7 +1,7 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import {MigrationInterface, QueryRunner} from 'typeorm';
 
 export class CategoryGenderEnym1616842860655 implements MigrationInterface {
-    name = 'CategoryGenderEnym1616842860655'
+    name = 'CategoryGenderEnym1616842860655';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "event" DROP COLUMN "distance"`);

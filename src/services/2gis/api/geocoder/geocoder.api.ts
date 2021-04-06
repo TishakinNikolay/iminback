@@ -18,7 +18,6 @@ export class GeocoderApi extends ParentApi {
     }
 
     public async searchOne(request: ResponseSearchPointDto): Promise<ResponseSearchDto> {
-        console.log(123)
         const result = await this.get(`?${stringify({...request})}&fields=items.point,items.geometry.centroid`);
 
         return result.body.result.items[0];

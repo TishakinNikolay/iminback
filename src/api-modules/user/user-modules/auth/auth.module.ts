@@ -12,4 +12,5 @@ import {LocalStrategy} from './strategies/local.strategy';
     providers: [AuthService, JwtService, LocalStrategy, UserValidatorService],
     imports: [forwardRef(() => UserModule), forwardRef(() => ImageModule)]
 })
-export class AuthModule {}
+export class AuthModule {
+}

@@ -1,5 +1,5 @@
-import { CreateImageDto } from '../../../../../../image/models/create-image.dto';
-import { GenderEnum } from '../../../../../enums/gender.enum';
+import {CreateImageDto} from '../../../../../../image/models/create-image.dto';
+import {GenderEnum} from '../../../../../enums/gender.enum';
 import {UserCityDto} from '../../../../../models/dto/user-city.dto';
 
 export class RequestRegisterDto {
@@ -8,8 +8,8 @@ export class RequestRegisterDto {
     nickname: string;
     phone: string;
     city: UserCityDto;
-    birthday: Date;
+    dateOfBirth: Date;
     gender: GenderEnum;
-    descriptions: string;
+    description: string;
     image?: CreateImageDto;
 }

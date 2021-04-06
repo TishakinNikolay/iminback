@@ -1,4 +1,4 @@
-import { EventMemberUserDto } from "./event-member.user.dto";
+import {EventMemberUserDto} from './event-member.user.dto';
 
 export class EventMemberDeclineResponseDto {
     public eventId: number = null;

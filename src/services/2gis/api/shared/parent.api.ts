@@ -1,7 +1,7 @@
 import {NotFoundException} from '@nestjs/common';
 import {HttpsUtils} from '../../../../utils/https';
 import {IResponseData} from '../../../../utils/https/interfaces/IHttpsUtils';
-import {IConfigApi, IConfigAuth} from '../../interfaces/IConfig';
+import {IConfigApi} from '../../interfaces/IConfig';
 
 export class ParentApi {
     private readonly config: IConfigApi;
@@ -72,7 +72,6 @@ export class ParentApi {
         });
 
         if (this.checkOnErrors(result)) {
-            console.log(result);
             throw new NotFoundException(result.body.meta.error);
         }
 
@@ -97,7 +96,9 @@ export class ParentApi {
     private getUrl(url: string) {
         if (url === '') {
             url = this.baseUrl;
-        } else { url = this.baseUrl + url; }
+        } else {
+            url = this.baseUrl + url;
+        }
 
         return url + '&key=' + this.config.auth.key;
     }

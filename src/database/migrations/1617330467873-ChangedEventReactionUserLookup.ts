@@ -1,7 +1,7 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import {MigrationInterface, QueryRunner} from 'typeorm';
 
 export class ChangedEventReactionUserLookup1617330467873 implements MigrationInterface {
-    name = 'ChangedEventReactionUserLookup1617330467873'
+    name = 'ChangedEventReactionUserLookup1617330467873';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "event_reaction" DROP CONSTRAINT "FK_379822c368ffa299f35ac314ff8"`);

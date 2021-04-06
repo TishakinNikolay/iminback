@@ -1,6 +1,6 @@
-import { EntityRepository, Repository } from "typeorm";
+import {EntityRepository, Repository} from 'typeorm';
 import {EventReactionType} from './enums/event-reaction-type.enum';
-import { EventReaction } from "./models/event-reaction.entity";
+import {EventReaction} from './models/event-reaction.entity';
 
 @EntityRepository(EventReaction)
 export class EventReactionRepository extends Repository<EventReaction> {

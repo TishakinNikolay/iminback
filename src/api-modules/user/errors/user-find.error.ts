@@ -1,11 +1,11 @@
-import {ResponseError} from '../../_shared/models/response-error.model';
 import {IError} from '../../_shared/interfaces/IError';
 import {IErrorParams} from '../../_shared/interfaces/IErrorParams';
+import {ResponseError} from '../../_shared/models/response-error.model';
 import {UserErrorEnum} from '../enums/user-error.enum';
 
 export class UserFindError extends ResponseError {
     public readonly message = 'User Not Found';
-    public readonly statusCode = 404;
+    public readonly statusCode = 401;
     public readonly typeError: string = UserErrorEnum.NOT_FOUND;
     public errorDetails: IError[] = [
         {

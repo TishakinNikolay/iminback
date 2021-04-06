@@ -1,5 +1,4 @@
 import {forwardRef, Inject, Injectable} from '@nestjs/common';
-import {UpdateResult} from 'typeorm';
 import {DatetimeService} from '../../../_shared/datetime.service';
 import {scalable, scalableBulk} from '../../../_shared/decorators/remap.decorator';
 import {EventValidatorService} from '../../event-validator.service';
@@ -7,6 +6,7 @@ import {EventService} from '../../event.service';
 import {Event} from '../../models/event.entity';
 import {StatusEnum} from './enums/status.enum';
 import {CantAcceptAllError} from './errors/cant-accept-all.error';
+import {NoFreePlacesError} from './errors/no-free-places.error';
 import {EventMemberRepository} from './event-member.repository';
 import {EventMemberApplyDto} from './models/dto/request/apply/event-member.apply.dto';
 import {EventMemberApproveRequestDto} from './models/dto/request/approve/event-member.approve.dto';
@@ -24,12 +24,17 @@ export class EventMemberService {
         @Inject(forwardRef(() => EventValidatorService))
         private readonly eventValidatorService: EventValidatorService,
         @Inject(forwardRef(() => EventService))
-        private readonly eventService: EventService) { }
+        private readonly eventService: EventService) {
+    }
 
     @scalable(EventMemberApplyResponseDto)
     public async applyMember(eventMemberApply: EventMemberApplyDto): Promise<EventMember> {
         // if there is any approved event with intersected timerange - throws exception
-        const targetEvent = await this.eventService.getEventById(eventMemberApply.eventId);
+        const targetEvent: Event = await this.eventService.getEventById(eventMemberApply.eventId);
+        const approvedMembers = targetEvent.eventMembers ? targetEvent.eventMembers.filter(member => member.status === StatusEnum.APPROVED) : [];
+        if (targetEvent.totalOfPersons === approvedMembers.length) {
+            throw new NoFreePlacesError();
+        }
         await this.eventValidatorService.validateSelfEventApplication(eventMemberApply.userId, eventMemberApply.eventId);
         await this.eventValidatorService.validateApplicationEventTime(eventMemberApply.userId, targetEvent.startTime, targetEvent.endTime);
         const eventMember: EventMember = Object.assign(new EventMember(), eventMemberApply);
@@ -55,7 +60,7 @@ export class EventMemberService {
 
     @scalable(EventMemberApproveResponseDto)
     public async approveEventMember(approveRequest: EventMemberApproveRequestDto): Promise<EventMember> {
-        const { startTime, endTime } = await this.eventService.getEventById(approveRequest.eventId);
+        const {startTime, endTime} = await this.eventService.getEventById(approveRequest.eventId);
         await this.eventMemberRepository.flushCollisedApplications(startTime, endTime, approveRequest.userId);
 
         const partialEventMember: EventMember = Object.assign(new EventMember(), approveRequest);
@@ -75,18 +80,20 @@ export class EventMemberService {
         await this.eventMemberRepository.declineEventMember(partialEventMember);
         return partialEventMember;
     }
-    public async acceptAll(eventId: number) : Promise<UpdateResult[]> {
+
+    @scalableBulk(EventMemberApproveResponseDto)
+    public async acceptAll(eventId: number): Promise<EventMember[]> {
         const targetEvent: Event = await this.eventService.getEventById(eventId);
-        const appliedMembers = targetEvent.eventMembers.filter(member => member.status === StatusEnum.APPLIED);
-        const approvedMembers = targetEvent.eventMembers.filter(member => member.status === StatusEnum.APPROVED);
+        const appliedMembers = targetEvent.eventMembers ? targetEvent.eventMembers.filter(member => member.status === StatusEnum.APPLIED) : [];
+        const approvedMembers = targetEvent.eventMembers ? targetEvent.eventMembers.filter(member => member.status === StatusEnum.APPROVED) : [];
         if (targetEvent.totalOfPersons - approvedMembers.length < appliedMembers.length) {
             throw new CantAcceptAllError();
         }
         appliedMembers.forEach(member => member.status = StatusEnum.APPROVED);
         return Promise.all(appliedMembers
-            .map( member => {
-            return this.eventMemberRepository.flushCollisedApplications(targetEvent.startTime, targetEvent.endTime, member.userId)
-            .then(() => this.eventMemberRepository.approveEventMember(member));
+            .map(member => {
+                return this.eventMemberRepository.flushCollisedApplications(targetEvent.startTime, targetEvent.endTime, member.userId)
+                    .then(() => this.eventMemberRepository.approveEventMember(member));
             }));
     }
 

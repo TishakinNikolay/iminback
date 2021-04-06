@@ -14,7 +14,7 @@ export class DoubleGisApi {
     }
 
     public get suggestApi(): SuggestApi {
-       return this._suggestApi;
+        return this._suggestApi;
     }
 
     public get geocodeApi(): GeocoderApi {

@@ -1,4 +1,7 @@
 export class ResponseEventImageDto {
     public id: number = null;
-    constructor() { }
+    public uri: string = null;
+
+    constructor() {
+    }
 }

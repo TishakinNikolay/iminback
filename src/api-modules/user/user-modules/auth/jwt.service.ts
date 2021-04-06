@@ -15,7 +15,7 @@ export class JwtService {
             context: {...context}
         };
 
-        const refreshTokenPayload: TokenPayload =  {
+        const refreshTokenPayload: TokenPayload = {
             expiresAt: Date.now() + Number(process.env.JWT_REFRESH_EXPIRES_IN) * 1000,
             context: {...context}
         };

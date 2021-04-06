@@ -8,7 +8,8 @@ import {EventReaction} from './models/event-reaction.entity';
 
 @Injectable()
 export class EventReactionService {
-    constructor(private readonly eventReactionRepository: EventReactionRepository) { }
+    constructor(private readonly eventReactionRepository: EventReactionRepository) {
+    }
 
     @scalable(EventReactionResponseDto)
     public async addFavoriteReaction(eventFavoriteReactionDto: EventReactionCreateDto): Promise<EventReaction> {

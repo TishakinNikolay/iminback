@@ -1,9 +1,6 @@
-import {EntityRepository, FindConditions, FindOneOptions, Repository} from 'typeorm';
-import {User} from './models/user.entity';
+import {EntityRepository, FindConditions, Repository} from 'typeorm';
 import {UpdateUserDto} from './models/dto/request/update-user.dto';
-import {UserFindError} from './errors/user-find.error';
-import {UserErrorEnum} from './enums/user-error.enum';
-import {UserValidatorService} from './user-validator.service';
+import {User} from './models/user.entity';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {

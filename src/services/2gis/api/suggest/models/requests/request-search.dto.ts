@@ -3,18 +3,18 @@ import {RequestSeacrhPointDto} from './request-seacrh.point.dto';
 
 export class RequestSearch {
     constructor(public suggest_type: string,
-    public page_size: number,
-    public locale: string,
-    public q: string,
-    public sort_point?: RequestSeacrhPointDto) {
+                public page_size: number,
+                public locale: string,
+                public q: string,
+                public sort_point?: RequestSeacrhPointDto) {
     }
 
     public toQueryParamsString(): string {
         if (!this.sort_point) {
             delete this.sort_point;
-            return stringify({ ...(this as any) });
+            return stringify({...(this as any)});
         } else {
-            return stringify({ ...(this as any), sort_point: `${this.sort_point.lat},${this.sort_point.long}` });
+            return stringify({...(this as any), sort_point: `${this.sort_point.lat},${this.sort_point.long}`});
         }
     }
 }

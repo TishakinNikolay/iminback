@@ -1,12 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { scalable } from '../_shared/decorators/remap.decorator';
-import { CreateUserDto } from './models/dto/request/create-user.dto';
-import { ResponseUserDto } from './models/dto/response/response-user.dto';
-import { User } from './models/user.entity';
-import {UserValidatorService} from './user-validator.service';
-import { UserRepository } from './user.repository';
-import {UpdateUserDto} from './models/dto/request/update-user.dto';
+import {Injectable} from '@nestjs/common';
 import {getConnection} from 'typeorm';
+import {scalable} from '../_shared/decorators/remap.decorator';
+import {UserAlreadyExistsError} from './errors/user-already-exists.error';
+import {CreateUserDto} from './models/dto/request/create-user.dto';
+import {UpdateUserDto} from './models/dto/request/update-user.dto';
+import {ResponseUserDto} from './models/dto/response/response-user.dto';
+import {User} from './models/user.entity';
+import {UserValidatorService} from './user-validator.service';
+import {UserRepository} from './user.repository';
 
 @Injectable()
 export class UserService {
@@ -39,7 +40,10 @@ export class UserService {
     @scalable(ResponseUserDto)
     public async updateUser(newUser: UpdateUserDto, id: number): Promise<ResponseUserDto> {
         await this.userValidatorService.validateUserById(id);
-        await this.userValidatorService.validateSameUserByPhoneAndNickname(newUser.phone, newUser.nickname);
+        const oldUser = await this.getUserById(id);
+        if (newUser.phone != oldUser.phone || newUser.nickname != oldUser.nickname) {
+            throw new UserAlreadyExistsError();
+        }
         newUser.id = id;
         return this.userRepository.updateUser(newUser);
     }

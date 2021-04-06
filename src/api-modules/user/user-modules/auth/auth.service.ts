@@ -1,4 +1,4 @@
-import {ConflictException, forwardRef, Inject, Injectable} from '@nestjs/common';
+import {forwardRef, Inject, Injectable} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import {ImageService} from '../../../image/image.service';
 import {CreateImageDto} from '../../../image/models/create-image.dto';
@@ -19,10 +19,10 @@ export class AuthService {
         private readonly imageService: ImageService,
         @Inject(forwardRef(() => UserValidatorService))
         private readonly userValidatorService: UserValidatorService,
-    ) {}
+    ) {
+    }
 
     public async login(creds: RequestLoginDto) {
-        console.log(creds);
         const user = await User.findOne({phone: creds.phone});
 
         if (!user) {
@@ -60,7 +60,6 @@ export class AuthService {
     }
 
     private async hashPhoneCode(code: number): Promise<string> {
-        console.log(process.env['HASH_SALT_PHONE_CODE ']);
         return bcrypt.hash(code.toString(), process.env.HASH_SALT_PHONE_CODE);
     }
 

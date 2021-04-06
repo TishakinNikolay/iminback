@@ -1,4 +1,4 @@
-import { EventSearchStrategy } from "./events-search.strategy";
+import {EventSearchStrategy} from './events-search.strategy';
 
 export class SearchVisitedEventsStrategy extends EventSearchStrategy {
     public getSearchQuery(searchRequest) {

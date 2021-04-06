@@ -1,4 +1,4 @@
-import { UserCountryDto } from './user-country.dto';
+import {UserCountryDto} from './user-country.dto';
 
 export class UserCityDto {
     public id: number = null;

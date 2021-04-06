@@ -53,12 +53,12 @@ export class HttpsUtils {
         return await this.mutationMethod(url, data, optionsResponse, optionsRequest);
     }
 
-    public async delete(url: string, data: object = {}, optionsResponse: IHttpsUtilResponseOptions, optionsRequest: RequestOptions = {}): Promise<IResponseData>  {
+    public async delete(url: string, data: object = {}, optionsResponse: IHttpsUtilResponseOptions, optionsRequest: RequestOptions = {}): Promise<IResponseData> {
         optionsRequest.method = 'DELETE';
         return await this.mutationMethod(url, data, optionsResponse, optionsRequest);
     }
 
-    public async patch(url: string, data: object = {}, optionsResponse: IHttpsUtilResponseOptions, optionsRequest: RequestOptions = {}): Promise<IResponseData>  {
+    public async patch(url: string, data: object = {}, optionsResponse: IHttpsUtilResponseOptions, optionsRequest: RequestOptions = {}): Promise<IResponseData> {
         optionsRequest.method = 'PATCH';
         return await this.mutationMethod(url, data, optionsResponse, optionsRequest);
     }
@@ -132,6 +132,8 @@ export class HttpsUtils {
     private getEditedData(data: string, optionsResponse: IHttpsUtilResponseOptions): any {
         if (optionsResponse.json) {
             return JSON.parse(data);
-        } else { return data; }
+        } else {
+            return data;
+        }
     }
 }

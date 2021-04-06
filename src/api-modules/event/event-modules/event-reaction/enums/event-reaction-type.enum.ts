@@ -1,6 +1,6 @@
-export enum EventReactionType {
-    LIKE,
-    COMMENT,
-    ADD_TO_FAVORITE,
-    ANOTHER
-}
+    export enum EventReactionType {
+        LIKE,
+        COMMENT,
+        ADD_TO_FAVORITE,
+        ANOTHER
+    }

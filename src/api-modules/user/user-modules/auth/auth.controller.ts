@@ -1,9 +1,9 @@
 import {Body, Controller, Post, UploadedFile, UseInterceptors} from '@nestjs/common';
-import {AuthService} from './auth.service';
-import {RequestRegisterDto} from './models/dto/request/request-register.dto';
 import {FileInterceptor} from '@nestjs/platform-express';
 import {CreateImageDto} from '../../../image/models/create-image.dto';
+import {AuthService} from './auth.service';
 import {RequestLoginDto} from './models/dto/request/request-login.dto';
+import {RequestRegisterDto} from './models/dto/request/request-register.dto';
 import {Tokens} from './models/token.models';
 
 @Controller('auth')

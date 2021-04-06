@@ -1,14 +1,12 @@
-import * as moment from 'moment';
-import { createQueryBuilder, EntityRepository, Repository, SelectQueryBuilder } from 'typeorm';
+import {createQueryBuilder, EntityRepository, LessThan, Repository} from 'typeorm';
 import {DatetimeService} from '../../_shared/datetime.service';
 import {StatusEnum} from '../event-modules/event-member/enums/status.enum';
-import { EventMember } from '../event-modules/event-member/models/event-member.entity';
-import { EventLocationDto } from '../models/dto/request/event-location.dto';
-import { UpdateEventDto } from '../models/dto/request/update/update-event.dto';
-import { Event } from '../models/event.entity';
-import { LessThan } from "typeorm";
-import { EventQueryBuilder } from './event-query-builder';
-import { EventSearchEngine } from './search-engine/event-search-engine';
+import {EventMember} from '../event-modules/event-member/models/event-member.entity';
+import {EventLocationDto} from '../models/dto/request/event-location.dto';
+import {UpdateEventDto} from '../models/dto/request/update/update-event.dto';
+import {Event} from '../models/event.entity';
+import {EventQueryBuilder} from './event-query-builder';
+import {EventSearchEngine} from './search-engine/event-search-engine';
 
 @EntityRepository(Event)
 export class EventRepository extends Repository<Event> {
@@ -40,11 +38,9 @@ export class EventRepository extends Repository<Event> {
                                targetDate: Date,
                                page: number,
                                pageSize: number): Promise<Event[]> {
-        return this.eventQueryBuilder
+        return (await this.eventQueryBuilder
             .getFeedQuery(userId, userCityId, categoriesId, geo, targetDate)
-            .skip(page * pageSize)
-            .take(pageSize)
-            .getMany();
+            .getMany()).splice(pageSize * page, pageSize);
     }
 
     public async getUserEvents(userId: number, page, pageSize): Promise<Event[]> {
@@ -55,7 +51,7 @@ export class EventRepository extends Repository<Event> {
     }
 
     public async getUserPassedEvents(userId: number): Promise<Event[]> {
-        const currentDate: string = DatetimeService.nowString();
+        const currentDate: string = DatetimeService.serializeToString(DatetimeService.now());
         return this
             .find({
                 relations: [
@@ -67,10 +63,10 @@ export class EventRepository extends Repository<Event> {
                     'categories'
                 ],
                 where: {
-                    owner: { id: userId },
+                    owner: {id: userId},
                     endTime: LessThan(currentDate)
                 },
-                order: { endTime: 'DESC' }
+                order: {endTime: 'DESC'}
             });
     }
 
@@ -119,7 +115,7 @@ export class EventRepository extends Repository<Event> {
                     'eventMembers',
                     'categories'
                 ],
-                where: { id: eventId }
+                where: {id: eventId}
             });
     }
 
@@ -127,12 +123,13 @@ export class EventRepository extends Repository<Event> {
         return this.createQueryBuilder()
             .delete()
             .from(EventMember)
-            .where('eventId = :id', { id: createEventDto.id })
+            .where('eventId = :id', {id: createEventDto.id})
             .execute();
     }
 
     public async updateEvent(event: Event): Promise<Event> {
-        await this.update({ id: event.id, }, event);
+        await this.save(event);
+        //await this.update({ id: event.id, }, event);
         return this.getEventById(event.id);
     }
 

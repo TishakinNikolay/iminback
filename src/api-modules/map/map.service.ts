@@ -4,16 +4,17 @@ import {RequestGeocoderSearchDto} from '../../services/2gis/api/geocoder/models/
 import {ResponseSearchListDto} from '../../services/2gis/api/shared/models/response/response-search.list.dto';
 import {RequestSearch} from '../../services/2gis/api/suggest/models/requests/request-search.dto';
 import {DoubleGisService} from '../../services/2gis/double-gis.service';
+import {ErrorsMapEnum} from '../_shared/enums/erros/errors-map.enum';
 import {ErrorMapSearchModel} from '../_shared/errors/map/error-map-search.model';
 import {RequestMapPointDto} from './models/dto/request/request-map.point.dto';
 import {RequestMapSearchDto} from './models/dto/request/request-map.search.dto';
-import {ErrorsMapEnum} from '../_shared/enums/erros/errors-map.enum';
 
 @Injectable()
 export class MapService {
     constructor(
         private readonly doubleGisService: DoubleGisService
-    ) {}
+    ) {
+    }
 
     public async searchByAddress(search: RequestMapSearchDto): Promise<any> {
         const {page_size = 10, phrase = '', sortByPoint} = search;
