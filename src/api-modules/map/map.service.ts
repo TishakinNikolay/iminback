@@ -8,6 +8,7 @@ import {ErrorsMapEnum} from '../_shared/enums/erros/errors-map.enum';
 import {ErrorMapSearchModel} from '../_shared/errors/map/error-map-search.model';
 import {RequestMapPointDto} from './models/dto/request/request-map.point.dto';
 import {RequestMapSearchDto} from './models/dto/request/request-map.search.dto';
+import {User} from '../user/models/user.entity';
 
 @Injectable()
 export class MapService {
@@ -16,12 +17,15 @@ export class MapService {
     ) {
     }
 
-    public async searchByAddress(search: RequestMapSearchDto): Promise<any> {
+    public async searchByAddress(search: RequestMapSearchDto, userId: number): Promise<any> {
         const {page_size = 10, phrase = '', sortByPoint} = search;
         const pageSizeGeoCode = page_size / 2;
+        const user = await User.findOne({relations: ['city']})
         let pageSizeSuggest = page_size / 2;
         let resultsGeocode: ResponseSearchListDto = {items: [], total: 0};
         let resultsSuggest: ResponseSearchListDto = {items: [], total: 0};
+
+        search.phrase = `${user.city.name} ${search.phrase}`
 
         try {
             resultsGeocode = await this.doubleGisService.api.geocodeApi.search(new RequestGeocoderSearchDto(phrase, pageSizeGeoCode));
