@@ -12,7 +12,8 @@ export class GeocoderApi extends ParentApi {
     }
 
     public async search(request: RequestGeocoderSearchDto): Promise<ResponseSearchListDto> {
-        const result = await this.get(`?${request.toQueryParamsString()}&fields=items.point,items.geometry.centroid`);
+        console.log(`?q=${request.q}&fields=items.point,items.geometry.centroid`)
+        const result = await this.get(`?q=${request.q}&fields=items.point,items.geometry.centroid`);
 
         return result.body.result;
     }

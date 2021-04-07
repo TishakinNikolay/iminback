@@ -13,8 +13,8 @@ export class MapController {
 
     @UseGuards(LocalGuard)
     @Post('search/address')
-    public async searchByPhrase(@Body() search: RequestMapSearchDto) {
-        return await this.mapService.searchByAddress(search);
+    public async searchByPhrase(@Body() search: RequestMapSearchDto, @GetUser() user: User) {
+        return await this.mapService.searchByAddress(search, user.id);
     }
 
     @UseGuards(LocalGuard)

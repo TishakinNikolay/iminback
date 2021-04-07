@@ -28,7 +28,7 @@ export class MapService {
         search.phrase = `${user.city.name} ${search.phrase}`
 
         try {
-            resultsGeocode = await this.doubleGisService.api.geocodeApi.search(new RequestGeocoderSearchDto(phrase, pageSizeGeoCode));
+            resultsGeocode = await this.doubleGisService.api.geocodeApi.search(new RequestGeocoderSearchDto(search.phrase, pageSizeGeoCode));
         } catch (e) {
             if (e.status === 404) {
                 pageSizeSuggest = page_size;
@@ -52,6 +52,7 @@ export class MapService {
             ));
         } catch (e) {
             if (resultsGeocode.total <= 0) {
+                console.log(123)
                 throw new ErrorMapSearchModel([
                     {
                         type: ErrorsMapEnum.SEARCH_NOT_FOUND,

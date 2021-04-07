@@ -10,6 +10,7 @@ export class RequestGeocoderSearchDto {
     }
 
     public toQueryParamsString(): string {
+        console.log(this.page_size)
         return stringify({...(this as any)});
     }
 }
