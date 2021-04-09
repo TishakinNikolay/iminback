@@ -10,11 +10,11 @@ export class RequestSearch {
     }
 
     public toQueryParamsString(): string {
-        if (!this.sort_point) {
+        if (this.sort_point && this.sort_point.lat && this.sort_point.long) {
+            return stringify({...(this as any), sort_point: `${this.sort_point.lat},${this.sort_point.long}`});
+        } else {
             delete this.sort_point;
             return stringify({...(this as any)});
-        } else {
-            return stringify({...(this as any), sort_point: `${this.sort_point.lat},${this.sort_point.long}`});
         }
     }
 }
