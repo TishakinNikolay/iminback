@@ -1,5 +1,4 @@
 import {createQueryBuilder, EntityRepository, LessThan, Repository} from 'typeorm';
-import {DatetimeService} from '../../_shared/datetime.service';
 import {StatusEnum} from '../event-modules/event-member/enums/status.enum';
 import {EventMember} from '../event-modules/event-member/models/event-member.entity';
 import {EventLocationDto} from '../models/dto/request/event-location.dto';
@@ -51,7 +50,7 @@ export class EventRepository extends Repository<Event> {
     }
 
     public async getUserPassedEvents(userId: number): Promise<Event[]> {
-        const currentDate: string = DatetimeService.serializeToString(DatetimeService.now());
+        const currentDate: Date = new Date();
         return this
             .find({
                 relations: [
@@ -113,7 +112,8 @@ export class EventRepository extends Repository<Event> {
                     'eventLocation',
                     'eventLocation.city',
                     'eventMembers',
-                    'categories'
+                    'categories',
+                    'eventReactions'
                 ],
                 where: {id: eventId}
             });

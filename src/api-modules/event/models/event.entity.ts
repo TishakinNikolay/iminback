@@ -11,9 +11,9 @@ import {EventReaction} from '../event-modules/event-reaction/models/event-reacti
 export class Event extends BaseColumnModel {
     @Column({type: 'character varying', nullable: false, length: 350})
     public title: string;
-    @Column({type: 'timestamp', nullable: false})
+    @Column({type: 'timestamp with time zone', nullable: false})
     public startTime: Date;
-    @Column({type: 'timestamp', nullable: false})
+    @Column({type: 'timestamp with time zone', nullable: false})
     public endTime: Date;
     @ManyToOne(type => User, owner => owner.events)
     public owner: User;

@@ -64,7 +64,6 @@ export class EventMemberRepository extends Repository<EventMember> {
     }
 
     public async approveEventMember(partialEventMember: EventMember): Promise<EventMember> {
-        console.log(partialEventMember);
         return this.save(partialEventMember);
     }
 

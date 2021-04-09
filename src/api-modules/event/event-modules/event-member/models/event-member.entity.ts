@@ -12,14 +12,14 @@ export class EventMember extends BaseEntity {
     @Column({type: 'enum', enum: StatusEnum, nullable: false})
     public status: StatusEnum;
     @CreateDateColumn({
-        type: 'timestamp',
+        type: 'timestamp with time zone',
         nullable: true,
         default: () => 'NOW()',
     })
     public applicationDate: Date;
-    @Column({type: 'timestamp', nullable: true})
+    @Column({type: 'timestamp with time zone', nullable: true, precision: 0})
     public approvalDate: Date;
-    @Column({type: 'timestamp', nullable: true})
+    @Column({type: 'timestamp with time zone', nullable: true})
     public declineDate: Date;
 
     @ManyToOne(() => Event, event => event.eventMembers)

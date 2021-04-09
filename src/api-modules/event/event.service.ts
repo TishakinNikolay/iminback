@@ -1,5 +1,4 @@
 import {Injectable} from '@nestjs/common';
-import {DatetimeService} from '../_shared/datetime.service';
 import {scalable, scalableBulk} from '../_shared/decorators/remap.decorator';
 import {EventNotFoundError} from './errors/event-not-found.error';
 import {EventLocationService} from './event-modules/event-location/event-location.service';
@@ -89,8 +88,8 @@ export class EventService {
         if (!oldEvent) {
             throw new EventNotFoundError();
         }
-        if (DatetimeService.asString(DatetimeService.asUTC(oldEvent.startTime)) !== DatetimeService.asString(DatetimeService.parseDate(updateEventDto.startTime)) ||
-            DatetimeService.asString(DatetimeService.asUTC(oldEvent.endTime)) !== DatetimeService.asString((DatetimeService.parseDate(updateEventDto.endTime)))) {
+        if (oldEvent.startTime != updateEventDto.startTime ||
+            oldEvent.endTime != updateEventDto.endTime) {
             await this.eventValidatorSerivce.validateEventTime(updateEventDto.owner.id, updateEventDto.startTime, updateEventDto.endTime);
             await this.eventRepository.flushEventMembers(updateEventDto);
         }

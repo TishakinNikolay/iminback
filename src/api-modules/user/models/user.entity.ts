@@ -19,7 +19,7 @@ export class User extends BaseColumnModel {
     @ManyToOne(type => Image, {nullable: true})
     @JoinColumn()
     public profileImage: Image;
-    @Column({type: 'timestamp', nullable: true})
+    @Column({type: 'timestamp with time zone', nullable: true})
     public dateOfBirth: Date;
     @Column({type: 'enum', enum: GenderEnum, nullable: false})
     public gender: GenderEnum;

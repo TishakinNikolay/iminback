@@ -1,5 +1,4 @@
 import {Injectable} from '@nestjs/common';
-import {DatetimeService} from '../_shared/datetime.service';
 import {EventErrors} from './enums/event-errors.enum';
 import {EventCreationTimeOverlapError} from './errors/creation-event-time-overlap.error';
 import {EventEndTimeError} from './errors/event-end-time.error';
@@ -17,13 +16,13 @@ export class EventValidatorService {
     }
 
     public async validateEventTime(ownerId: number, startTime, endTime): Promise<void> {
-        if (DatetimeService.parseDate(startTime) < DatetimeService.now()) {
+        if (new Date(startTime) < new Date()) {
             throw new EventStartTimeError([{
                 type: EventErrors.EVENT_START_TIME_LESS_THAN_TODAY,
-                details: `startTime is ${startTime} lower than now ${DatetimeService.serializeToString(DatetimeService.now())}`
+                details: `startTime is ${startTime} lower than now ${new Date()}`
             }]);
         }
-        if (DatetimeService.parseDate(endTime) <= DatetimeService.parseDate(startTime)) {
+        if (new Date(endTime) < new Date(startTime)) {
             throw new EventEndTimeError([{
                 type: EventErrors.EVENT_END_TIME_LESS_OR_QUAL_THAN_START_TIME,
                 details: `endtime  is ${endTime} lower than ${startTime}`

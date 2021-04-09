@@ -1,5 +1,4 @@
 import {Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UseGuards} from '@nestjs/common';
-import {DatetimeService} from '../../_shared/datetime.service';
 import {LocalGuard} from '../../user/user-modules/auth/guards/local.guard';
 import {EventService} from '../event.service';
 import {CreateEventDto} from '../models/dto/request/create/create-event.dto';
@@ -33,7 +32,7 @@ export class EventController {
             feedRequest.categories = JSON.parse(query.categories);
         }
         if (query.targetDate) {
-            feedRequest.targetDate = DatetimeService.parseDate(query.targetDate);
+            feedRequest.targetDate = new Date(query.targetDate);
         }
         if (query.location) {
             const coords = JSON.parse(query.location);

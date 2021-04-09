@@ -1,6 +1,5 @@
 import {QueryBuilder, SelectQueryBuilder} from 'typeorm';
 import {User} from '../../../api-modules/user/models/user.entity';
-import {DatetimeService} from '../../_shared/datetime.service';
 import {StatusEnum} from '../event-modules/event-member/enums/status.enum';
 import {EventMember} from '../event-modules/event-member/models/event-member.entity';
 import {EventReactionType} from '../event-modules/event-reaction/enums/event-reaction-type.enum';
@@ -12,12 +11,13 @@ export class EventQueryBuilder {
     public constructor(private readonly queryBuilder: QueryBuilder<Event>) {
     }
 
+
     public getFeedQuery(userId: number,
                         userCityId: number,
                         categoriesId: number[],
                         geo: EventLocationDto,
                         targetDate: Date): SelectQueryBuilder<Event> {
-        const currentDate: string = DatetimeService.serializeToString(DatetimeService.now());
+        const currentDate: Date = new Date();
         const eventQb: SelectQueryBuilder<Event> = new SelectQueryBuilder(this.queryBuilder);
         let eventsQuery = eventQb
             .innerJoinAndSelect('event.eventLocation', 'event_location', 'event_location.id = event.eventLocationId')
@@ -62,27 +62,25 @@ export class EventQueryBuilder {
             .setParameter('todayDate', currentDate);
 
         if (categoriesId) {
-            console.log(categoriesId);
             eventsQuery = eventsQuery.andWhere('event_category.id IN (:...categoriesId)');
             eventsQuery = eventsQuery.setParameter('categoriesId', categoriesId);
         }
         if (geo) {
-            console.log(geo);
             eventsQuery = eventsQuery
                 .addSelect(`ROUND((earth_distance(ll_to_earth(event_location.lat, event_location.long), ll_to_earth(${geo.lat}, ${geo.long}))/1000)::NUMERIC, 2)`,
                     'distance')
                 .orderBy('distance', 'ASC');
         } else {
-            console.log(userCityId);
             eventsQuery = eventsQuery
                 .andWhere('event_location.cityId = :userCityId')
                 .setParameter('userCityId', userCityId);
         }
         if (targetDate) {
-            console.log(targetDate);
             const date = targetDate;
-            const dayStart: string = DatetimeService.serializeToString(DatetimeService.dayStartString(date));
-            const dayEnd: string = DatetimeService.serializeToString(DatetimeService.dayEndString(date));
+            const dayStart: Date = new Date(date);
+            dayStart.setHours(0,0,0,0);
+            const dayEnd: Date = new Date(date);
+            dayEnd.setHours(23,59,59,999);
             eventsQuery = eventsQuery
                 .andWhere('event.startTime <= :dayEnd')
                 .andWhere('event.startTime >= :dayStart')
@@ -101,7 +99,7 @@ export class EventQueryBuilder {
     }
 
     public getVisitedQuery(userId: number): SelectQueryBuilder<Event> {
-        const currentDate: string = DatetimeService.serializeToString(DatetimeService.now());
+        const currentDate: Date = new Date();
         const eventQb: SelectQueryBuilder<Event> = new SelectQueryBuilder(this.queryBuilder);
         return eventQb
             .innerJoinAndSelect('event.eventLocation', 'event_location', 'event_location.id = event.eventLocationId')
@@ -122,7 +120,7 @@ export class EventQueryBuilder {
     }
 
     public getUpcomingQuery(userId: number): SelectQueryBuilder<Event> {
-        const currentDate: string = DatetimeService.serializeToString(DatetimeService.now());
+        const currentDate: Date = new Date();
         const eventQb: SelectQueryBuilder<Event> = new SelectQueryBuilder(this.queryBuilder);
         return eventQb
             .innerJoinAndSelect('event.eventLocation', 'event_location', 'event_location.id = event.eventLocationId')
@@ -143,9 +141,9 @@ export class EventQueryBuilder {
     }
 
     public getHistoryQuery(userId: number): SelectQueryBuilder<Event> {
-        const currentDate: string = DatetimeService.serializeToString(DatetimeService.now());
+        const currentDate: Date = new Date();
         const eventQb: SelectQueryBuilder<Event> = new SelectQueryBuilder(this.queryBuilder);
-        return eventQb
+        const a =  eventQb
             .innerJoinAndSelect('event.eventLocation', 'event_location', 'event_location.id = event.eventLocationId')
             .innerJoinAndSelect('event_location.city', 'city')
             .innerJoinAndSelect('event.owner', 'owner')
@@ -154,14 +152,13 @@ export class EventQueryBuilder {
             .leftJoinAndSelect('event.image', 'event_image', 'event_image.id = event.imageId')
             .leftJoinAndSelect('event.categories', 'event_category')
             .leftJoinAndSelect('event.eventReactions', 'event_reaction', 'event_reaction.eventId = event.id')
-            .where('event_member.status IN (:...checkInStatuses)')
-            .andWhere('event_member.userId = :currentUserId')
-            .orWhere('event.ownerId = :currentUserId')
+            .where('((event_member.status IN (:...checkInStatuses) AND event_member.userId = :currentUserId) OR (event.ownerId = :currentUserId))')
             .andWhere('event.endTime < :currentDate')
             .orderBy('event.endTime', 'DESC')
             .setParameter('checkInStatuses', [StatusEnum.APPLIED, StatusEnum.DECLINED, StatusEnum.APPROVED])
             .setParameter('currentUserId', userId)
             .setParameter('currentDate', currentDate);
+        return a;
     }
 
     public getFavoriteQuery(userId: number): SelectQueryBuilder<Event> {
@@ -199,7 +196,7 @@ export class EventQueryBuilder {
     }
 
     public getTimeCollidedQuery(startTime: Date, endTime: Date, userId: number, memberStatuses: StatusEnum[]): SelectQueryBuilder<Event> {
-        const currentDate: string = DatetimeService.serializeToString(DatetimeService.now());
+        const currentDate: Date = new Date();
         const eventQb: SelectQueryBuilder<Event> = new SelectQueryBuilder(this.queryBuilder);
         return eventQb
             .leftJoinAndSelect(EventMember, 'event_member', 'event_member.eventId = event.id')

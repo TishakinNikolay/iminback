@@ -1,5 +1,4 @@
 import {forwardRef, Inject, Injectable} from '@nestjs/common';
-import {DatetimeService} from '../../../_shared/datetime.service';
 import {scalable, scalableBulk} from '../../../_shared/decorators/remap.decorator';
 import {EventValidatorService} from '../../event-validator.service';
 import {EventService} from '../../event.service';
@@ -39,7 +38,7 @@ export class EventMemberService {
         await this.eventValidatorService.validateApplicationEventTime(eventMemberApply.userId, targetEvent.startTime, targetEvent.endTime);
         const eventMember: EventMember = Object.assign(new EventMember(), eventMemberApply);
         eventMember.status = StatusEnum.APPLIED;
-        eventMember.applicationDate = DatetimeService.now();
+        eventMember.applicationDate = new Date();
         return this.eventMemberRepository.applyMemberToEvent(eventMember);
     }
 
@@ -65,7 +64,7 @@ export class EventMemberService {
 
         const partialEventMember: EventMember = Object.assign(new EventMember(), approveRequest);
         partialEventMember.status = StatusEnum.APPROVED;
-        partialEventMember.approvalDate = DatetimeService.now();
+        partialEventMember.approvalDate = new Date();
 
         await this.eventMemberRepository.approveEventMember(partialEventMember);
 
@@ -76,7 +75,7 @@ export class EventMemberService {
     public async declineEventMember(declineRequest: EventMemberDeclineRequestDto): Promise<EventMember> {
         const partialEventMember: EventMember = Object.assign(new EventMember(), declineRequest);
         partialEventMember.status = StatusEnum.DECLINED;
-        partialEventMember.declineDate = DatetimeService.now();
+        partialEventMember.declineDate = new Date();
         await this.eventMemberRepository.declineEventMember(partialEventMember);
         return partialEventMember;
     }
