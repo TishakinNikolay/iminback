@@ -55,6 +55,7 @@
       "ts-loader": "^8.0.17",
       "ts-node": "^9.1.1",
       "tsconfig-paths": "^3.9.0",
+      "twilio": "^3.60.0",
       "typeorm": "^0.2.31"
    },
    "devDependencies": {

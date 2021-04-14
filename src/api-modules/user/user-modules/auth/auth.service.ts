@@ -6,6 +6,7 @@ import {UserErrorEnum} from '../../enums/user-error.enum';
 import {UserFindError} from '../../errors/user-find.error';
 import {User} from '../../models/user.entity';
 import {UserValidatorService} from '../../user-validator.service';
+import {SmsService} from '../sms/sms-service';
 import {AuthNotValidCodeError} from './errors/auth-not-valid-code.error';
 import {JwtService} from './jwt.service';
 import {RequestLoginDto} from './models/dto/request/request-login.dto';
@@ -19,6 +20,7 @@ export class AuthService {
         private readonly imageService: ImageService,
         @Inject(forwardRef(() => UserValidatorService))
         private readonly userValidatorService: UserValidatorService,
+        private readonly smsService : SmsService
     ) {
     }
 
@@ -55,8 +57,8 @@ export class AuthService {
 
         user.code = await this.hashPhoneCode(code);
         await user.save();
-
-        return code;
+        await this.smsService.sendSMS(user.phone, `Your login code is ${code}`);
+        return user.phone;
     }
 
     private async hashPhoneCode(code: number): Promise<string> {
