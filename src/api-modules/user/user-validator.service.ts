@@ -26,19 +26,19 @@ export class UserValidatorService {
         });
 
         if (sameUser) {
-            throw new UserAlreadyExistsError();
+            throw new UserAlreadyExistsError(null);
         }
     }
 
     public async validateUserById(userId: number) {
         const user = await this.userRepository.getUserById(userId);
         if (!user) {
-            throw new UserFindError([
+            throw new UserFindError(
                 {
                     type: UserErrorEnum.NOT_FOUND,
                     details: 'Not found user by id: ' + userId
                 }
-            ]);
+            );
         }
     }
 }

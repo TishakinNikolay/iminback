@@ -1,7 +1,7 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import {MigrationInterface, QueryRunner} from 'typeorm';
 
 export class TimeZoneFix21617837060025 implements MigrationInterface {
-    name = 'TimeZoneFix21617837060025'
+    name = 'TimeZoneFix21617837060025';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "event_member" ALTER COLUMN "applicationDate" TYPE TIMESTAMP(0) WITH TIME ZONE`);

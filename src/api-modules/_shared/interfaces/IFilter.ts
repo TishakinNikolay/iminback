@@ -1,6 +1,6 @@
-import { FieldEnum } from '../enums/field.enum';
-import { FilterComparisonOperatorEnum } from '../enums/filter-comparison-operator.enum';
-import { FilterLogicalOperatorEnum } from '../enums/filter-logical-operator.enum';
+import {FieldEnum} from '../enums/field.enum';
+import {FilterComparisonOperatorEnum} from '../enums/filter-comparison-operator.enum';
+import {FilterLogicalOperatorEnum} from '../enums/filter-logical-operator.enum';
 
 export interface IFilterInit {
     initFilter?: () => Promise<IFilter>;

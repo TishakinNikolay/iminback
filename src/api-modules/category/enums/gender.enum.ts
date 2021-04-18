@@ -1,5 +1,5 @@
 export enum GenderCategoryEnum {
     MALE,
-    FEMALE ,
+    FEMALE,
     ALL
 }

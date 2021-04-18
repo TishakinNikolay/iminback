@@ -78,9 +78,9 @@ export class EventQueryBuilder {
         if (targetDate) {
             const date = targetDate;
             const dayStart: Date = new Date(date);
-            dayStart.setHours(0,0,0,0);
+            dayStart.setHours(0, 0, 0, 0);
             const dayEnd: Date = new Date(date);
-            dayEnd.setHours(23,59,59,999);
+            dayEnd.setHours(23, 59, 59, 999);
             eventsQuery = eventsQuery
                 .andWhere('event.startTime <= :dayEnd')
                 .andWhere('event.startTime >= :dayStart')
@@ -143,7 +143,7 @@ export class EventQueryBuilder {
     public getHistoryQuery(userId: number): SelectQueryBuilder<Event> {
         const currentDate: Date = new Date();
         const eventQb: SelectQueryBuilder<Event> = new SelectQueryBuilder(this.queryBuilder);
-        const a =  eventQb
+        const a = eventQb
             .innerJoinAndSelect('event.eventLocation', 'event_location', 'event_location.id = event.eventLocationId')
             .innerJoinAndSelect('event_location.city', 'city')
             .innerJoinAndSelect('event.owner', 'owner')

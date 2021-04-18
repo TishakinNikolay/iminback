@@ -6,9 +6,9 @@ import {RequestSearch} from '../../services/2gis/api/suggest/models/requests/req
 import {DoubleGisService} from '../../services/2gis/double-gis.service';
 import {ErrorsMapEnum} from '../_shared/enums/erros/errors-map.enum';
 import {ErrorMapSearchModel} from '../_shared/errors/map/error-map-search.model';
+import {User} from '../user/models/user.entity';
 import {RequestMapPointDto} from './models/dto/request/request-map.point.dto';
 import {RequestMapSearchDto} from './models/dto/request/request-map.search.dto';
-import {User} from '../user/models/user.entity';
 
 @Injectable()
 export class MapService {
@@ -20,12 +20,12 @@ export class MapService {
     public async searchByAddress(search: RequestMapSearchDto, userId: number): Promise<any> {
         const {page_size = 10, phrase = '', sortByPoint} = search;
         const pageSizeGeoCode = page_size / 2;
-        const user = await User.findOne({relations: ['city']})
+        const user = await User.findOne({relations: ['city']});
         let pageSizeSuggest = page_size / 2;
         let resultsGeocode: ResponseSearchListDto = {items: [], total: 0};
         let resultsSuggest: ResponseSearchListDto = {items: [], total: 0};
 
-        search.phrase = `${user.city.name} ${search.phrase}`
+        search.phrase = `${user.city.name} ${search.phrase}`;
 
         try {
             resultsGeocode = await this.doubleGisService.api.geocodeApi.search(new RequestGeocoderSearchDto(search.phrase, pageSizeGeoCode));
@@ -52,13 +52,13 @@ export class MapService {
             ));
         } catch (e) {
             if (resultsGeocode.total <= 0) {
-                console.log(123)
-                throw new ErrorMapSearchModel([
+                console.log(123);
+                throw new ErrorMapSearchModel(
                     {
                         type: ErrorsMapEnum.SEARCH_NOT_FOUND,
                         details: 'Not found address by phrase: ' + search.phrase
                     }
-                ]);
+                );
             }
         }
 

@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { Dropbox } from 'dropbox';
+import {Injectable} from '@nestjs/common';
+import {ConfigService} from '@nestjs/config';
+import {Dropbox} from 'dropbox';
 import * as fs from 'fs';
-import { rootPath } from 'get-root-path';
-import { nanoid } from 'nanoid';
-import { join } from 'path';
-import { CreateImageDto } from '../../models/create-image.dto';
+import {rootPath} from 'get-root-path';
+import {nanoid} from 'nanoid';
+import {join} from 'path';
+import {CreateImageDto} from '../../models/create-image.dto';
 
 @Injectable()
 export class ImageLoaderService {
@@ -36,10 +36,10 @@ export class ImageLoaderService {
         const dropBoxAccessToken: string = this.configService.get('DROPBOX_ACCESS_TOKEN');
         const filetype = this._getFiletypeFromName(image.originalname);
         const fullDbxImagePath = `/images/${this._generateImageName()}.${filetype}`;
-        const dbx = new Dropbox({ accessToken: dropBoxAccessToken });
+        const dbx = new Dropbox({accessToken: dropBoxAccessToken});
         try {
-            const uploadresult = await dbx.filesUpload({ path: fullDbxImagePath, contents: image.buffer });
-            const dbxResponse = await dbx.sharingCreateSharedLinkWithSettings({ path: fullDbxImagePath });
+            const uploadresult = await dbx.filesUpload({path: fullDbxImagePath, contents: image.buffer});
+            const dbxResponse = await dbx.sharingCreateSharedLinkWithSettings({path: fullDbxImagePath});
             publickRawLink = dbxResponse.result.url + '&raw=1';
         } catch (uploadErr: any) {
             console.log(uploadErr);

@@ -1,5 +1,6 @@
-import {SmsGateway} from './sms-gateway';
 import * as twilio from 'twilio';
+import {InvalidPhoneError} from '../errors/invalid-phone.error';
+import {SmsGateway} from './sms-gateway';
 
 export class SmsGatewayTwillio extends SmsGateway {
     private static ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
@@ -7,6 +8,7 @@ export class SmsGatewayTwillio extends SmsGateway {
     private static SMS_SERIVCE_SID = process.env.TWILIO_SMS_SERVICE_SID;
 
     private client;
+
     constructor() {
         super();
         this.client = twilio(SmsGatewayTwillio.ACCOUNT_SID, SmsGatewayTwillio.AUTH_TOKEN);
@@ -20,7 +22,16 @@ export class SmsGatewayTwillio extends SmsGateway {
                 to: phone
             })
             .then(() => true)
-            .catch(() => false)
+            .catch(() => false);
+    }
+
+    async validatePhoneNumber(phone: string): Promise<boolean> {
+        try {
+            await this.client.lookups.v1.phoneNumbers(phone).fetch();
+        } catch (e : any) {
+            throw new InvalidPhoneError({phone});
+        }
+        return true;
     }
 
 }

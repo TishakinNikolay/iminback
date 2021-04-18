@@ -32,7 +32,7 @@ export class EventMemberService {
         const targetEvent: Event = await this.eventService.getEventById(eventMemberApply.eventId);
         const approvedMembers = targetEvent.eventMembers ? targetEvent.eventMembers.filter(member => member.status === StatusEnum.APPROVED) : [];
         if (targetEvent.totalOfPersons === approvedMembers.length) {
-            throw new NoFreePlacesError();
+            throw new NoFreePlacesError(null);
         }
         await this.eventValidatorService.validateSelfEventApplication(eventMemberApply.userId, eventMemberApply.eventId);
         await this.eventValidatorService.validateApplicationEventTime(eventMemberApply.userId, targetEvent.startTime, targetEvent.endTime);
@@ -86,7 +86,7 @@ export class EventMemberService {
         const appliedMembers = targetEvent.eventMembers ? targetEvent.eventMembers.filter(member => member.status === StatusEnum.APPLIED) : [];
         const approvedMembers = targetEvent.eventMembers ? targetEvent.eventMembers.filter(member => member.status === StatusEnum.APPROVED) : [];
         if (targetEvent.totalOfPersons - approvedMembers.length < appliedMembers.length) {
-            throw new CantAcceptAllError();
+            throw new CantAcceptAllError(null);
         }
         appliedMembers.forEach(member => member.status = StatusEnum.APPROVED);
         return Promise.all(appliedMembers

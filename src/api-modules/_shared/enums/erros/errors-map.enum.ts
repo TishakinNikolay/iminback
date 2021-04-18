@@ -3,5 +3,5 @@ export enum ErrorsMapEnum {
 }
 
 export enum ErrorsMapEnumS {
-    DEFAULT= 'DEFAULT'
+    DEFAULT = 'DEFAULT'
 }

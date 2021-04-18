@@ -42,7 +42,7 @@ export class UserService {
         await this.userValidatorService.validateUserById(id);
         const oldUser = await this.getUserById(id);
         if (newUser.phone != oldUser.phone || newUser.nickname != oldUser.nickname) {
-            throw new UserAlreadyExistsError();
+            throw new UserAlreadyExistsError(null);
         }
         newUser.id = id;
         return this.userRepository.updateUser(newUser);

@@ -1,22 +1,14 @@
-import {IError} from '../../_shared/interfaces/IError';
-import {IErrorParams} from '../../_shared/interfaces/IErrorParams';
 import {ResponseError} from '../../_shared/models/response-error.model';
 import {UserErrorEnum} from '../enums/user-error.enum';
 
 export class UserFindError extends ResponseError {
-    public readonly message = 'User Not Found';
-    public readonly statusCode = 401;
-    public readonly typeError: string = UserErrorEnum.NOT_FOUND;
-    public errorDetails: IError[] = [
-        {
-            message: 'User Not Found',
-            type: UserErrorEnum.NOT_FOUND,
-            details: 'Not found user by id'
-        }
-    ];
+    public  message = 'User Not Found';
+    public  statusCode = 401;
+    public  typeError: string = UserErrorEnum.NOT_FOUND;
+    public errorDetails: any;
 
-    constructor(errorParams?: IErrorParams[]) {
+    constructor(details: any) {
         super();
-        this.init(errorParams);
+        this.errorDetails = details;
     }
 }

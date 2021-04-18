@@ -54,7 +54,7 @@ export class EventValidatorService {
     public async validateSelfEventApplication(ownerId: number, eventId: number) {
         const targetEvent = await this.eventRepository.getEventById(eventId);
         if (targetEvent.owner.id === ownerId) {
-            throw new SelfApplicationError();
+            throw new SelfApplicationError({eventId: eventId, ownerId: ownerId});
         }
     }
 }

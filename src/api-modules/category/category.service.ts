@@ -1,7 +1,8 @@
 import {Injectable} from '@nestjs/common';
-import { CategoryRepository } from './category.repository';
-import { GenderCategoryEnum } from './enums/gender.enum';
-import { Category } from './category.entity';
+import {Category} from './category.entity';
+import {CategoryRepository} from './category.repository';
+import {GenderCategoryEnum} from './enums/gender.enum';
+
 @Injectable()
 export class CategoryService {
     constructor(

@@ -20,7 +20,7 @@ export class AuthService {
         private readonly imageService: ImageService,
         @Inject(forwardRef(() => UserValidatorService))
         private readonly userValidatorService: UserValidatorService,
-        private readonly smsService : SmsService
+        private readonly smsService: SmsService
     ) {
     }
 
@@ -28,12 +28,12 @@ export class AuthService {
         const user = await User.findOne({phone: creds.phone});
 
         if (!user) {
-            throw new UserFindError([
+            throw new UserFindError(
                 {
                     type: UserErrorEnum.NOT_FOUND,
                     details: 'Not found user by phone: ' + creds.phone
                 }
-            ]);
+            );
         }
 
         if (await user.validatePassword(creds.code)) {
@@ -41,7 +41,7 @@ export class AuthService {
             await user.save();
             return this.jwtService.tokensByUser(user);
         } else {
-            throw new AuthNotValidCodeError();
+            throw new AuthNotValidCodeError(null);
         }
     }
 
@@ -56,6 +56,23 @@ export class AuthService {
         const code = this.generateCode();
 
         user.code = await this.hashPhoneCode(code);
+        await this.smsService.validatePhoneNumber(user.phone);
+        await user.save();
+        await this.smsService.sendSMS(user.phone, `Your login code is ${code}`);
+        return user.phone;
+    }
+
+    public async resendCode(phone: string) {
+        const user = await User.findOne({phone: phone});
+        if (!user) {
+            const err =  new UserFindError({phone:phone});
+            err.statusCode = 400;
+            throw err;
+        }
+        const code = this.generateCode();
+
+        user.code = await this.hashPhoneCode(code);
+        await this.smsService.validatePhoneNumber(user.phone);
         await user.save();
         await this.smsService.sendSMS(user.phone, `Your login code is ${code}`);
         return user.phone;

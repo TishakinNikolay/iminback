@@ -1,5 +1,5 @@
-import { DynamicModule, Module } from '@nestjs/common';
-import { ImageLoaderService } from './image-loader.service';
+import {Module} from '@nestjs/common';
+import {ImageLoaderService} from './image-loader.service';
 
 @Module({
     providers: [ImageLoaderService],

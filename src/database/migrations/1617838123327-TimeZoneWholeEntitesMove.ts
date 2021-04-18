@@ -1,7 +1,7 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import {MigrationInterface, QueryRunner} from 'typeorm';
 
 export class TimeZoneWholeEntitesMove1617838123327 implements MigrationInterface {
-    name = 'TimeZoneWholeEntitesMove1617838123327'
+    name = 'TimeZoneWholeEntitesMove1617838123327';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "image" DROP COLUMN "createdAt"`);

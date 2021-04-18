@@ -1,4 +1,4 @@
-import { validate } from 'class-validator';
+import {validate} from 'class-validator';
 import {FindManyOptions, In, SelectQueryBuilder} from 'typeorm';
 import {IFilter} from '../interfaces/IFilter';
 
@@ -10,7 +10,7 @@ export class BaseEntity {
         }
     }
 
-    public static async findAndTotal<T>(this, options?: FindManyOptions<BaseEntity> | undefined): Promise<{items: T[], count: number}> {
+    public static async findAndTotal<T>(this, options?: FindManyOptions<BaseEntity> | undefined): Promise<{ items: T[], count: number }> {
         const result = await this.findAndCount(options);
 
         return {
@@ -49,8 +49,7 @@ export class BaseEntity {
             const value = options[key];
             if (value === undefined) {
                 continue;
-            } else
-            if (Array.isArray(value)) {
+            } else if (Array.isArray(value)) {
                 whereProperties.push(`"${key}" IN (:...${key})`);
             } else if (typeof value === 'object' && value !== null) {
                 whereProperties.push(`"${key}" @> :${key}`);
@@ -90,7 +89,9 @@ export class BaseEntity {
         let order = {};
         for (const key of Object.keys(orderObject)) {
             const value = orderObject[key];
-            if (typeof value === 'object') { order = {...order, ...BaseEntity.createSortOrderObject(value, parentPropertyName ? `${parentPropertyName}.${key}` : key)}; } else if (parentPropertyName) {
+            if (typeof value === 'object') {
+                order = {...order, ...BaseEntity.createSortOrderObject(value, parentPropertyName ? `${parentPropertyName}.${key}` : key)};
+            } else if (parentPropertyName) {
                 order[`"property" ->> '${parentPropertyName ? `${parentPropertyName}.${key}` : key}'`] = value;
             } else {
                 order[key] = value;

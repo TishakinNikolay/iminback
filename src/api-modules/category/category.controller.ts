@@ -1,6 +1,6 @@
 import {Controller, Get, Request, UseGuards} from '@nestjs/common';
 import {LocalGuard} from '../user/user-modules/auth/guards/local.guard';
-import { CategoryService } from './category.service';
+import {CategoryService} from './category.service';
 
 @Controller('category')
 export class CategoryController {

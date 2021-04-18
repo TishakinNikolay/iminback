@@ -73,7 +73,7 @@ export class EventService {
     public async getEventById(eventId: number) {
         const result: Event = await this.eventRepository.getEventById(eventId);
         if (!result) {
-            throw new EventNotFoundError();
+            throw new EventNotFoundError({id: eventId});
         }
         return this.eventRepository.getEventById(eventId);
     }
@@ -86,7 +86,7 @@ export class EventService {
     public async updateEvent(updateEventDto: UpdateEventDto): Promise<Event> {
         const oldEvent = await this.eventRepository.getEventById(updateEventDto.id);
         if (!oldEvent) {
-            throw new EventNotFoundError();
+            throw new EventNotFoundError({id: updateEventDto.id});
         }
         if (oldEvent.startTime != updateEventDto.startTime ||
             oldEvent.endTime != updateEventDto.endTime) {
@@ -96,7 +96,7 @@ export class EventService {
         if (oldEvent.totalOfPersons != updateEventDto.totalOfPersons) {
             const approvedMembers = oldEvent.eventMembers.filter(member => member.status === StatusEnum.APPROVED);
             if (oldEvent.totalOfPersons < approvedMembers.length) {
-                throw new CantAcceptAllError();
+                throw new CantAcceptAllError(null);
             }
         }
         return this.eventRepository.updateEvent(Object.assign(new Event(), updateEventDto));

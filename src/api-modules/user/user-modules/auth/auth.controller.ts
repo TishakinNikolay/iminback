@@ -26,4 +26,9 @@ export class AuthController {
 
         return {phone};
     }
+
+    @Post('resend-code')
+    public async resendCode(@Body('phone') phone) {
+        return this.authService.resendCode(phone);
+    }
 }

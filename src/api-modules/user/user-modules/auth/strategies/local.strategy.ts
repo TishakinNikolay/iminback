@@ -19,12 +19,12 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'jwt') {
         if (user) {
             return user;
         } else {
-            throw new UserFindError([
+            throw new UserFindError(
                 {
                     type: UserErrorEnum.NOT_FOUND,
                     details: 'Not found user by id: ' + id
                 }
-            ]);
+            );
         }
     }
 }
