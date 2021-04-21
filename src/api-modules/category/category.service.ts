@@ -13,4 +13,8 @@ export class CategoryService {
     public async getCategoriesByGender(gender: GenderCategoryEnum): Promise<Category[]> {
         return await this.categoryRepository.getCategories(gender);
     }
+
+    public async getCategoriesByValue(values: string[]):Promise<Category[]> {
+        return await this.categoryRepository.getCategoriesByValues(values);
+    }
 }

@@ -1,5 +1,5 @@
 export class CreateImageDto {
-    public fieldname: string;
+    public fileName: string;
     public originalname: string;
     public encoding: string;
     public mimetype: string;

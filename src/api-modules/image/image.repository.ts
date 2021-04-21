@@ -9,6 +9,7 @@ export class ImageRepository extends Repository<Image> {
     }
 
     getAllImages(): Promise<Image[]> {
-        return this.find();
+        return this.find({relations: ['category']});
     }
+
 }

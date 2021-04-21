@@ -1,4 +1,4 @@
-import {Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToOne} from 'typeorm';
+import {Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne} from 'typeorm';
 import {BaseColumnModel} from '../_shared/base/base-column.model';
 import {Event} from '../event/models/event.entity';
 import {Image} from '../image/models/image.entity';
@@ -19,4 +19,6 @@ export class Category extends BaseColumnModel {
     @ManyToMany(() => Event)
     @JoinTable()
     public events: Event[];
+    @OneToMany(() => Image, (image) => image.category)
+    public images: Image[];
 }

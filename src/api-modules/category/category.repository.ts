@@ -12,4 +12,12 @@ export class CategoryRepository extends Repository<Category> {
             ]
         });
     }
+
+    public async getCategoriesByValues(values: string[]): Promise<Category[]> {
+        return this
+            .createQueryBuilder('category')
+            .where('value IN (:...values)')
+            .setParameter('values', values)
+            .getMany();
+    }
 }
