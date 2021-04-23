@@ -20,4 +20,8 @@ export class CategoryRepository extends Repository<Category> {
             .setParameter('values', values)
             .getMany();
     }
+
+    public async getAllCategories(): Promise<Category[]>{
+        return this.find({relations:['images']});
+    }
 }

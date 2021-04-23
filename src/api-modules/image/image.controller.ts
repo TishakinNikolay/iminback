@@ -1,5 +1,6 @@
-import {Controller, Headers, Post, Put, UnauthorizedException, UploadedFile, UseInterceptors} from '@nestjs/common';
+import {Controller, Get, Headers, Post, Put, Query, UnauthorizedException, UploadedFile, UseGuards, UseInterceptors} from '@nestjs/common';
 import {FileInterceptor} from '@nestjs/platform-express';
+import {LocalGuard} from '../user/user-modules/auth/guards/local.guard';
 import {ImageService} from './image.service';
 import {CreateImageDto} from './models/create-image.dto';
 import {ResponseImageDto} from './models/response-image.dto';
@@ -14,6 +15,8 @@ export class ImageController {
     createImage(@UploadedFile() image: CreateImageDto): Promise<ResponseImageDto> {
         return this.imageService.createImage(image);
     }
+
+
 
     @Put('/sync-storage')
     syncImagesWithStorage(@Headers('Authorization') key){

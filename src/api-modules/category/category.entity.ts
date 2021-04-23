@@ -12,6 +12,10 @@ export class Category extends BaseColumnModel {
     public value: string;
     @Column({type: 'enum', enum: GenderCategoryEnum, nullable: false, default: GenderCategoryEnum.ALL})
     public gender: GenderCategoryEnum;
+    @Column({type:'bool', default:true})
+    public isActive;
+    @Column({type:'integer', default:0})
+    public orderNumber;
     @OneToOne(type => Image, {nullable: true})
     @JoinColumn()
     public icon: Image;

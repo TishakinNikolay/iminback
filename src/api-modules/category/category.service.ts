@@ -17,4 +17,15 @@ export class CategoryService {
     public async getCategoriesByValue(values: string[]):Promise<Category[]> {
         return await this.categoryRepository.getCategoriesByValues(values);
     }
+
+    public async getCategoryPalette(windowSize: number): Promise<Category[]>{
+        const categories = await this.categoryRepository.getAllCategories();
+        categories.forEach( category => {
+            category.images.splice(windowSize)
+        });
+        return categories;
+    }
+    public async getCategoryById(id: number): Promise<Category> {
+        return Category.findOne(id, {relations:['images']})
+    }
 }
