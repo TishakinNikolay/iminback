@@ -5,7 +5,7 @@ import {User} from '../../user/models/user.entity';
 import {ChatMessageView} from './chat-message-view.entity';
 import {Chat} from './chat.entity';
 
-@Entity('chat_message')
+@Entity('chat_member')
 export class ChatMember extends BaseColumnModel {
     @Column()
     public userId: number;

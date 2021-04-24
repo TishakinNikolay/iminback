@@ -23,7 +23,8 @@
       "typeorm": "ts-node  ./node_modules/typeorm/cli.js",
       "rimraf": "./node_modules/rimraf/bin.js",
       "typeorm:migration:generate": "yarn typeorm -- migration:generate -n",
-      "typeorm:migration:run": "yarn typeorm -- migration:run"
+      "typeorm:migration:run": "yarn typeorm -- migration:run",
+      "typeorm:migration:revert": "yarn typeorm -- migration:revert"
    },
    "dependencies": {
       "@nestjs/common": "^7.6.13",
