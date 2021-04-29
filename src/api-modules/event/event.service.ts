@@ -1,5 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {scalable, scalableBulk} from '../_shared/decorators/remap.decorator';
+import {ChatService} from '../chat/chat.service';
 import {EventNotFoundError} from './errors/event-not-found.error';
 import {EventLocationService} from './event-modules/event-location/event-location.service';
 import {StatusEnum} from './event-modules/event-member/enums/status.enum';
@@ -23,6 +24,7 @@ export class EventService {
         private readonly eventRepository: EventRepository,
         private readonly eventValidatorSerivce: EventValidatorService,
         private readonly eventLocationService: EventLocationService,
+        private readonly chatService: ChatService
     ) {
     }
 
@@ -31,7 +33,10 @@ export class EventService {
         await this.eventValidatorSerivce.validateEventTime(createEventDto.owner.id, createEventDto.startTime, createEventDto.endTime);
         const event: Event = Object.assign(new Event(), createEventDto);
         event.eventLocation = await this.eventLocationService.createEventLocation(createEventDto.eventLocation);
-        return this.eventRepository.createEvent(event);
+        await this.eventRepository.createEvent(event);
+        await this.chatService.createChatForOwner(event);
+        return event;
+
     }
 
     @scalableBulk(ResponseEventDto)

@@ -12,7 +12,7 @@ export class Chat extends BaseColumnModel {
     @OneToOne(() => Event, event => event.eventMembers, {onDelete:"CASCADE", cascade:true})
     @JoinColumn({name: 'eventId', referencedColumnName: 'id'})
     public event: Event;
-    @OneToMany(type => ChatMember, chatMember => chatMember.chat)
+    @OneToMany(type => ChatMember, chatMember => chatMember.chat, {cascade:true})
     @JoinColumn()
     public chatMembers: ChatMember[];
     @OneToMany(type => ChatMessage, chatMessage => chatMessage.chat)
@@ -20,4 +20,6 @@ export class Chat extends BaseColumnModel {
     public chatMessages: ChatMessage[];
     @DeleteDateColumn()
     deletedAt?: Date;
+
+    public totalUnread?:number;
 }

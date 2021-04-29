@@ -1,4 +1,6 @@
 import {Category} from '../api-modules/category/category.entity';
+import {ChatMember} from '../api-modules/chat/models/chat-member.entity';
+import {Chat} from '../api-modules/chat/models/chat.entity';
 import {EventLocation} from '../api-modules/event/event-modules/event-location/models/event-location.entity';
 import {Event} from '../api-modules/event/models/event.entity';
 import {Image} from '../api-modules/image/models/image.entity';
@@ -21,15 +23,26 @@ export class CustomStartup {
             event.owner = user;
             event.title = 'Test Event #' + i;
             event.description = 'Lorem impsum дальше не помню #' + i;
-            event.startTime = startDate;
+            event.startTime = new Date(startDate);
             startDate.setUTCDate(startDate.getUTCDate() + 3);
-            event.endTime = startDate;
+            event.endTime = new Date(startDate);
             event.totalOfPersons = 10;
             event.eventLocation = eventLocation[0];
             i++;
             startDate.setUTCDate(startDate.getUTCDate() + 3);
             payload.push(event);
         }
-        return await Event.save(payload);
+        await Event.save(payload);
+        const chats = []
+        for(let event of payload) {
+            const chat = new Chat();
+            chat.event = event;
+            const ownerAsChatMember = new ChatMember();
+            ownerAsChatMember.user = event.owner
+            chat.chatMembers = [ownerAsChatMember]
+            chats.push(chat);
+        }
+        await Chat.save(chats)
+        return Promise.resolve()
     }
 }

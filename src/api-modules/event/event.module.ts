@@ -1,5 +1,6 @@
 import {Module} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
+import {ChatModule} from '../chat/chat.module';
 import {UserModule} from '../user/user.module';
 import {EventController} from './controller/event.controller';
 import {EventLocationModule} from './event-modules/event-location/event-location.module';
@@ -17,7 +18,9 @@ import {EventRepository} from './repository/event.repository';
         EventMemberModule,
         EventReactionModule,
         UserModule,
-        TypeOrmModule.forFeature([EventRepository])],
+        TypeOrmModule.forFeature([EventRepository]),
+        ChatModule
+    ],
     exports: [EventValidatorService, EventService]
 })
 export class EventModule {
