@@ -1,5 +1,6 @@
 import {forwardRef, Inject, Injectable} from '@nestjs/common';
 import {scalable, scalableBulk} from '../../../_shared/decorators/remap.decorator';
+import {ChatService} from '../../../chat/chat.service';
 import {EventValidatorService} from '../../event-validator.service';
 import {EventService} from '../../event.service';
 import {Event} from '../../models/event.entity';
@@ -23,7 +24,9 @@ export class EventMemberService {
         @Inject(forwardRef(() => EventValidatorService))
         private readonly eventValidatorService: EventValidatorService,
         @Inject(forwardRef(() => EventService))
-        private readonly eventService: EventService) {
+        private readonly eventService: EventService,
+        @Inject(forwardRef(() => ChatService))
+        private readonly chatService: ChatService) {
     }
 
     @scalable(EventMemberApplyResponseDto)
@@ -67,13 +70,17 @@ export class EventMemberService {
         partialEventMember.approvalDate = new Date();
 
         await this.eventMemberRepository.approveEventMember(partialEventMember);
-
+        await this.chatService.addChatMemberOnApprove(approveRequest.userId,approveRequest.eventId);
         return partialEventMember;
     }
 
     @scalable(EventMemberDeclineResponseDto)
     public async declineEventMember(declineRequest: EventMemberDeclineRequestDto): Promise<EventMember> {
         const partialEventMember: EventMember = Object.assign(new EventMember(), declineRequest);
+        const existingMember = await EventMember.findOne(partialEventMember);
+        if(existingMember.status = StatusEnum.APPROVED) {
+            await this.chatService.removeChatMemberOnDecline(existingMember.userId,existingMember.eventId);
+        }
         partialEventMember.status = StatusEnum.DECLINED;
         partialEventMember.declineDate = new Date();
         await this.eventMemberRepository.declineEventMember(partialEventMember);

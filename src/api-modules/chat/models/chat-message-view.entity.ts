@@ -7,12 +7,12 @@ import {ChatMessage} from './chat-message.entity';
 @Entity('chat_message_view')
 export class ChatMessageView extends BaseColumnModel {
     @Column({type: 'bool', default: false})
-    public isViewed: string;
+    public isViewed: boolean;
     @Column()
     public chatMemberId: number;
     @Column()
     public chatMessageId: number;
-    @ManyToOne(() => ChatMessage, chatMessage => chatMessage.chatMessageViews, {onDelete: 'CASCADE', cascade:true})
+    @ManyToOne(() => ChatMessage, chatMessage => chatMessage.chatMessageViews, {onDelete: 'CASCADE'})
     @JoinColumn({name: 'chatMessageId', referencedColumnName: 'id'})
     public chatMessage: ChatMessage;
     @ManyToOne(() => ChatMember, chatMember => chatMember.chatMessageViews,{onDelete: 'CASCADE', cascade:true})

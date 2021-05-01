@@ -1,4 +1,4 @@
-import {Controller, Get, Query, Request, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UseGuards} from '@nestjs/common';
 import {EventOwnerDto} from '../event/models/dto/request/event-owner.dto';
 import {FavoriteEventsRequest} from '../event/models/dto/request/favorite/favorite-events-request.dto';
 import {LocalGuard} from '../user/user-modules/auth/guards/local.guard';
@@ -16,5 +16,23 @@ export class ChatController {
         const pageSize = query.pageSize;
         const user =  req.user;
         return this.chatService.getUserChats(user, page,pageSize);
+    }
+    @Post('/message')
+    @UseGuards(LocalGuard)
+    public async postMessage(@Body('text') text: string, @Body('chatId') chatId: number, @Request() req) {
+        const user = req.user;
+        return this.chatService.postMessage(user, chatId, text);
+
+    }
+    @Delete('/message/:messageId')
+    @UseGuards(LocalGuard)
+    public async deleteMessage(@Param('messageId') messageId: number) {
+        return this.chatService.deleteMessage(messageId);
+
+    }
+    @Put('/message/:messageId')
+    @UseGuards(LocalGuard)
+    public async updateMessage(@Param('messageId') messageId: number, @Body('text') text:string) {
+        return this.chatService.updateMessage(messageId, text);
     }
 }
