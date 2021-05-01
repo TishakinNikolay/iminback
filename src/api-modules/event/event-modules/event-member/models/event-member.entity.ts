@@ -22,7 +22,7 @@ export class EventMember extends BaseEntity {
     @Column({type: 'timestamp with time zone', nullable: true})
     public declineDate: Date;
 
-    @ManyToOne(() => Event, event => event.eventMembers)
+    @ManyToOne(() => Event, event => event.eventMembers, {onDelete: 'CASCADE'})
     @JoinColumn({name: 'eventId', referencedColumnName: 'id'})
     public event: Event;
     @ManyToOne(() => User, user => user.eventMembers)

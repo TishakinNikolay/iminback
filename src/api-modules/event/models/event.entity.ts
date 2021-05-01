@@ -33,10 +33,10 @@ export class Event extends BaseColumnModel {
     @OneToMany(type => EventMember, member => member.event, {onDelete: 'CASCADE'})
     @JoinColumn()
     public eventMembers: EventMember[];
-    @OneToMany(() => EventReaction, reaction => reaction.event, {onDelete: 'CASCADE'})
+    @OneToMany(() => EventReaction, reaction => reaction.event)
     @JoinColumn()
     public eventReactions: EventReaction[];
-    @ManyToMany(type => Category, category => category.events, {onDelete: 'CASCADE'})
+    @ManyToMany(type => Category, category => category.events)
     @JoinTable()
     public categories: Category[];
 }

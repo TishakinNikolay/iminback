@@ -34,7 +34,7 @@ export class UserService {
     }
 
     public async deleteUser(id: number): Promise<void> {
-        await this.userRepository.softDelete(id);
+        await this.userRepository.delete({id:id});
     }
 
     @scalable(ResponseUserDto)

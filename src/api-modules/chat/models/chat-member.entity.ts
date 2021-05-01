@@ -14,7 +14,7 @@ export class ChatMember extends BaseColumnModel {
     @ManyToOne(() => Chat, chat => chat.chatMembers, {onDelete: 'CASCADE'})
     @JoinColumn({name: 'chatId', referencedColumnName: 'id'})
     public chat: Chat;
-    @ManyToOne(() => User, {onDelete: 'CASCADE', cascade:true})
+    @ManyToOne(() => User)
     @JoinColumn({name: 'userId', referencedColumnName: 'id'})
     public user: User;
     @OneToMany(type => ChatMessageView, chatMessageView => chatMessageView.chatMember)

@@ -13,7 +13,7 @@ export class EventReaction extends BaseColumnModel {
     @Column({type: 'enum', enum: EventReactionType, nullable: false})
     public reactionType: EventReactionType;
 
-    @ManyToOne(() => Event, event => event.eventReactions)
+    @ManyToOne(() => Event, event => event.eventReactions, {onDelete:"CASCADE"})
     @JoinColumn({name: 'eventId', referencedColumnName: 'id'})
     public event: Event;
     @ManyToOne(() => User, user => user.eventReactions)
