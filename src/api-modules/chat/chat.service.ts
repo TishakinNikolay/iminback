@@ -115,4 +115,14 @@ export class ChatService {
         const messages: ChatMessage[] = await  this.chatMessageRepository.getMessagesOnChatOpen(user,chatId);
         return messages;
     }
+
+    public async getChatMessages(user, offsetMessageId, pageSize, chatId, vector) {
+        const messages: ChatMessage[] = await this.chatMessageRepository.getMessagesOnScroll(user,offsetMessageId,pageSize,chatId,vector);
+        return messages;
+    }
+
+    public async setMessagesViewed(ids) {
+        await this.chatMessageViewRepository.setMessagesViewed(ids);
+        return true;
+    }
 }

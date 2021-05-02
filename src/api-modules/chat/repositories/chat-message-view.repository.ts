@@ -11,4 +11,14 @@ export class ChatMessageViewRepository extends Repository<ChatMessageView> {
             'chat_message."chatId" IN (' + chats.map(chat => chat.id).join(',') +  ') AND chat_message_view."isViewed" = false GROUP BY chat_message."chatId"')
         return result;
     }
+
+    public async setMessagesViewed(ids) {
+        return this
+            .createQueryBuilder()
+            .update(ChatMessageView)
+            .set({isViewed:true})
+            .where("id IN (:...ids)", {ids})
+            .execute();
+    }
+
 }
