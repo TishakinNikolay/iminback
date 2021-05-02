@@ -1,4 +1,5 @@
 import {EntityRepository, Repository} from 'typeorm';
+import {ScrollVectorEnum} from '../enums/scroll-vector.enum';
 import {ChatMessage} from '../models/chat-message.entity';
 import {Chat} from '../models/chat.entity';
 
@@ -56,7 +57,7 @@ export class ChatMessageRepository extends Repository<ChatMessage> {
             .where('"message"."chatId" = :chatId', {chatId: chatId})
             .andWhere('"chatMember"."userId" = :userId', {userId: user.id})
             .andWhere('"messageView"."isViewed" = true')
-            .orderBy('message.createdAt','ASC');
+            .orderBy('message.id','ASC');
     }
     public getNewMessageQuery(user, chatId) {
         return this
@@ -66,6 +67,20 @@ export class ChatMessageRepository extends Repository<ChatMessage> {
             .where('"message"."chatId" = :chatId', {chatId: chatId})
             .andWhere('"chatMember"."userId" = :userId', {userId: user.id})
             .andWhere('"messageView"."isViewed" = false')
-            .orderBy('message.createdAt','ASC');
+            .orderBy('message.id','ASC');
+    }
+
+    public async getMessagesOnScroll(user, offsetMessageId, pageSize, chatId, vector) {
+        const vectorSign = vector === ScrollVectorEnum.UP ? '<' : '>';
+        const order = vector === ScrollVectorEnum.UP ? 'DESC' : 'ASC'
+        const query = this
+            .createQueryBuilder('message')
+            .innerJoinAndSelect('message.chatMessageViews', 'messageView')
+            .innerJoin('messageView.chatMember','chatMember')
+            .where('"message"."chatId" = :chatId', {chatId: chatId})
+            .andWhere('"chatMember"."userId" = :userId', {userId: user.id})
+            .andWhere(`"message"."id" ${vectorSign} :offsetId`, {offsetId: offsetMessageId})
+            .orderBy('message.id', order);
+        return query.take(pageSize).getMany();
     }
 }

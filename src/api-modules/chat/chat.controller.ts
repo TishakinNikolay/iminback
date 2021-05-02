@@ -41,4 +41,19 @@ export class ChatController {
         const user = req.user;
         return this.chatService.onChatOpen(user, chatId);
     }
+    @Get('/message/:chatId')
+    @UseGuards(LocalGuard)
+    public async getChatMessages(@Param('chatId') chatId: number, @Request() req, @Query() query) {
+        const user = req.user;
+        const scrollVector = query.scrollVector;
+        const pageSize = query.pageSize;
+        const offsetId = query.offsetId;
+        return this.chatService.getChatMessages(user,offsetId,pageSize,chatId,scrollVector);
+    }
+
+    @Put('/view')
+    @UseGuards(LocalGuard)
+    public async setMessagesViewed(@Body('messageViewIds') ids) {
+        return this.chatService.setMessagesViewed(ids);
+    }
 }
