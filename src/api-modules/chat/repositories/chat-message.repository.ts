@@ -26,7 +26,7 @@ export class ChatMessageRepository extends Repository<ChatMessage> {
             .innerJoin('message.chatMessageViews', 'messageView')
             .innerJoin('messageView.chatMember','chatMember')
             .where('"message"."chatId" = :chatId', {chatId: chatId})
-            .andWhere('"chatMember"."userId" = :userId', {userId: 7})
+            .andWhere('"chatMember"."userId" = :userId', {userId: user.id})
             .groupBy('"messageView"."isViewed"');
         const countResult = await query.getRawMany();
         const oldCount = (countResult).filter( res => res['isViewed'] === false)[0].count;
@@ -54,7 +54,7 @@ export class ChatMessageRepository extends Repository<ChatMessage> {
             .innerJoinAndSelect('message.chatMessageViews', 'messageView')
             .innerJoin('messageView.chatMember','chatMember')
             .where('"message"."chatId" = :chatId', {chatId: chatId})
-            .andWhere('"chatMember"."userId" = :userId', {userId: 7})
+            .andWhere('"chatMember"."userId" = :userId', {userId: user.id})
             .andWhere('"messageView"."isViewed" = true')
             .orderBy('message.createdAt','ASC');
     }
@@ -64,7 +64,7 @@ export class ChatMessageRepository extends Repository<ChatMessage> {
             .innerJoinAndSelect('message.chatMessageViews', 'messageView')
             .innerJoin('messageView.chatMember','chatMember')
             .where('"message"."chatId" = :chatId', {chatId: chatId})
-            .andWhere('"chatMember"."userId" = :userId', {userId: 7})
+            .andWhere('"chatMember"."userId" = :userId', {userId: user.id})
             .andWhere('"messageView"."isViewed" = false')
             .orderBy('message.createdAt','ASC');
     }
