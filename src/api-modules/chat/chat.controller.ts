@@ -35,4 +35,10 @@ export class ChatController {
     public async updateMessage(@Param('messageId') messageId: number, @Body('text') text:string) {
         return this.chatService.updateMessage(messageId, text);
     }
+    @Get('/load/:chatId')
+    @UseGuards(LocalGuard)
+    public async onChatOpen(@Param('chatId') chatId: number, @Request() req) {
+        const user = req.user;
+        return this.chatService.onChatOpen(user, chatId);
+    }
 }

@@ -110,4 +110,9 @@ export class ChatService {
         chatMessage.messageText = text;
         return chatMessage.save();
     }
+
+    public async onChatOpen(user, chatId: number) {
+        const messages: ChatMessage[] = await  this.chatMessageRepository.getMessagesOnChatOpen(user,chatId);
+        return messages;
+    }
 }
