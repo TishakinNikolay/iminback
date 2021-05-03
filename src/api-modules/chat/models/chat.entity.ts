@@ -21,5 +21,5 @@ export class Chat extends BaseColumnModel {
     @DeleteDateColumn()
     deletedAt?: Date;
 
-    public totalUnread?:number;
+    public totalUnread:number;
 }

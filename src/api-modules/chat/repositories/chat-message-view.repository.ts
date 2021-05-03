@@ -13,12 +13,12 @@ export class ChatMessageViewRepository extends Repository<ChatMessageView> {
     }
 
     public async setMessagesViewed(ids) {
-        return this
-            .createQueryBuilder()
-            .update(ChatMessageView)
-            .set({isViewed:true})
-            .where("id IN (:...ids)", {ids})
-            .execute();
+        // return this
+        //     .createQueryBuilder()
+        //     .update(ChatMessageView)
+        //     .set({isViewed:true})
+        //     .where("id IN (:...ids)", {ids})
+        //     .execute();
     }
 
 }
