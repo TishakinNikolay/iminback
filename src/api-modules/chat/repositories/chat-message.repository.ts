@@ -30,8 +30,8 @@ export class ChatMessageRepository extends Repository<ChatMessage> {
             .andWhere('"chatMember"."userId" = :userId', {userId: user.id})
             .groupBy('"messageView"."isViewed"');
         const countResult = await query.getRawMany();
-        const oldCount = (countResult).filter( res => res['isViewed'] === false)[0].count;
-        const newCount = (countResult).filter( res => res['isViewed'] === true)[0].count;
+        const oldCount = (countResult).filter( res => res['isViewed'] === true)[0].count;
+        const newCount = (countResult).filter( res => res['isViewed'] === false)[0].count;
         if((oldCount + newCount) === 0 ) {
             return [];
         }
