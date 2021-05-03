@@ -1,5 +1,4 @@
-import {BaseEntity, Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn} from 'typeorm';
-import {BaseColumnDateModelModel} from '../../_shared/base/base-column-date.model';
+import {Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany} from 'typeorm';
 import {BaseColumnModel} from '../../_shared/base/base-column.model';
 import {ChatMember} from './chat-member.entity';
 import {ChatMessageView} from './chat-message-view.entity';
@@ -13,10 +12,10 @@ export class ChatMessage extends BaseColumnModel {
     public chatMemberId: number;
     @Column()
     public chatId: number;
-    @ManyToOne(() => Chat, chat => chat.chatMessages, {onDelete: 'CASCADE', cascade:true})
+    @ManyToOne(() => Chat, chat => chat.chatMessages, {onDelete: 'CASCADE', cascade: true})
     @JoinColumn({name: 'chatId', referencedColumnName: 'id'})
     public chat: Chat;
-    @ManyToOne(() => ChatMember, {nullable:true})
+    @ManyToOne(() => ChatMember, {nullable: true})
     @JoinColumn({name: 'chatMemberId', referencedColumnName: 'id'})
     public chatMember: ChatMember;
     @OneToMany(type => ChatMessageView, chatMessageView => chatMessageView.chatMessage, {cascade: true})

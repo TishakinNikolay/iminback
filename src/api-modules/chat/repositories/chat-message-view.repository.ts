@@ -21,4 +21,14 @@ export class ChatMessageViewRepository extends Repository<ChatMessageView> {
         //     .execute();
     }
 
+    public async deleteViewsOnChatMemberDeactivation(chatId, chatMemberId) {
+        return this
+            .createQueryBuilder('chatMessageView')
+            .innerJoin('chatMessageView.chatMessage','message')
+            .where('message.chatId = chatId' , {chatId})
+            .andWhere('chatMessageView.chatMemberId = chatMemberId', {chatMemberId})
+            .delete()
+            .execute()
+    }
+
 }

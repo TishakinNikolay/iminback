@@ -50,6 +50,7 @@ export class ChatService {
         const [existingChatMember]  = await ChatMember.find({chatId: chat.id, userId:userId});
         existingChatMember.isActive = false
         existingChatMember.leaveDate = new Date();
+        await this.chatMessageViewRepository.deleteViewsOnChatMemberDeactivation(chat.id, existingChatMember.id);
         return existingChatMember.save();
     }
 
@@ -59,28 +60,21 @@ export class ChatService {
     }
 
     public async postMessage(user, chatId, text) {
-        const chatMembers: ChatMember[] = await ChatMember.find({chatId:chatId});
+        const [chatMember] = await ChatMember.find({chatId:chatId, userId: user.id});
         const message = new ChatMessage()
         message.chatId = chatId;
         message.messageText = text;
-        const messageView: ChatMessageView[] = [];
-        // chatMembers.forEach( member => {
-        //     const chatMessageView = new ChatMessageView();
-        //     chatMessageView.chatMemberId = member.id;
-        //    if(member.userId === user.id) {
-        //        message.chatMemberId = member.id;
-        //        chatMessageView.isViewed = true;
-        //    } else {
-        //        chatMessageView.isViewed = false;
-        //    }
-        //    messageView.push(chatMessageView);
-        // });
-        message.chatMessageViews = messageView;
+        message.chatMemberId = chatMember.id;
+        const messageView: ChatMessageView = new ChatMessageView();
+        messageView.chatMemberId = chatMember.id;
+        message.chatMessageViews = [messageView];
         return message.save();
     }
 
     public async deleteMessage(messageId: number) {
-        return ChatMessage.delete(messageId);
+        const messageToDelete = new ChatMessage();
+        messageToDelete.id = messageId;
+        return ChatMessage.remove(messageToDelete);
     }
     public async updateMessage(messageId: number, text:string) {
         const chatMessage  = new ChatMessage();
