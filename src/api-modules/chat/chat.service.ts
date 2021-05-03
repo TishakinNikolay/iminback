@@ -75,7 +75,7 @@ export class ChatService {
             if(lastMessageIt1 && !lastMessageIt2) return -1;
             if(lastMessageIt1.createdAt > lastMessageIt2.createdAt) return -1;
             if(lastMessageIt1.createdAt < lastMessageIt2.createdAt) return 1;
-            if(lastMessageIt1.createdAt = lastMessageIt2.createdAt) return 1;
+            if(lastMessageIt1.createdAt == lastMessageIt2.createdAt) return 0;
         });
         return chats;
     }
