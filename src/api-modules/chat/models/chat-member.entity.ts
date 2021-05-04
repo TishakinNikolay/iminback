@@ -11,6 +11,10 @@ export class ChatMember extends BaseColumnModel {
     public userId: number;
     @Column()
     public chatId: number;
+    @Column({default:true})
+    public isActive:boolean;
+    @Column({type: 'timestamp with time zone', nullable: true})
+    public leaveDate: Date;
     @ManyToOne(() => Chat, chat => chat.chatMembers, {onDelete: 'CASCADE'})
     @JoinColumn({name: 'chatId', referencedColumnName: 'id'})
     public chat: Chat;

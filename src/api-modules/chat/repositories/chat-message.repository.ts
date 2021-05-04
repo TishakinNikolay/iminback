@@ -1,5 +1,8 @@
 import {EntityRepository, Repository} from 'typeorm';
+import {CustomUtils} from '../../../utils/custom-utils';
 import {ScrollVectorEnum} from '../enums/scroll-vector.enum';
+import {ChatMember} from '../models/chat-member.entity';
+import {ChatMessageView} from '../models/chat-message-view.entity';
 import {ChatMessage} from '../models/chat-message.entity';
 import {Chat} from '../models/chat.entity';
 
@@ -12,75 +15,119 @@ export class ChatMessageRepository extends Repository<ChatMessage> {
             .groupBy('chat_message.chatId')
             .where('chat_message.chatId IN (:...chatIds)', {chatIds: chats.map(chat => chat.id)})
             .execute();
-        const targetMessageIds = result.map( aggregateResult => aggregateResult.max);
+        const targetMessageIds = result.map(aggregateResult => aggregateResult.max);
         return this
             .createQueryBuilder('chat_message')
-            .where('chat_message.id IN (:...ids)',{ids:targetMessageIds})
+            .where('chat_message.id IN (:...ids)', {ids: targetMessageIds})
             .getMany();
     }
 
     public async getMessagesOnChatOpen(user, chatId) {
-        const query = await this
-            .createQueryBuilder('message')
-            .select("COUNT(*)")
-            .addSelect('messageView.isViewed','isViewed')
-            .innerJoin('message.chatMessageViews', 'messageView')
-            .innerJoin('messageView.chatMember','chatMember')
-            .where('"message"."chatId" = :chatId', {chatId: chatId})
-            .andWhere('"chatMember"."userId" = :userId', {userId: user.id})
-            .groupBy('"messageView"."isViewed"');
-        const countResult = await query.getRawMany();
-        const oldCount = (countResult).filter( res => res['isViewed'] === true)[0].count;
-        const newCount = (countResult).filter( res => res['isViewed'] === false)[0].count;
-        if((oldCount + newCount) === 0 ) {
-            return [];
-        }
-        const takeNew = Math.min(newCount, 25);
-        const takeOld = Math.min(50 - takeNew,oldCount);
-
-        const oldQuery = this.getOldMessageQuery(user,chatId);
-        const newQuery = this.getNewMessageQuery(user,chatId);
-
-        if(takeNew === 0) {
-            return oldQuery.take(takeOld).getMany();
-        }
-        if(takeOld === 0) {
-            return newQuery.take(takeNew).getMany();
-        }
-        return (await Promise.all([oldQuery.take(takeOld).getMany(),newQuery.take(takeNew).getMany()])).flat();
-    }
-    public getOldMessageQuery(user, chatId) {
-        return this
-            .createQueryBuilder('message')
-            .innerJoinAndSelect('message.chatMessageViews', 'messageView')
-            .innerJoin('messageView.chatMember','chatMember')
-            .where('"message"."chatId" = :chatId', {chatId: chatId})
-            .andWhere('"chatMember"."userId" = :userId', {userId: user.id})
-            .andWhere('"messageView"."isViewed" = true')
-            .orderBy('message.id','ASC');
-    }
-    public getNewMessageQuery(user, chatId) {
-        return this
-            .createQueryBuilder('message')
-            .innerJoinAndSelect('message.chatMessageViews', 'messageView')
-            .innerJoin('messageView.chatMember','chatMember')
-            .where('"message"."chatId" = :chatId', {chatId: chatId})
-            .andWhere('"chatMember"."userId" = :userId', {userId: user.id})
-            .andWhere('"messageView"."isViewed" = false')
-            .orderBy('message.id','ASC');
+        const readUnreadCount = await
+            this.query(`SELECT SUM(
+                                       CASE WHEN "viewsAndChatMembers"."chatMessageViewId" IS NULL THEN 1 ELSE 0 END
+                                   ) AS "newCount",
+                               SUM(
+                                       CASE WHEN "viewsAndChatMembers"."chatMessageViewId" IS NULL THEN 0 ELSE 1 END
+                                   ) AS "oldCount"
+                        FROM "chat_message" "innerMessage"
+                                 LEFT JOIN (
+                            SELECT "chatMessageView"."id"            AS "chatMessageViewId",
+                                   "chatMessageView"."chatMessageId" AS "chatMessageViewChatMessageId"
+                            FROM "chat_message_view" "chatMessageView"
+                                     INNER JOIN "chat_member" "messageViewChatMember"
+                                                ON "messageViewChatMember"."id" = "chatMessageView"."chatMemberId"
+                                                    AND (
+                                                       "messageViewChatMember"."deletedAt" IS NULL
+                                                       )
+                            WHERE (
+                                "messageViewChatMember"."userId" = $2
+                                )
+                              AND (
+                                "chatMessageView"."deletedAt" IS NULL
+                                )
+                        ) "viewsAndChatMembers" ON "viewsAndChatMembers"."chatMessageViewChatMessageId" = "innerMessage"."id"
+                        WHERE (
+                            "innerMessage"."chatId" = $1
+                            )
+                          AND (
+                            "innerMessage"."deletedAt" IS NULL
+                            )
+                        GROUP BY "innerMessage"."chatId"`, [chatId, user.id]);
+        const unreadLimit = Math.min(Number(readUnreadCount[0].newCount),25);
+        const readLimit = 50 - unreadLimit;
+        const result = await this
+            .createQueryBuilder('chatMessage')
+            .leftJoin( qb => {
+                return qb
+                    .select('"innerNewMessage"."chatId", "innerNewMessage"."id" AS "innerNewMessageId"')
+                    .from(ChatMessage,'innerNewMessage')
+                    .leftJoin( qb1 => {
+                        return qb1
+                            .select('"chatMessageView"."id" AS "chatMessageViewId",' +
+                                '"chatMessageView"."chatMessageId" AS "chatMessageViewChatMessageId"')
+                            .from(ChatMessageView,'chatMessageView')
+                            .innerJoin(ChatMember,'messageViewChatMember','"messageViewChatMember"."id" = "chatMessageView"."chatMemberId"')
+                            .where('"messageViewChatMember"."userId" = :userId')
+                    },'viewsAndChatMembers','"viewsAndChatMembers"."chatMessageViewChatMessageId" = "innerNewMessage"."id"')
+                    .where('"innerNewMessage"."chatId" = :chatId')
+                    .andWhere('"viewsAndChatMembers"."chatMessageViewId" IS NULL')
+                    .orderBy('innerNewMessage.id','ASC')
+                    .limit(unreadLimit);
+            },'newMessage', '"newMessage"."innerNewMessageId" = "chatMessage"."id"')
+            .leftJoin(qb => {
+                return qb
+                    .select('"innerOldMessage"."chatId", "innerOldMessage"."id" AS "innerOldMessageId"')
+                    .from(ChatMessage,'innerOldMessage')
+                    .leftJoin( qb1 => {
+                        return qb1
+                            .select('"chatMessageView"."id" AS "chatMessageViewId",' +
+                                '"chatMessageView"."chatMessageId" AS "chatMessageViewChatMessageId"')
+                            .from(ChatMessageView,'chatMessageView')
+                            .innerJoin(ChatMember,'messageViewChatMember','"messageViewChatMember"."id" = "chatMessageView"."chatMemberId"')
+                            .where('"messageViewChatMember"."userId" = :userId')
+                    },'viewsAndChatMembers','"viewsAndChatMembers"."chatMessageViewChatMessageId" = "innerOldMessage"."id"')
+                    .where('"innerOldMessage"."chatId" = :chatId')
+                    .andWhere('"viewsAndChatMembers"."chatMessageViewId" IS NOT NULL')
+                    .orderBy('innerOldMessage.id','DESC')
+                    .limit(readLimit);
+            },'oldMessage', '"oldMessage"."innerOldMessageId" = "chatMessage"."id"')
+            .innerJoinAndSelect('chatMessage.chatMember','chatMemberResponse')
+            .innerJoinAndSelect('chatMemberResponse.user','user')
+            .leftJoinAndSelect('chatMessage.chatMessageViews','messageViewResponse',
+                '"messageViewResponse"."chatMemberId" = ' +
+                '(SELECT "chat_member"."id" FROM "chat_member" WHERE "chat_member"."chatId" = :chatId AND "chat_member"."userId" = :userId)')
+            .where('("newMessage"."innerNewMessageId" IS NOT NULL OR "oldMessage"."innerOldMessageId" IS NOT NULL)')
+            .orderBy('chatMessage.id','ASC')
+            .setParameter('chatId',chatId)
+            .setParameter('userId',user.id)
+            .getMany();
+        return result;
     }
 
     public async getMessagesOnScroll(user, offsetMessageId, pageSize, chatId, vector) {
         const vectorSign = vector === ScrollVectorEnum.UP ? '<' : '>';
-        const order = vector === ScrollVectorEnum.UP ? 'DESC' : 'ASC'
+        const order = vector === ScrollVectorEnum.UP ? 'DESC' : 'ASC';
         const query = this
-            .createQueryBuilder('message')
-            .innerJoinAndSelect('message.chatMessageViews', 'messageView')
-            .innerJoin('messageView.chatMember','chatMember')
-            .where('"message"."chatId" = :chatId', {chatId: chatId})
-            .andWhere('"chatMember"."userId" = :userId', {userId: user.id})
-            .andWhere(`"message"."id" ${vectorSign} :offsetId`, {offsetId: offsetMessageId})
-            .orderBy('message.id', order);
-        return query.take(pageSize).getMany();
+            .createQueryBuilder('chatMessage')
+            .innerJoinAndSelect('chatMessage.chatMember','chatMemberResponse')
+            .innerJoinAndSelect('chatMemberResponse.user','user')
+            .leftJoinAndSelect('chatMessage.chatMessageViews','messageViewResponse',
+                '"messageViewResponse"."chatMemberId" = ' +
+                '(SELECT "chat_member"."id" FROM "chat_member" WHERE "chat_member"."chatId" = :chatId AND "chat_member"."userId" = :userId)')
+            .where('"chatMessage"."chatId" = :chatId')
+            .andWhere(`"chatMessage"."id" ${vectorSign} :offsetId`, {offsetId: offsetMessageId})
+            .orderBy('chatMessage.id', order)
+            .setParameter('chatId',chatId)
+            .setParameter('userId',user.id);
+        let result = await query.take(pageSize).getMany();
+        if(order === 'DESC') {
+           result.sort((a,b) => {
+               if(a.id < b.id) return -1;
+               if(a.id > b.id) return 1;
+               return 0;
+           });
+        }
+        return result;
     }
 }

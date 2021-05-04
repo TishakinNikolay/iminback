@@ -33,76 +33,48 @@ export class ChatService {
     }
 
     public async addChatMemberOnApprove(userId: number, eventId: number) {
-      const approvedChatMember = new ChatMember();
       const [chat] = await Chat.find({eventId:eventId});
-      approvedChatMember.chat = chat;
-      approvedChatMember.userId = userId;
-      let [existingChatMember] = await ChatMember.find({chatId:approvedChatMember.chat.id, userId:approvedChatMember.userId});
-      if(existingChatMember && existingChatMember.deletedAt != null) {
-          existingChatMember.deletedAt = null;
+      const [existingChatMember]  = await ChatMember.find({chatId: chat.id, userId:userId, isActive: false});
+      if(existingChatMember) {
+          existingChatMember.isActive = true;
           return existingChatMember.save();
       }
-      return approvedChatMember.save();
+      const chatMember = new ChatMember();
+      chatMember.chat = chat;
+      chatMember.userId = userId;
+      return chatMember.save();
     }
 
     public async removeChatMemberOnDecline(userId: number, eventId: number) {
-        let approvedChatMember = new ChatMember();
         const [chat] = await Chat.find({eventId:eventId});
-        approvedChatMember.chat = chat;
-        approvedChatMember.userId = userId;
-        console.log(approvedChatMember);
-        [approvedChatMember] = await ChatMember.find({chatId:approvedChatMember.chat.id, userId:approvedChatMember.userId});
-        console.log(approvedChatMember);
-        return ChatMember.softRemove(approvedChatMember);
+        const [existingChatMember]  = await ChatMember.find({chatId: chat.id, userId:userId});
+        existingChatMember.isActive = false
+        existingChatMember.leaveDate = new Date();
+        await this.chatMessageViewRepository.deleteViewsOnChatMemberDeactivation(chat.id, existingChatMember.id);
+        return existingChatMember.save();
     }
 
     public async getUserChats(user: User, page: number, pageSize:number) : Promise<Chat[]> {
         const chats: Chat[] = await this.chatRepository.getUserChats(user, page, pageSize);
-        if (chats.length === 0) return chats;
-        const chatsLastMessages = await this.chatMessageRepository.getChatLastMessages(chats);
-        const chatIdTolastMessage = CustomUtils.getUniqueMapBy(chatsLastMessages, 'chatId');
-        const totalUnread = await this.chatMessageViewRepository.getTotalUnread(user, chats);
-        const chatIdTotalUnread = CustomUtils.getUniqueMapBy(totalUnread, 'chatId');
-        chats.forEach(chat => {
-            chat.chatMessages = chatIdTolastMessage.has(chat.id) ? [chatIdTolastMessage.get(chat.id) as ChatMessage] : [];
-            chat.totalUnread = Number(chatIdTotalUnread.get(chat.id) ? chatIdTotalUnread.get(chat.id)['count'] : '0');
-        })
-        chats.sort((item1,item2) => {
-            const lastMessageIt1 = item1.chatMessages[0];
-            const lastMessageIt2 = item2.chatMessages[0];
-            if(!lastMessageIt1 && !lastMessageIt2) return 0;
-            if(!lastMessageIt1 && lastMessageIt2) return 1;
-            if(lastMessageIt1 && !lastMessageIt2) return -1;
-            if(lastMessageIt1.createdAt > lastMessageIt2.createdAt) return -1;
-            if(lastMessageIt1.createdAt < lastMessageIt2.createdAt) return 1;
-            if(lastMessageIt1.createdAt == lastMessageIt2.createdAt) return 0;
-        });
         return chats;
     }
 
     public async postMessage(user, chatId, text) {
-        const chatMembers: ChatMember[] = await ChatMember.find({chatId:chatId});
+        const [chatMember] = await ChatMember.find({chatId:chatId, userId: user.id});
         const message = new ChatMessage()
         message.chatId = chatId;
         message.messageText = text;
-        const messageView: ChatMessageView[] = [];
-        chatMembers.forEach( member => {
-            const chatMessageView = new ChatMessageView();
-            chatMessageView.chatMemberId = member.id;
-           if(member.userId === user.id) {
-               message.chatMemberId = member.id;
-               chatMessageView.isViewed = true;
-           } else {
-               chatMessageView.isViewed = false;
-           }
-           messageView.push(chatMessageView);
-        });
-        message.chatMessageViews = messageView;
+        message.chatMemberId = chatMember.id;
+        const messageView: ChatMessageView = new ChatMessageView();
+        messageView.chatMemberId = chatMember.id;
+        message.chatMessageViews = [messageView];
         return message.save();
     }
 
     public async deleteMessage(messageId: number) {
-        return ChatMessage.delete(messageId);
+        const messageToDelete = new ChatMessage();
+        messageToDelete.id = messageId;
+        return ChatMessage.remove(messageToDelete);
     }
     public async updateMessage(messageId: number, text:string) {
         const chatMessage  = new ChatMessage();
@@ -121,8 +93,8 @@ export class ChatService {
         return messages;
     }
 
-    public async setMessagesViewed(ids) {
-        await this.chatMessageViewRepository.setMessagesViewed(ids);
+    public async setMessagesViewed(lastMessageId, chatId,user) {
+        await this.chatMessageViewRepository.setMessagesViewed(lastMessageId, chatId, user);
         return true;
     }
 }

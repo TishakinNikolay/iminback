@@ -1,13 +1,10 @@
 import {BaseEntity, Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn} from 'typeorm';
-import {BaseColumnDateModelModel} from '../../_shared/base/base-column-date.model';
 import {BaseColumnModel} from '../../_shared/base/base-column.model';
 import {ChatMember} from './chat-member.entity';
 import {ChatMessage} from './chat-message.entity';
 
 @Entity('chat_message_view')
 export class ChatMessageView extends BaseColumnModel {
-    @Column({type: 'bool', default: false})
-    public isViewed: boolean;
     @Column()
     public chatMemberId: number;
     @Column()

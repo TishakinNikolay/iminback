@@ -1,6 +1,8 @@
-import {EntityRepository, Repository} from 'typeorm';
+import {EntityRepository, LessThan, LessThanOrEqual, Repository} from 'typeorm';
 import {User} from '../../user/models/user.entity';
+import {ChatMember} from '../models/chat-member.entity';
 import {ChatMessageView} from '../models/chat-message-view.entity';
+import {ChatMessage} from '../models/chat-message.entity';
 import {Chat} from '../models/chat.entity';
 
 @EntityRepository(ChatMessageView)
@@ -12,13 +14,27 @@ export class ChatMessageViewRepository extends Repository<ChatMessageView> {
         return result;
     }
 
-    public async setMessagesViewed(ids) {
+    public async setMessagesViewed(lastMessageId, chatId, user) {
+        const messages = await ChatMessage.find({id : LessThanOrEqual(lastMessageId), chatId: chatId});
+        const [chatMember] = await ChatMember.find({chatId: chatId, userId : user.id});
+        const views = [];
+        messages.forEach(msg => {
+            const view = new ChatMessageView();
+            view.chatMemberId = chatMember.id;
+            view.chatMessageId = msg.id;
+            views.push(view);
+        })
+        return this.save(views);
+    }
+
+    public async deleteViewsOnChatMemberDeactivation(chatId, chatMemberId) {
         return this
-            .createQueryBuilder()
-            .update(ChatMessageView)
-            .set({isViewed:true})
-            .where("id IN (:...ids)", {ids})
-            .execute();
+            .createQueryBuilder('chatMessageView')
+            .innerJoin('chatMessageView.chatMessage','message')
+            .where('message.chatId = chatId' , {chatId})
+            .andWhere('chatMessageView.chatMemberId = chatMemberId', {chatMemberId})
+            .delete()
+            .execute()
     }
 
 }
