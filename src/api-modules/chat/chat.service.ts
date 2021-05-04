@@ -93,8 +93,8 @@ export class ChatService {
         return messages;
     }
 
-    public async setMessagesViewed(ids) {
-        await this.chatMessageViewRepository.setMessagesViewed(ids);
+    public async setMessagesViewed(lastMessageId, chatId,user) {
+        await this.chatMessageViewRepository.setMessagesViewed(lastMessageId, chatId, user);
         return true;
     }
 }

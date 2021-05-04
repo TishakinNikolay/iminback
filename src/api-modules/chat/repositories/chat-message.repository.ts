@@ -1,4 +1,5 @@
 import {EntityRepository, Repository} from 'typeorm';
+import {CustomUtils} from '../../../utils/custom-utils';
 import {ScrollVectorEnum} from '../enums/scroll-vector.enum';
 import {ChatMember} from '../models/chat-member.entity';
 import {ChatMessageView} from '../models/chat-message-view.entity';
@@ -108,13 +109,25 @@ export class ChatMessageRepository extends Repository<ChatMessage> {
         const vectorSign = vector === ScrollVectorEnum.UP ? '<' : '>';
         const order = vector === ScrollVectorEnum.UP ? 'DESC' : 'ASC';
         const query = this
-            .createQueryBuilder('message')
-            .innerJoinAndSelect('message.chatMessageViews', 'messageView')
-            .innerJoin('messageView.chatMember', 'chatMember')
-            .where('"message"."chatId" = :chatId', {chatId: chatId})
-            .andWhere('"chatMember"."userId" = :userId', {userId: user.id})
-            .andWhere(`"message"."id" ${vectorSign} :offsetId`, {offsetId: offsetMessageId})
-            .orderBy('message.id', order);
-        return query.take(pageSize).getMany();
+            .createQueryBuilder('chatMessage')
+            .innerJoinAndSelect('chatMessage.chatMember','chatMemberResponse')
+            .innerJoinAndSelect('chatMemberResponse.user','user')
+            .leftJoinAndSelect('chatMessage.chatMessageViews','messageViewResponse',
+                '"messageViewResponse"."chatMemberId" = ' +
+                '(SELECT "chat_member"."id" FROM "chat_member" WHERE "chat_member"."chatId" = :chatId AND "chat_member"."userId" = :userId)')
+            .where('"chatMessage"."chatId" = :chatId')
+            .andWhere(`"chatMessage"."id" ${vectorSign} :offsetId`, {offsetId: offsetMessageId})
+            .orderBy('chatMessage.id', order)
+            .setParameter('chatId',chatId)
+            .setParameter('userId',user.id);
+        let result = await query.take(pageSize).getMany();
+        if(order === 'DESC') {
+           result.sort((a,b) => {
+               if(a.id < b.id) return -1;
+               if(a.id > b.id) return 1;
+               return 0;
+           });
+        }
+        return result;
     }
 }
