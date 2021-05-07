@@ -9,6 +9,8 @@ export class ChatRepository extends Repository<Chat> {
         const query = this
             .createQueryBuilder('chat')
             .addSelect('"messageAndViews"."totalUnread"','totalUnread')
+            .innerJoinAndSelect('chat.event','chatEvent')
+            .leftJoinAndSelect('chatEvent.image','chatEventImage')
             .innerJoinAndSelect(
                 'chat.chatMembers','chatMember',
                 'chatMember.userId = :curUserId AND chatMember.isActive = true',
