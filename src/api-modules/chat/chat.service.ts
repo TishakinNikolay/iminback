@@ -34,10 +34,15 @@ export class ChatService {
 
     public async addChatMemberOnApprove(userId: number, eventId: number) {
       const [chat] = await Chat.find({eventId:eventId});
-      const [existingChatMember]  = await ChatMember.find({chatId: chat.id, userId:userId, isActive: false});
+      const [existingChatMember]  = await ChatMember.find({chatId: chat.id, userId:userId});
       if(existingChatMember) {
-          existingChatMember.isActive = true;
-          return existingChatMember.save();
+          if(existingChatMember.isActive === false) {
+              existingChatMember.isActive = true;
+              return existingChatMember.save();
+          } else {
+            return existingChatMember;
+          }
+
       }
       const chatMember = new ChatMember();
       chatMember.chat = chat;
@@ -94,7 +99,7 @@ export class ChatService {
     }
 
     public async setMessagesViewed(lastMessageId, chatId,user) {
-        await this.chatMessageViewRepository.setMessagesViewed(lastMessageId, chatId, user);
-        return true;
+        return await this.chatMessageRepository.setMessagesViewed(lastMessageId, chatId, user);
+
     }
 }

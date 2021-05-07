@@ -14,18 +14,7 @@ export class ChatMessageViewRepository extends Repository<ChatMessageView> {
         return result;
     }
 
-    public async setMessagesViewed(lastMessageId, chatId, user) {
-        const messages = await ChatMessage.find({id : LessThanOrEqual(lastMessageId), chatId: chatId});
-        const [chatMember] = await ChatMember.find({chatId: chatId, userId : user.id});
-        const views = [];
-        messages.forEach(msg => {
-            const view = new ChatMessageView();
-            view.chatMemberId = chatMember.id;
-            view.chatMessageId = msg.id;
-            views.push(view);
-        })
-        return this.save(views);
-    }
+
 
     public async deleteViewsOnChatMemberDeactivation(chatId, chatMemberId) {
         return this

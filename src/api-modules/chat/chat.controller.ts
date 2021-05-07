@@ -51,7 +51,7 @@ export class ChatController {
         return this.chatService.getChatMessages(user,offsetId,pageSize,chatId,scrollVector);
     }
 
-    @Put('/view/:lastMessageId/:chatId')
+    @Put('/view/:chatId/:lastMessageId')
     @UseGuards(LocalGuard)
     public async setMessagesViewed(@Param('lastMessageId') lastMessageId, @Param('chatId') chatId, @Request() req) {
         const user = req.user;
