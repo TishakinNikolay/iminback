@@ -102,7 +102,8 @@ export class ChatMessageRepository extends Repository<ChatMessage> {
             .setParameter('chatId',chatId)
             .setParameter('userId',user.id)
             .getMany();
-        return result;
+        const chat = await Chat.findOne(chatId,{relations:['event', 'event.image']})
+        return {chat, messages: result};
     }
 
     public async getMessagesOnScroll(user, offsetMessageId, pageSize, chatId, vector) {

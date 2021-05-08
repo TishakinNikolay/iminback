@@ -89,8 +89,8 @@ export class ChatService {
     }
 
     public async onChatOpen(user, chatId: number) {
-        const messages: ChatMessage[] = await  this.chatMessageRepository.getMessagesOnChatOpen(user,chatId);
-        return messages;
+        const result= await  this.chatMessageRepository.getMessagesOnChatOpen(user,chatId);
+        return result;
     }
 
     public async getChatMessages(user, offsetMessageId, pageSize, chatId, vector) {
