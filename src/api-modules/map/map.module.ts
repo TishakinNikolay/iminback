@@ -1,5 +1,5 @@
 import {Module} from '@nestjs/common';
-import {DoubleGisService} from '../../services/2gis/double-gis.service';
+import {DoubleGisService} from '../_shared/services/2gis/double-gis.service';
 import {EventModule} from '../event/event.module';
 import {MapController} from './map.controller';
 import {MapService} from './map.service';

@@ -29,6 +29,8 @@ export class User extends BaseColumnModel {
     public description: string;
     @Column({type: 'character varying', nullable: true, length: 500})
     public code: string;
+    @Column({type: 'character varying', nullable: true, length: 500})
+    public pushNotificationToken: string;
     @DeleteDateColumn()
     deletedAt?: Date;
 

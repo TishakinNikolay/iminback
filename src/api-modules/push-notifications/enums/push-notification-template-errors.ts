@@ -1,0 +1,3 @@
+export enum PushNotificationTemplateErrors {
+    NOTIFICATION_TEMPLATE_NOT_FOUND = 'NOTIFICATION_TEMPLATE_NOT_FOUND'
+}

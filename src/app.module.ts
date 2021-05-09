@@ -12,17 +12,21 @@ import {ImageModule} from './api-modules/image/image.module';
 import {MapModule} from './api-modules/map/map.module';
 import {UserModule} from './api-modules/user/user.module';
 import dbConfig from './database/db-config';
+import { PushNotificationModule } from './api-modules/push-notifications/push-notification.module';
 
 config();
 
 @Module({
     imports: [
+        // Custom Modules
         EventModule,
         MapModule,
         ImageModule,
         UserModule,
         CategoryModule,
         SharedModule,
+        PushNotificationModule,
+        // Custom Modules
         TypeOrmModule.forRoot(dbConfig),
         ConfigModule.forRoot({
             isGlobal: true,
