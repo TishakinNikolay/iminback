@@ -12,6 +12,7 @@ import {ImageModule} from './api-modules/image/image.module';
 import {MapModule} from './api-modules/map/map.module';
 import {UserModule} from './api-modules/user/user.module';
 import dbConfig from './database/db-config';
+import {TestModule} from "./api-modules/test/test.module";
 
 config();
 
@@ -24,6 +25,7 @@ config();
         CategoryModule,
         SharedModule,
         TypeOrmModule.forRoot(dbConfig),
+        TestModule,
         ConfigModule.forRoot({
             isGlobal: true,
         }),
