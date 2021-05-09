@@ -3,9 +3,14 @@ import {PushNotificationCreateManyRequestDto} from "./push-notification-create-m
 import {FindConditions} from "typeorm";
 import {User} from "../../../../user/models/user.entity";
 import {PushNotificationCreateRequestDto} from "./push-notification-create-request.dto";
+import {PushNotificationFilterRequestDto} from "./push-notification-filter-request.dto";
 
 export class PushNotificationCreateManyAndSendRequestDto {
-    public userFindCondition: FindConditions<User>
+    public filter: PushNotificationFilterRequestDto
     public sendOptions: PushNotificationSendDataRequestDto
     public notification: PushNotificationCreateRequestDto
+}
+
+export class PushNotificationCreate {
+
 }

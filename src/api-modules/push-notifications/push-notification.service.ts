@@ -13,6 +13,7 @@ import {PushNotificationCreateRequestDto} from "./models/dto/requests/push-notif
 import {PushNotificationGetByUserRequestDto} from "./models/dto/requests/push-notification-get-by-user-request.dto";
 import {PushNotificationCreateManyRequestDto} from "./models/dto/requests/push-notification-create-many-request.dto";
 import {PushNotificationCreateManyAndSendRequestDto} from "./models/dto/requests/push-notification-create-many-and-send-request.dto";
+import {PushNotificationCreateSendRequestDto} from "./models/dto/requests/push-notification-create-send-request.dto";
 
 @Injectable()
 export class PushNotificationService {
@@ -21,7 +22,7 @@ export class PushNotificationService {
         private options: IPushNotificationConfig
     ) {}
 
-    public async send(notificationFindCondition: FindConditions<PushNotificationTemplateEntity>, data: PushNotificationSendDataRequestDto) {
+    public async send(notificationFindCondition: FindConditions<PushNotificationTemplateEntity>, data: PushNotificationSendDataRequestDto, userCondition: FindConditions<User>) {
         const notificationTemplate = await PushNotificationTemplateEntity.findOne(notificationFindCondition)
 
         if (!notificationTemplate) {
@@ -37,7 +38,7 @@ export class PushNotificationService {
         const tokens = (await User.find({
             select: ['pushNotificationToken'],
             where: {
-                ...data.userFindCondition,
+                ...userCondition,
                 pushNotificationToken: Not(IsNull())
             }
         })).map(i => i.pushNotificationToken);
@@ -73,16 +74,18 @@ export class PushNotificationService {
         await PushNotificationEntity.save(newNotifications)
     }
 
-    public async createAndSendNotification(_newNotification: PushNotificationCreateRequestDto, data: PushNotificationSendDataRequestDto) {
-        await this.createNotification(_newNotification)
+    public async createAndSendNotification(body: PushNotificationCreateSendRequestDto) {
+        await this.createNotification(body.notification)
         console.log(await this.send({
-            id: _newNotification.notificationTemplateId
-            }, data))
+            id: body.notification.notificationTemplateId
+            }, body.sendOptions, body.filter.userFindCondition))
     }
 
-    public async createManyAndSendNotification(request: PushNotificationCreateManyAndSendRequestDto) {
-        await this.createManyNotifications({notification: request.notification, userFindCondition: request.userFindCondition})
-        console.log(await this.send({id: request.notification.notificationTemplateId}, request.sendOptions))
+    public async createManyAndSendNotification(body: PushNotificationCreateManyAndSendRequestDto) {
+        body.sendOptions = Object.assign(body.notification, body.sendOptions)
+
+        await this.createManyNotifications({notification: body.notification, userFindCondition: body.filter.userFindCondition})
+        console.log(await this.send({id: body.notification.notificationTemplateId}, body.sendOptions, body.filter.userFindCondition))
     }
 
     public async setSeen(seen: boolean, notificationId: number) {
