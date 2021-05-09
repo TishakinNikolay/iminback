@@ -21,6 +21,10 @@ export class UserRepository extends Repository<User> {
         return await this.findOne(conditions, {relations: ['profileImage', 'city', 'city.country']});
     }
 
+    async findManyByWhere(conditions: FindConditions<User>): Promise<User[]> {
+        return await this.find({where: conditions, relations: ['profileImage', 'city', 'city.country']})
+    }
+
     async updateUser(newUser: UpdateUserDto): Promise<User> {
         const updateUser = Object.assign(new User(), newUser);
         return updateUser.save();

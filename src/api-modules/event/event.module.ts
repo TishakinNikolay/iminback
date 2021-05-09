@@ -2,7 +2,7 @@ import {Module} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {ChatModule} from '../chat/chat.module';
 import {UserModule} from '../user/user.module';
-import {EventController} from './controller/event.controller';
+import {EventController} from './controllers/event.controller';
 import {EventLocationModule} from './event-modules/event-location/event-location.module';
 import {EventMemberModule} from './event-modules/event-member/event-member.module';
 import {EventReactionModule} from './event-modules/event-reaction/event-reaction.module';

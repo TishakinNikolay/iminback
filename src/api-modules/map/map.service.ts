@@ -1,9 +1,9 @@
 import {Injectable} from '@nestjs/common';
 import * as _ from 'lodash';
-import {RequestGeocoderSearchDto} from '../../services/2gis/api/geocoder/models/requests/request-geocoder-search.dto';
-import {ResponseSearchListDto} from '../../services/2gis/api/shared/models/response/response-search.list.dto';
-import {RequestSearch} from '../../services/2gis/api/suggest/models/requests/request-search.dto';
-import {DoubleGisService} from '../../services/2gis/double-gis.service';
+import {RequestGeocoderSearchDto} from '../_shared/services/2gis/api/geocoder/models/requests/request-geocoder-search.dto';
+import {ResponseSearchListDto} from '../_shared/services/2gis/api/shared/models/response/response-search.list.dto';
+import {RequestSearch} from '../_shared/services/2gis/api/suggest/models/requests/request-search.dto';
+import {DoubleGisService} from '../_shared/services/2gis/double-gis.service';
 import {ErrorsMapEnum} from '../_shared/enums/erros/errors-map.enum';
 import {ErrorMapSearchModel} from '../_shared/errors/map/error-map-search.model';
 import {User} from '../user/models/user.entity';

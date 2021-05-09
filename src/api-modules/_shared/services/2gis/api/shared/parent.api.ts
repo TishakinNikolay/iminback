@@ -1,6 +1,6 @@
 import {NotFoundException} from '@nestjs/common';
-import {HttpsUtils} from '../../../../utils/https';
-import {IResponseData} from '../../../../utils/https/interfaces/IHttpsUtils';
+import {HttpsUtils} from '../../../../../../utils/https';
+import {IResponseData} from '../../../../../../utils/https/interfaces/IHttpsUtils';
 import {IConfigApi} from '../../interfaces/IConfig';
 
 export class ParentApi {
