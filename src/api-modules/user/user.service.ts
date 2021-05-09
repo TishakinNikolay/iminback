@@ -47,4 +47,9 @@ export class UserService {
         newUser.id = id;
         return this.userRepository.updateUser(newUser);
     }
+
+    public async setPushToken(user: User, token: string) {
+        user.pushNotificationToken = token
+        await user.save()
+    }
 }

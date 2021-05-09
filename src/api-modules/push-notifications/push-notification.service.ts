@@ -12,6 +12,7 @@ import {NotificationTemplateNotFoundError} from "./errors/notification-template-
 import {PushNotificationCreateRequestDto} from "./models/dto/requests/push-notification-create-request.dto";
 import {PushNotificationGetByUserRequestDto} from "./models/dto/requests/push-notification-get-by-user-request.dto";
 import {PushNotificationCreateManyRequestDto} from "./models/dto/requests/push-notification-create-many-request.dto";
+import {PushNotificationCreateManyAndSendRequestDto} from "./models/dto/requests/push-notification-create-many-and-send-request.dto";
 
 @Injectable()
 export class PushNotificationService {
@@ -77,6 +78,11 @@ export class PushNotificationService {
         console.log(await this.send({
             id: _newNotification.notificationTemplateId
             }, data))
+    }
+
+    public async createManyAndSendNotification(request: PushNotificationCreateManyAndSendRequestDto) {
+        await this.createManyNotifications({notification: request.notification, userFindCondition: request.userFindCondition})
+        console.log(await this.send({id: request.notification.notificationTemplateId}, request.sendOptions))
     }
 
     public async setSeen(seen: boolean, notificationId: number) {

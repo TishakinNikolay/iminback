@@ -1,8 +1,9 @@
-import {Controller, Get, Param, Patch, Post} from "@nestjs/common";
+import {Body, Controller, Get, Param, Patch, Post} from "@nestjs/common";
 import {PushNotificationService} from "./push-notification.service";
 import {PushNotificationSendDataRequestDto} from "./models/dto/requests/push-notification-send-data-request.dto";
 import {GetUser} from "../_shared/decorators/get-user-request.decorator";
 import {User} from "../user/models/user.entity";
+import {PushNotificationCreateManyAndSendRequestDto} from "./models/dto/requests/push-notification-create-many-and-send-request.dto";
 
 @Controller('push-notification')
 export class PushNotificationController {
@@ -26,6 +27,11 @@ export class PushNotificationController {
                 ...new PushNotificationSendDataRequestDto()
             }
         )
+    }
+
+    @Post('/send-create')
+    public async createAndSend(@Body() requestBody: PushNotificationCreateManyAndSendRequestDto) {
+        await this.pushNotificationService.createManyAndSendNotification(requestBody)
     }
 
     @Patch('seen/:id')
