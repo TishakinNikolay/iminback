@@ -102,7 +102,8 @@ export class ChatMessageRepository extends Repository<ChatMessage> {
             .setParameter('chatId',chatId)
             .setParameter('userId',user.id)
             .getMany();
-        return result;
+        const chat = await Chat.findOne(chatId,{relations:['event', 'event.image']})
+        return {chat, messages: result};
     }
 
     public async getMessagesOnScroll(user, offsetMessageId, pageSize, chatId, vector) {
@@ -122,12 +123,32 @@ export class ChatMessageRepository extends Repository<ChatMessage> {
             .setParameter('userId',user.id);
         let result = await query.take(pageSize).getMany();
         if(order === 'DESC') {
-           result.sort((a,b) => {
-               if(a.id < b.id) return -1;
-               if(a.id > b.id) return 1;
-               return 0;
-           });
+           result.reverse();
         }
         return result;
+    }
+
+    public async setMessagesViewed(lastMessageId, chatId, user) {
+        const [chatMember] = await ChatMember.find({chatId: chatId, userId : user.id});
+        const messages = await this
+            .createQueryBuilder('message')
+            .select('"message"."id"')
+            .leftJoin('message.chatMessageViews','messageView','"messageView"."chatMemberId" = :userChatMemberId')
+            .where('"message"."chatId" = :chatId')
+            .andWhere('"message"."id" <= :lastMessageId')
+            .andWhere('"messageView"."id" IS NULL')
+            .setParameter('chatId',chatId)
+            .setParameter('curUserId',user.id)
+            .setParameter('lastMessageId',lastMessageId)
+            .setParameter('userChatMemberId',chatMember.id).getMany();
+        if(messages.length === 0) return;
+        const views = [];
+        messages.forEach(msg => {
+            const view = new ChatMessageView();
+            view.chatMemberId = chatMember.id;
+            view.chatMessageId = msg.id;
+            views.push(view);
+        })
+        return ChatMessageView.save(views);
     }
 }

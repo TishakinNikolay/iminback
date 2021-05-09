@@ -13,6 +13,7 @@ import {MapModule} from './api-modules/map/map.module';
 import {UserModule} from './api-modules/user/user.module';
 import dbConfig from './database/db-config';
 import { PushNotificationModule } from './api-modules/push-notifications/push-notification.module';
+import {TestModule} from "./api-modules/test/test.module";
 
 config();
 
@@ -28,6 +29,7 @@ config();
         PushNotificationModule,
         // Custom Modules
         TypeOrmModule.forRoot(dbConfig),
+        TestModule,
         ConfigModule.forRoot({
             isGlobal: true,
         }),
