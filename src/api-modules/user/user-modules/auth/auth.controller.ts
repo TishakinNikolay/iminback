@@ -20,11 +20,11 @@ export class AuthController {
 
     @Post('register')
     @UseInterceptors(FileInterceptor('photo'))
-    public async register(@Body() user: RequestRegisterDto, @UploadedFile() image: CreateImageDto): Promise<{ phone: string }> {
+    public async register(@Body() user: RequestRegisterDto, @UploadedFile() image: CreateImageDto): Promise<{ code: string }> {
         user.image = image;
-        const phone = await this.authService.register(user, image);
+        const code = await this.authService.register(user, image);
 
-        return {phone};
+        return {code};
     }
 
     @Post('resend-code')
