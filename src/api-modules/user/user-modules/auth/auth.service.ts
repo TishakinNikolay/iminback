@@ -72,10 +72,10 @@ export class AuthService {
         const code = this.generateCode();
 
         user.code = await this.hashPhoneCode(code);
-        await this.smsService.validatePhoneNumber(user.phone);
+        //await this.smsService.validatePhoneNumber(user.phone);
         await user.save();
-        await this.smsService.sendSMS(user.phone, `Your login code is ${code}`);
-        return user.phone;
+        //await this.smsService.sendSMS(user.phone, `Your login code is ${code}`);
+        return {code};
     }
 
     private async hashPhoneCode(code: number): Promise<string> {
