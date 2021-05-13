@@ -30,7 +30,7 @@ export class DropboxGatewayStrategy extends FileGatewayStrategy {
         return onlyFiles.map( file => {
             return {
                 externalId: file['id'],
-                uri: file['uri'] + '&raw=1',
+                uri: file['uri'].replace('www.dropbox.com','dl.dropboxusercontent.com') + '&raw=1',
                 path: file['path_lower'],
                 name: file['name']
             }
