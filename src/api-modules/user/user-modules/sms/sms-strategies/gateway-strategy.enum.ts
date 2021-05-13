@@ -1,3 +1,4 @@
 export enum GatewayStrategyEnum {
-    TWILIO = 'TWILIO'
+    TWILIO = 'TWILIO',
+    VONAGE = 'VONAGE',
 }

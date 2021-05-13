@@ -58,7 +58,7 @@ export class AuthService {
         user.code = await this.hashPhoneCode(code);
         //await this.smsService.validatePhoneNumber(user.phone);
         await user.save();
-        ///await this.smsService.sendSMS(user.phone, `Your login code is ${code}`);
+        await this.smsService.sendSMS(user.phone, `Your login code is ${code}`);
         return String(code);
     }
 
