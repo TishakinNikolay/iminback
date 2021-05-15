@@ -6,6 +6,7 @@ import {ImageLoaderService} from './image-modules/image-loader/image-loader.serv
 import {ImageRepository} from './image.repository';
 import {CreateImageDto} from './models/create-image.dto';
 import {Image} from './models/image.entity';
+import {In, Not} from "typeorm";
 
 @Injectable()
 export class ImageService {
@@ -48,6 +49,18 @@ export class ImageService {
         if(upsertPayload.length > 0) {
             await Image.save(upsertPayload);
         }
+        const ids = imagesInfo.map(externalStorageImg => {
+            return externalStorageImg.externalId;
+        });
+        console.log(ids);
+        const deletedImagesFromExternalStorage = await Image.find({where: {externalId: Not(In(ids))}});
+        if(deletedImagesFromExternalStorage.length > 0) {
+            console.log('deleted:');
+            console.log(deletedImagesFromExternalStorage);
+            deletedImagesFromExternalStorage.forEach(img => img.isActive = false);
+            await Image.save(deletedImagesFromExternalStorage);
+        }
+
         return {result: 'synced'};
     }
 

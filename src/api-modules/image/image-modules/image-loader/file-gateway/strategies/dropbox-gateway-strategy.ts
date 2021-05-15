@@ -46,6 +46,7 @@ export class DropboxGatewayStrategy extends FileGatewayStrategy {
             try {
                 result = await this.timeoutPromise(this.dbx, {path: path}, tryAfter);
                 success = true;
+                console.log(result);
             } catch (e) {
                tryAfter = Number.parseInt(e.headers['retry-after']) * 1000;
             }
@@ -58,8 +59,7 @@ export class DropboxGatewayStrategy extends FileGatewayStrategy {
             setTimeout(async function(pathProps) {
                 try {
                     const result = await dbx.sharingCreateSharedLinkWithSettings(pathProps);
-                    console.log(result);
-                    res({id: result.result.id, uri: result.result.url + '&raw=1'});
+                    res({id: result.result.id, uri: result.result.url});
                 }catch (e) {
                     rej(e);
                 }

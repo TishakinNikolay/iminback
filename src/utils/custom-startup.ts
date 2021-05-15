@@ -7,7 +7,7 @@ import {Image} from '../api-modules/image/models/image.entity';
 import {User} from '../api-modules/user/models/user.entity';
 
 export class CustomStartup {
-    public static async run() {
+    public static async run_disaabled() {
         const allimages = await Image.find({relations: ['category']});
         const user = await User.findOne(7);
         const eventLocation = await EventLocation.find();
@@ -44,5 +44,16 @@ export class CustomStartup {
         }
         await Chat.save(chats)
         return Promise.resolve()
+    }
+
+    public static async run() {
+        const events = await Event.find({take: 176});
+        const imgs =  await Image.find({where:{isActive:true}});
+        console.log(imgs);
+        imgs.forEach((img,i) => {
+           events[i].image = img;
+        });
+        console.log(events);
+        return await Event.save(events);
     }
 }

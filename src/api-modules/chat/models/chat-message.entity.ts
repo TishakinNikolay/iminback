@@ -18,7 +18,7 @@ export class ChatMessage extends BaseColumnModel {
     @ManyToOne(() => ChatMember, {nullable: true})
     @JoinColumn({name: 'chatMemberId', referencedColumnName: 'id'})
     public chatMember: ChatMember;
-    @OneToMany(type => ChatMessageView, chatMessageView => chatMessageView.chatMessage, {cascade: true})
+    @OneToMany(type => ChatMessageView, chatMessageView => chatMessageView.chatMessage, {cascade: true, onDelete:"CASCADE"})
     @JoinColumn()
     public chatMessageViews: ChatMessageView[];
     @DeleteDateColumn()
