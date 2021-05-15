@@ -95,7 +95,7 @@ export class EventService {
         }
         if (oldEvent.startTime != updateEventDto.startTime ||
             oldEvent.endTime != updateEventDto.endTime) {
-            await this.eventValidatorSerivce.validateEventTime(updateEventDto.owner.id, updateEventDto.startTime, updateEventDto.endTime);
+            await this.eventValidatorSerivce.validateEventTime(updateEventDto.owner.id, updateEventDto.startTime, updateEventDto.endTime, updateEventDto.id);
             await this.eventRepository.flushEventMembers(updateEventDto);
         }
         if (oldEvent.totalOfPersons != updateEventDto.totalOfPersons) {

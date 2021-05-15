@@ -15,7 +15,7 @@ export class EventValidatorService {
 
     }
 
-    public async validateEventTime(ownerId: number, startTime, endTime): Promise<void> {
+    public async validateEventTime(ownerId: number, startTime, endTime, eventId = null): Promise<void> {
         if (new Date(startTime) < new Date()) {
             throw new EventStartTimeError([{
                 type: EventErrors.EVENT_START_TIME_LESS_THAN_TODAY,
@@ -32,7 +32,7 @@ export class EventValidatorService {
             ownerId, startTime, endTime, [StatusEnum.APPROVED, StatusEnum.APPLIED]
         ));
         console.log(eventsD);
-        const events = eventsD.map(event => event.id);
+        const events = eventsD.map(event => event.id).filter(id => id != eventId);
         if (events.length > 0) {
             throw new EventCreationTimeOverlapError([{
                 type: EventErrors.EVENT_CREATION_TIME_OVERLAP,
