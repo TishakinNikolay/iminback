@@ -28,9 +28,11 @@ export class EventValidatorService {
                 details: `endtime  is ${endTime} lower than ${startTime}`
             }]);
         }
-        const events: number[] = (await this.eventRepository.getTimeIntersectedEvents(
+        const eventsD = (await this.eventRepository.getTimeIntersectedEvents(
             ownerId, startTime, endTime, [StatusEnum.APPROVED, StatusEnum.APPLIED]
-        )).map(event => event.id);
+        ));
+        console.log(eventsD);
+        const events = eventsD.map(event => event.id);
         if (events.length > 0) {
             throw new EventCreationTimeOverlapError([{
                 type: EventErrors.EVENT_CREATION_TIME_OVERLAP,
