@@ -10,7 +10,10 @@ export class ResponseUserDto {
     public profileImage: UserImageDto = new UserImageDto();
     public dateOfBirth: Date = new Date();
     public gender: GenderEnum = null;
+    public description: string = null;
     public city?: UserCityDto = new UserCityDto();
     public nickname: string = null;
+    public totalOfCreated? : number = 0;
+    public totalOfVisited?: number = 0;
 
 }

@@ -74,7 +74,7 @@ export class EventService {
         return this.eventRepository.getFavoriteEvents(favoriteEventsRequest.currentUser.id, page, pageSize);
     }
 
-    @scalable(ResponseEventDto)
+    //@scalable(ResponseEventDto)
     public async getEventById(eventId: number) {
         const result: Event = await this.eventRepository.getEventById(eventId);
         if (!result) {

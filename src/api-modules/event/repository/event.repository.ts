@@ -114,6 +114,8 @@ export class EventRepository extends Repository<Event> {
                     'eventLocation',
                     'eventLocation.city',
                     'eventMembers',
+                    'eventMembers.user',
+                    'eventMembers.user.profileImage',
                     'categories',
                     'eventReactions'
                 ],
