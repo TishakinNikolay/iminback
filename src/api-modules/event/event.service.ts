@@ -39,7 +39,7 @@ export class EventService {
 
     }
 
-    @scalableBulk(ResponseEventDto)
+    //@scalableBulk(ResponseEventDto)
     public async getFeedEvents(feedRequest: FeedRequest, page, pageSize): Promise<Event[]> {
         const userId = feedRequest.currentUser.id;
         const cityId = feedRequest.currentUser.city.id;
