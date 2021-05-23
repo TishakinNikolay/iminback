@@ -36,7 +36,6 @@ export class EventService {
         await this.eventRepository.createEvent(event);
         await this.chatService.createChatForOwner(event);
         return event;
-
     }
 
     //@scalableBulk(ResponseEventDto)
@@ -75,12 +74,12 @@ export class EventService {
     }
 
     //@scalable(ResponseEventDto)
-    public async getEventById(eventId: number) {
-        const result: Event = await this.eventRepository.getEventById(eventId);
+    public async getEventById(eventId: number, user = null) {
+        const result: Event = await this.eventRepository.getEventById(eventId, user);
         if (!result) {
             throw new EventNotFoundError({id: eventId});
         }
-        return this.eventRepository.getEventById(eventId);
+        return result;
     }
 
     public async deleteEventById(eventId: number) {

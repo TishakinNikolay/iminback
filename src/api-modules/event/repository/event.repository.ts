@@ -105,22 +105,28 @@ export class EventRepository extends Repository<Event> {
             .getMany();
     }
 
-    public getEventById(eventId: number) {
-        return this
-            .findOne({
-                relations: [
-                    'owner',
-                    'image',
-                    'eventLocation',
-                    'eventLocation.city',
-                    'eventMembers',
-                    'eventMembers.user',
-                    'eventMembers.user.profileImage',
-                    'categories',
-                    'eventReactions'
-                ],
-                where: {id: eventId}
-            });
+    public getEventById(eventId: number, user?:any) {
+        let query = this
+            .createQueryBuilder('event')
+            .innerJoinAndSelect('event.owner', 'owner')
+            .innerJoinAndSelect('event.eventLocation','location')
+            .innerJoinAndSelect('location.city','locationCity')
+            .leftJoinAndSelect('event.eventMembers','members', 'members.status = :approvedStatus', {approvedStatus: StatusEnum.APPROVED})
+            .leftJoinAndSelect('members.user','memberUser')
+            .leftJoinAndSelect('memberUser.profileImage','profileImage')
+            .leftJoinAndSelect('event.categories','categories')
+            .leftJoinAndSelect('event.image','image');
+        if(user) {
+            query =
+                query.leftJoinAndSelect('event.eventReactions','reactions','reactions.userId = :userId', {userId : user.id});
+        } else {
+            query =
+                query.leftJoinAndSelect('event.eventReactions','reactions')
+        }
+        query = query
+            .where('event.id = :eventId', {eventId : eventId});
+
+        return query.getOne();
     }
 
     public async flushEventMembers(createEventDto: UpdateEventDto) {

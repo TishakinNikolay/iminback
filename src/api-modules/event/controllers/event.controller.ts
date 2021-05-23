@@ -99,8 +99,9 @@ export class EventController {
 
     @Get('/:id')
     @UseGuards(LocalGuard)
-    async getEventById(@Param('id') eventId: number) {
-        return this.eventService.getEventById(eventId);
+    async getEventById(@Param('id') eventId: number, @Request() req) {
+        const user = req.user;
+        return this.eventService.getEventById(eventId, user);
     }
 
     @Delete('/:id')

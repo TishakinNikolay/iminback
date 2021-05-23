@@ -27,7 +27,8 @@ export class EventQueryBuilder {
             .leftJoinAndSelect('event.eventMembers', 'event_member', 'event_member.eventId = event.id')
             .leftJoinAndSelect('event.image', 'event_image', 'event_image.id = event.imageId')
             .leftJoinAndSelect('event.categories', 'event_category')
-            .leftJoinAndSelect('event.eventReactions', 'event_reaction', 'event_reaction.eventId = event.id')
+            .leftJoinAndSelect('event.eventReactions', 'event_reaction', 'event_reaction.eventId = event.id AND ' +
+                'event_reaction.userId = :curUserId AND event_reaction.reactionType = :favoriteType')
             .leftJoinAndSelect(subQb => {
                 return subQb
                     .select('category_junc.eventId, COUNT(*) AS category_num')
@@ -44,13 +45,6 @@ export class EventQueryBuilder {
                 }
 
                 , 'applications', '\"applications\".\"eventId\" = \"event\".\"id\"')
-            .leftJoinAndSelect(subQb => {
-                return subQb
-                    .select('event_reaction.eventId, event_reaction.userId, event_reaction.reactionType')
-                    .from('event_reaction', 'event_reaction')
-                    .where('event_reaction.userId = :curUserId', {curUserId: userId})
-                    .where('event_reaction.reactionType = :favoriteType', {favoriteType: EventReactionType.ADD_TO_FAVORITE});
-            }, 'reactions', '\"reactions\".\"eventId\" = \"event\".\"id\"')
             .where('event.id NOT IN' +
                 eventQb.subQuery().select('event_member.eventId').from(EventMember, 'event_member')
                     .where('event_member.userId = :curUserId').getQuery())
@@ -58,7 +52,7 @@ export class EventQueryBuilder {
             .andWhere('event.endTime > :todayDate')
             .andWhere('event.totalOfPersons > COALESCE(applications.totalApplications,0)')
             .setParameter('curUserId', userId)
-            .setParameter('reactionType', EventReactionType.ADD_TO_FAVORITE)
+            .setParameter('favoriteType', EventReactionType.ADD_TO_FAVORITE)
             .setParameter('todayDate', currentDate);
 
         if (categoriesId) {
