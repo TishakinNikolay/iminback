@@ -20,8 +20,8 @@ export class ChatMessageViewRepository extends Repository<ChatMessageView> {
         return this
             .createQueryBuilder('chatMessageView')
             .innerJoin('chatMessageView.chatMessage','message')
-            .where('message.chatId = chatId' , {chatId})
-            .andWhere('chatMessageView.chatMemberId = chatMemberId', {chatMemberId})
+            .where('message.chatId =:chatId' , {chatId})
+            .andWhere('chatMessageView.chatMemberId =:chatMemberId', {chatMemberId})
             .delete()
             .execute()
     }

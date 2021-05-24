@@ -14,6 +14,7 @@ import {UserModule} from './api-modules/user/user.module';
 import dbConfig from './database/db-config';
 import { PushNotificationModule } from './api-modules/push-notifications/push-notification.module';
 import {TestModule} from "./api-modules/test/test.module";
+import {RedisModule} from "nestjs-redis";
 
 config();
 
@@ -28,6 +29,11 @@ config();
         SharedModule,
         PushNotificationModule,
         // Custom Modules
+        RedisModule.register({
+            password: process.env.REDIS_PASSWORD,
+            port: Number(process.env.REDIS_PORT),
+            host: process.env.REDIS_HOST
+        }),
         TypeOrmModule.forRoot(dbConfig),
         TestModule,
         ConfigModule.forRoot({
