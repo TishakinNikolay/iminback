@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {Message} from 'twilio/lib/twiml/MessagingResponse';
 import {log} from 'util';
 import {CustomUtils} from '../../utils/custom-utils';
@@ -38,22 +38,21 @@ export class ChatService {
       if(existingChatMember) {
           if(existingChatMember.isActive === false) {
               existingChatMember.isActive = true;
-              return existingChatMember.save();
-          } else {
-            return existingChatMember;
+              await existingChatMember.save()
           }
-
       }
       const chatMember = new ChatMember();
       chatMember.chat = chat;
       chatMember.userId = userId;
-      return chatMember.save();
+      await chatMember.save();
+
+      return true
     }
 
     public async removeChatMemberOnDecline(userId: number, eventId: number) {
         const [chat] = await Chat.find({eventId:eventId});
         const [existingChatMember]  = await ChatMember.find({chatId: chat.id, userId:userId});
-        existingChatMember.isActive = false
+        existingChatMember.isActive = false;
         existingChatMember.leaveDate = new Date();
         await this.chatMessageViewRepository.deleteViewsOnChatMemberDeactivation(chat.id, existingChatMember.id);
         return existingChatMember.save();
@@ -64,8 +63,9 @@ export class ChatService {
         return chats;
     }
 
-    public async postMessage(user, chatId, text) {
-        const [chatMember] = await ChatMember.find({chatId:chatId, userId: user.id});
+    public async postMessage(userId, chatId, text) {
+        const [chatMember] = await ChatMember.find({chatId:chatId, userId});
+        console.log(chatMember)
         const message = new ChatMessage()
         message.chatId = chatId;
         message.messageText = text;
@@ -101,5 +101,25 @@ export class ChatService {
     public async setMessagesViewed(lastMessageId, chatId,user) {
         return await this.chatMessageRepository.setMessagesViewed(lastMessageId, chatId, user);
 
+    }
+
+    public async getChatByEventId(eventId: number, relations: string[] = ['event', 'chatMembers', 'chatMessages']): Promise<Chat> {
+        const chat = await Chat.findOne({eventId}, {relations})
+
+        if(!chat) {
+            throw new NotFoundException('LOX')
+        }
+
+        return chat
+    }
+
+    public async getChatById(id: number, relations: string[] = ['event', 'chatMembers', 'chatMessages']): Promise<Chat> {
+        const chat = await Chat.findOne(id, {relations})
+
+        if(!chat) {
+            throw new NotFoundException('LOX')
+        }
+
+        return chat
     }
 }
