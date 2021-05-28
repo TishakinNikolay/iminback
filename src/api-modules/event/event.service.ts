@@ -1,4 +1,5 @@
 import {Injectable} from '@nestjs/common';
+import {log} from 'util';
 import {scalable, scalableBulk} from '../_shared/decorators/remap.decorator';
 import {ChatService} from '../chat/chat.service';
 import {EventNotFoundError} from './errors/event-not-found.error';
@@ -42,8 +43,8 @@ export class EventService {
     public async getFeedEvents(feedRequest: FeedRequest, page, pageSize): Promise<Event[]> {
         const userId = feedRequest.currentUser.id;
         const cityId = feedRequest.currentUser.city.id;
-        const categoriesId = feedRequest.categories ? feedRequest.categories.map(category => category.id) : null;
-        return this.eventRepository.getFeedEvents(userId, cityId, categoriesId,
+        const categoriesId = feedRequest.categories ? feedRequest.categories : null;
+        return this.eventRepository.getFeedEvents(userId, cityId, categoriesId as unknown as number[],
             feedRequest.location, feedRequest.targetDate, page, pageSize);
     }
 

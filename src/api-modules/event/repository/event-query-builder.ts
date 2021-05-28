@@ -17,6 +17,7 @@ export class EventQueryBuilder {
                         categoriesId: number[],
                         geo: EventLocationDto,
                         targetDate: Date): SelectQueryBuilder<Event> {
+        console.log(categoriesId);
         const currentDate: Date = new Date();
         const eventQb: SelectQueryBuilder<Event> = new SelectQueryBuilder(this.queryBuilder);
         let eventsQuery = eventQb
