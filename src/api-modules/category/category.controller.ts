@@ -10,6 +10,15 @@ export class CategoryController {
     ) {
     }
 
+    @Get('search/:name')
+    @UseGuards(LocalGuard)
+    public async search(@Param('name') name: string, @Query() query) {
+        const page = query.page ? query.page : 0;
+        const pageSize = query.pageSize ? query.pageSize : 10;
+
+        return this.categoryService.search(page,pageSize,name)
+    }
+
     @Get()
     @UseGuards(LocalGuard)
     public async getCategories(@Request() req) {

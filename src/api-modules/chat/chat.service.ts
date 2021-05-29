@@ -12,6 +12,8 @@ import {ChatMemberRepository} from './repositories/chat-member.repository';
 import {ChatMessageViewRepository} from './repositories/chat-message-view.repository';
 import {ChatMessageRepository} from './repositories/chat-message.repository';
 import {ChatRepository} from './repositories/chat.repository';
+import {Category} from "../category/category.entity";
+import { ILike } from 'typeorm';
 
 @Injectable()
 export class ChatService {
@@ -121,5 +123,14 @@ export class ChatService {
         }
 
         return chat
+    }
+
+    public async search(page, pageSize, name) {
+        return Chat.createQueryBuilder('chat')
+            .leftJoinAndSelect('chat.event', 'event')
+            .where('event.title LIKE :name').setParameter('name', `%${name}%`)
+            .skip(page * pageSize)
+            .take(pageSize)
+            .getMany()
     }
 }
