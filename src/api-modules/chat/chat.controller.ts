@@ -18,6 +18,14 @@ export class ChatController {
         const user =  req.user;
         return this.chatService.getUserChats(user, page,pageSize);
     }
+    @Get('search/:name')
+    @UseGuards(LocalGuard)
+    public async search(@Param('name') name: string, @Query() query) {
+        const page = query.page ? query.page : 0;
+        const pageSize = query.pageSize ? query.pageSize : 10;
+
+        return this.chatService.search(page,pageSize,name)
+    }
     @Post('/message')
     @UseGuards(LocalGuard)
     public async postMessage(@Body('text') text: string, @Body('chatId') chatId: number, @Request() req) {
