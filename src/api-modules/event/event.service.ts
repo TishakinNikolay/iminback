@@ -24,7 +24,6 @@ import {EventRepository} from './repository/event.repository';
 export class EventService {
     constructor(
         private readonly eventRepository: EventRepository,
-        @Inject(forwardRef(() => EventMemberService))
         private readonly eventMemberService: EventMemberService,
         private readonly eventValidatorSerivce: EventValidatorService,
         private readonly eventLocationService: EventLocationService,
