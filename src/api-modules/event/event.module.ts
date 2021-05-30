@@ -1,10 +1,11 @@
-import {Module} from '@nestjs/common';
+import {forwardRef, Module} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {ChatModule} from '../chat/chat.module';
 import {UserModule} from '../user/user.module';
 import {EventController} from './controllers/event.controller';
 import {EventLocationModule} from './event-modules/event-location/event-location.module';
 import {EventMemberModule} from './event-modules/event-member/event-member.module';
+import {EventMemberService} from './event-modules/event-member/event-member.service';
 import {EventReactionModule} from './event-modules/event-reaction/event-reaction.module';
 import {EventValidatorService} from './event-validator.service';
 import {EventService} from './event.service';
@@ -21,7 +22,7 @@ import {EventRepository} from './repository/event.repository';
         TypeOrmModule.forFeature([EventRepository]),
         ChatModule
     ],
-    exports: [EventValidatorService, EventService]
+    exports: [EventValidatorService, EventService, forwardRef( () => EventMemberModule)]
 })
 export class EventModule {
 }

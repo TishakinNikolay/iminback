@@ -126,4 +126,23 @@ export class PushNotificationService {
             skip: (page > 0 ? Number(page) - 1 : 0) * Number(perPage),
         })
     }
+
+    public async getNotificationInstanceDefault(userId, jsonParams, templateName, eventId) {
+        const notificationRequest = new PushNotificationCreateSendRequestDto();
+        const notificationBody = new PushNotificationCreateRequestDto();
+        const notificationParams = new PushNotificationSendDataRequestDto();
+        notificationBody.eventId = eventId;
+        notificationBody.notificationTemplateId = (await PushNotificationTemplateEntity.find( {
+            name : templateName
+        }))[0].id;
+        notificationBody.parametersTemplate = jsonParams;
+        notificationRequest.sendOptions = notificationParams;
+        const filter = {
+            "userFindCondition": {
+                "id": userId
+            }
+        };
+        notificationRequest.filter = filter;
+        return notificationRequest;
+    }
 }
