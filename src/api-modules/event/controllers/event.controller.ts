@@ -121,14 +121,16 @@ export class EventController {
     @Get('/search/:searchMode/:target')
     @UseGuards(LocalGuard)
     async searchEvents(@Request() request, @Param('searchMode') searchMode: string, @Param('target') target: string, @Query() query) {
-        const searchReq = {currentUser: {}, location: {}};
+        const searchReq: any = {currentUser: {}, location: {}};
         if (query.location) {
             const coords = JSON.parse(query.location);
             searchReq.location = coords;
         }
         const page = query.page;
         const pageSize = query.pageSize;
+        console.log(request.user)
         searchReq.currentUser = Object.assign(new EventOwnerDto(), request.user);
+        searchReq.userCityId = request.user.city.id
         return this.eventService.searchEventsByTitle(searchMode, target, searchReq, page, pageSize);
     }
 }

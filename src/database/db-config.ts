@@ -29,7 +29,5 @@ const dbConfig: ConnectionOptions = {
     maxQueryExecutionTime: 5000
     , logging: ['error']
 };
-console.log(dbConfig);
-
 
 export default dbConfig;

@@ -49,7 +49,7 @@ export class EventQueryBuilder {
             .where('event.id NOT IN' +
                 eventQb.subQuery().select('event_member.eventId').from(EventMember, 'event_member')
                     .where('event_member.userId = :curUserId').getQuery())
-            .andWhere('event.ownerId != :curUserId')
+            .andWhere(`event.ownerId != ${userId}`)
             .andWhere('event.endTime > :todayDate')
             .andWhere('event.totalOfPersons > COALESCE(applications.totalApplications,0)')
             .setParameter('curUserId', userId)
@@ -58,7 +58,7 @@ export class EventQueryBuilder {
             console.log(userId);
 
         if (categoriesId) {
-            eventsQuery = eventsQuery.andWhere('event_category.id IN (:...categoriesId)');
+           eventsQuery = eventsQuery.andWhere('event_category.id IN (:...categoriesId)');
             eventsQuery = eventsQuery.setParameter('categoriesId', categoriesId);
         }
         if (geo) {
@@ -68,8 +68,8 @@ export class EventQueryBuilder {
                 .orderBy('distance', 'ASC');
         } else {
             eventsQuery = eventsQuery
-                .andWhere('event_location.cityId = :userCityId')
-                .setParameter('userCityId', userCityId);
+               .andWhere('event_location.cityId = :userCityId')
+               .setParameter('userCityId', userCityId);
         }
         if (targetDate) {
             const date = targetDate;
@@ -78,19 +78,25 @@ export class EventQueryBuilder {
             const dayEnd: Date = new Date(date);
             dayEnd.setHours(23, 59, 59, 999);
             eventsQuery = eventsQuery
-                .andWhere('event.startTime <= :dayEnd')
-                .andWhere('event.startTime >= :dayStart')
+               .andWhere('event.startTime <= :dayEnd')
+               .andWhere('event.startTime >= :dayStart')
                 .setParameter('dayStart', dayStart)
                 .setParameter('dayEnd', dayEnd);
         }
 
+        eventsQuery.addSelect('event.totalOfPersons - COALESCE(applications.totalApplications,0)', 'differencemembers')
+        eventsQuery.addSelect('COALESCE(categories_for_total.category_num,0)', 'is_category_num')
+
         eventsQuery = eventsQuery
             .addOrderBy('event.startTime', 'ASC')
-            .addOrderBy('(event.totalOfPersons - COALESCE(applications.totalApplications,0))', 'ASC')
+            .addOrderBy('differencemembers', 'ASC')
             .addOrderBy('event.totalOfPersons', 'DESC')
-            .addOrderBy('event.imageId', 'DESC', 'NULLS LAST')
-            .addOrderBy('COALESCE(categories_for_total.category_num,0)', 'DESC')
+            // .addOrderBy('event.imageId', 'DESC', 'NULLS LAST')
+            .addOrderBy('is_category_num', 'DESC')
             .addOrderBy('event.description', 'DESC', 'NULLS LAST');
+
+        console.log(eventsQuery.getQuery())
+
         return eventsQuery;
     }
 

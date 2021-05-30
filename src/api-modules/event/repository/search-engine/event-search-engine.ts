@@ -26,6 +26,6 @@ export class EventSearchEngine {
 
     public getSearchByTitleQuery(searchScope: string, title: string, searchRequest: any): SelectQueryBuilder<Event> {
         const searchQuery: SelectQueryBuilder<Event> = this.searchStrategiesMap.get(searchScope).getSearchQuery(searchRequest);
-        return searchQuery.andWhere('event.title LIKE :targetTitle').setParameter('targetTitle', `%${title}%`);
+        return searchQuery.andWhere(`event.title ILIKE :targetTitle`).setParameter('targetTitle', `%${title}%`);
     }
 }
