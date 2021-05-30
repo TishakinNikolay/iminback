@@ -41,7 +41,9 @@ export class EventRepository extends Repository<Event> {
                                pageSize: number): Promise<Event[]> {
         return (await this.eventQueryBuilder
             .getFeedQuery(userId, userCityId, categoriesId, geo, targetDate)
-            .getMany()).splice(pageSize * page, pageSize);
+            .skip(page * pageSize)
+            .take(pageSize)
+            .getMany());
     }
 
     public async getUserEvents(userId: number, page, pageSize): Promise<Event[]> {
