@@ -28,4 +28,8 @@ export class CategoryService {
     public async getCategoryById(id: number): Promise<Category> {
         return Category.findOne(id, {relations:['images']})
     }
+
+    public async search(page, pageSize, name, limitImages: number = 5) {
+        return await this.categoryRepository.search(page, pageSize, name, limitImages)
+    }
 }
