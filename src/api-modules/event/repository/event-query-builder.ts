@@ -12,7 +12,7 @@ export class EventQueryBuilder {
     }
 
 
-    public getFeedQuery(userId: number,
+    public  getFeedQuery(userId: number,
                         userCityId: number,
                         categoriesId: number[],
                         geo: EventLocationDto,
@@ -36,7 +36,7 @@ export class EventQueryBuilder {
                     .from('event_categories_category', 'category_junc')
                     .groupBy('category_junc.eventId');
             }, 'categories_for_total', '\"categories_for_total\".\"eventId\" = \"event\".\"id\"')
-            .leftJoinAndSelect(subQb => {
+            .leftJoinAndSelect( subQb => {
                     return subQb
                         .select('event_member.eventId, COUNT(*) as totalApplications')
                         .from(EventMember, 'event_member')
@@ -55,6 +55,7 @@ export class EventQueryBuilder {
             .setParameter('curUserId', userId)
             .setParameter('favoriteType', EventReactionType.ADD_TO_FAVORITE)
             .setParameter('todayDate', currentDate);
+            console.log(userId);
 
         if (categoriesId) {
             eventsQuery = eventsQuery.andWhere('event_category.id IN (:...categoriesId)');

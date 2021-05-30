@@ -14,6 +14,10 @@ export class EventReactionService {
     @scalable(EventReactionResponseDto)
     public async addFavoriteReaction(eventFavoriteReactionDto: EventReactionCreateDto): Promise<EventReaction> {
         eventFavoriteReactionDto.reactionType = EventReactionType.ADD_TO_FAVORITE;
+        const existingReaction: EventReaction[] = await EventReaction.find(eventFavoriteReactionDto);
+        if(existingReaction.length > 0) {
+            return existingReaction[0];
+        }
         const reaction: EventReaction = Object.assign(new EventReaction(), eventFavoriteReactionDto);
         return this.eventReactionRepository.addEventReaction(reaction);
     }
