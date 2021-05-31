@@ -1,4 +1,4 @@
-   {
+{
    "name": "im-in-back",
    "version": "0.0.1",
    "description": "",
@@ -61,6 +61,7 @@
       "rimraf": "^3.0.2",
       "rxjs": "^6.6.6",
       "socket.io-redis": "5.4.0",
+      "telesignsdk": "^2.2.1",
       "ts-jest": "^26.5.2",
       "ts-loader": "^8.0.17",
       "ts-node": "^9.1.1",
