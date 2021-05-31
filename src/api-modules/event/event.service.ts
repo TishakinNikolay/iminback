@@ -91,6 +91,9 @@ export class EventService {
             if(currentMember) {
                 //@ts-ignore
                 result.currentUserApplicationStatus = currentMember.status;
+            } else {
+                //@ts-ignore
+                result.currentUserApplicationStatus = null;
             }
         }
         return result;
