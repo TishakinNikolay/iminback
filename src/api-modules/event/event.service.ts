@@ -86,7 +86,7 @@ export class EventService {
         }
         if (user) {
             const currentMember = result.eventMembers.find(member => {
-                member.userId = user.id;
+                return member.userId === user.id;
             });
             if(currentMember) {
                 //@ts-ignore
