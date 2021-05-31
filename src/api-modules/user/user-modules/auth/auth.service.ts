@@ -64,7 +64,7 @@ export class AuthService {
 
     public async resendCode(phone: string) {
         const user = await User.findOne({phone: phone});
-        if (!user) {
+        if (!user)  {
             const err =  new UserFindError({phone:phone});
             err.statusCode = 400;
             throw err;
