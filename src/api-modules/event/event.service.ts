@@ -84,6 +84,15 @@ export class EventService {
         if (!result) {
             throw new EventNotFoundError({id: eventId});
         }
+        if (user) {
+            const currentMember = result.eventMembers.find(member => {
+                member.userId = user.id;
+            });
+            if(currentMember) {
+                //@ts-ignore
+                result.currentUserApplicationStatus = currentMember.status;
+            }
+        }
         return result;
     }
 
