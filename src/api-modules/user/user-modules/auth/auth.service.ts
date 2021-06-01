@@ -79,7 +79,7 @@ export class AuthService {
     }
 
     private async hashPhoneCode(code: number): Promise<string> {
-        return bcrypt.hash(code.toString(), process.env.HASH_SALT_PHONE_CODE);
+        return bcrypt.hash(code.toString(), '$2b$10$2tbmCIkL1BBizc6FTsgZ4.');
     }
 
     private generateCode(): number {

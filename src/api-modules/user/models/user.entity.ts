@@ -40,7 +40,7 @@ export class User extends BaseColumnModel {
         if (!this.code) {
             return false;
         }
-        const hash = await bcrypt.hash(code.toString(), process.env.HASH_SALT_PHONE_CODE);
+        const hash = await bcrypt.hash(code.toString(), '$2b$10$2tbmCIkL1BBizc6FTsgZ4.');
         return true
     }
 
