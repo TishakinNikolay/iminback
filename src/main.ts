@@ -10,7 +10,6 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     app.useWebSocketAdapter(new RedisIoAdapter(app));
     app.enableCors();
-
     app.useGlobalPipes(new ValidationPipe({transform: true}));
     app.useGlobalFilters(new AllExceptionsFilter());
     await app.listen(process.env.PORT || 3000);
