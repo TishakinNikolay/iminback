@@ -9,7 +9,7 @@ import {RedisIoAdapter} from "./api-modules/_shared/adapters/redis.adapter";
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     app.useWebSocketAdapter(new RedisIoAdapter(app));
-    console.log('wtf5');
+    console.log('wtf6');
     app.enableCors();
     app.useGlobalPipes(new ValidationPipe({transform: true}));
     app.useGlobalFilters(new AllExceptionsFilter());
