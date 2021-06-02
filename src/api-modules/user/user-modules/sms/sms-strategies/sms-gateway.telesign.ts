@@ -34,6 +34,7 @@ export class SmsGatewayTelesign extends SmsGateway {
     }
 
     async sendSMS(phone: string, body: string): Promise<boolean> {
+        console.log(phone, body);
         return new Promise((res, rej) => {
             this.client.sms.message((err, responseBody) => {
                 console.log(responseBody);
