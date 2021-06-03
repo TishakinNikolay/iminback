@@ -52,13 +52,10 @@ export class MapService {
             ));
         } catch (e) {
             if (resultsGeocode.total <= 0) {
-                console.log(123);
-                throw new ErrorMapSearchModel(
-                    {
-                        type: ErrorsMapEnum.SEARCH_NOT_FOUND,
-                        details: 'Not found address by phrase: ' + search.phrase
-                    }
-                );
+               return {
+                   items: [],
+                   total: 0
+               }
             }
         }
 
@@ -78,6 +75,12 @@ export class MapService {
     }
 
     public async searchByCords(search: RequestMapPointDto) {
-        return await this.doubleGisService.api.geocodeApi.searchOne({lat: search.lat, lon: search.long});
+        try {
+            return await this.doubleGisService.api.geocodeApi.searchOne({lat: search.lat, lon: search.long});
+        } catch (e) {
+            if (e.status === 404) {
+                return {}
+            }
+        }
     }
 }
