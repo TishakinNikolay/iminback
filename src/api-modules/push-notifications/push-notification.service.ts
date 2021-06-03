@@ -48,7 +48,7 @@ export class PushNotificationService {
 
         const sender = new PushNotifications(this.options);
 
-        return await sender.send(tokens, {...data, title, body: message})
+        return await sender.send(tokens, {...data, title, body: message, custom: data.parameters})
     }
 
     public async createNotification(_newNotification: PushNotificationCreateRequestDto) {
@@ -86,8 +86,6 @@ export class PushNotificationService {
 
     public async createManyAndSendNotification(body: PushNotificationCreateManyAndSendRequestDto) {
         body.sendOptions = Object.assign(body.notification, {parameters: body.notification.parametersTemplate}, body.sendOptions)
-
-        console.log(body.sendOptions)
 
         await this.createManyNotifications({notification: body.notification, userFindCondition: body.filter.userFindCondition})
         console.log(await this.send({id: body.notification.notificationTemplateId}, body.sendOptions, body.filter.userFindCondition))

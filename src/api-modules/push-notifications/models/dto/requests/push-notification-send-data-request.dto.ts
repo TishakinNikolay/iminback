@@ -4,4 +4,5 @@ export class PushNotificationSendDataRequestDto {
     topic: string = 'topic'
     contentAvailable: boolean = true
     eventId: number
+    custom: any
 }

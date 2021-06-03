@@ -11,6 +11,7 @@ import {AuthNotValidCodeError} from './errors/auth-not-valid-code.error';
 import {JwtService} from './jwt.service';
 import {RequestLoginDto} from './models/dto/request/request-login.dto';
 import {RequestRegisterDto} from './models/dto/request/request-register.dto';
+import * as jwt from "jsonwebtoken";
 
 @Injectable()
 export class AuthService {
@@ -36,7 +37,7 @@ export class AuthService {
             );
         }
 
-        if (await user.validatePassword(creds.code)) {
+        if (await user.validateCode(creds.code)) {
             user.code = null;
             await user.save();
             return this.jwtService.tokensByUser(user);
@@ -79,7 +80,7 @@ export class AuthService {
     }
 
     private async hashPhoneCode(code: number): Promise<string> {
-        return bcrypt.hash(code.toString(), '$2b$10$2tbmCIkL1BBizc6FTsgZ4.');
+        return jwt.sign({code}, String(process.env.JWT_SECRET_CODE));
     }
 
     private generateCode(): number {

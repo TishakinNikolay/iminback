@@ -7,6 +7,8 @@ import {EventReaction} from '../../event/event-modules/event-reaction/models/eve
 import {Event} from '../../event/models/event.entity';
 import {Image} from '../../image/models/image.entity';
 import {GenderEnum} from '../enums/gender.enum';
+import {JwtService} from "../user-modules/auth/jwt.service";
+import * as jwt from "jsonwebtoken";
 
 @Entity('user')
 export class User extends BaseColumnModel {
@@ -34,14 +36,20 @@ export class User extends BaseColumnModel {
     @DeleteDateColumn()
     deletedAt?: Date;
 
-    async validatePassword(code: number): Promise<boolean> {
-        console.log(code)
-        console.log(this.code)
+    async validateCode(code: number): Promise<boolean> {
         if (!this.code) {
             return false;
         }
-        const hash = await bcrypt.hash(code.toString(), '$2b$10$2tbmCIkL1BBizc6FTsgZ4.');
-        return true
+        try {
+            console.log(this.code)
+            console.log(String(process.env.JWT_SECRET_CODE))
+            const parseCode: any = jwt.verify(this.code, String(process.env.JWT_SECRET_CODE))
+            console.log(parseCode)
+            return parseCode.code.toString() === code.toString()
+        } catch (e) {
+            console.log(e)
+            return false
+        }
     }
 
 

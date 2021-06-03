@@ -41,8 +41,6 @@ export class JwtService {
     }
 
     public getPayload(token: string, secret: string): TokenPayload {
-        console.log(token)
-        console.log(secret)
         return jwt.verify(token, secret) as TokenPayload;
     }
 }
