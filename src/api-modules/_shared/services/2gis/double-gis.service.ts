@@ -9,9 +9,9 @@ export class DoubleGisService {
 
     constructor() {
         this.config = {
-            baseUrl: process.env['2GIS_API_URL'],
+            baseUrl: process.env['GIS_API_URL2'],
             auth: {
-                key: process.env['2GIS_API_KEY']
+                key: process.env['GIS_API_KEY2']
             }
         };
         this.api = new DoubleGisApi(this.config);
