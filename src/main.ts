@@ -5,11 +5,11 @@ import {AllExceptionsFilter} from './api-modules/_shared/filters/all-exception.f
 import {AppModule} from './app.module';
 // import {CustomStartup} from './utils/custom-startup';
 import {RedisIoAdapter} from "./api-modules/_shared/adapters/redis.adapter";
+import {CustomStartup} from './utils/custom-startup';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     app.useWebSocketAdapter(new RedisIoAdapter(app));
-    console.log('wtf7');
     app.enableCors();
     app.useGlobalPipes(new ValidationPipe({transform: true}));
     app.useGlobalFilters(new AllExceptionsFilter());

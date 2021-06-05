@@ -25,4 +25,12 @@ export class ImageController {
         }
         return this.imageService.syncImageWithStorage();
     }
+
+    @Put('/loadFromLocal')
+    loadFromLocal(@Headers('Authorization') key) {
+        if(key !== `Bearer ${process.env.SERIVCE_KEY}`) {
+            throw new UnauthorizedException();
+        }
+        return this.imageService.loadFromLocal();
+    }
 }

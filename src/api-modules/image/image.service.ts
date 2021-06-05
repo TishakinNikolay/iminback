@@ -1,12 +1,15 @@
 import {forwardRef, Inject, Injectable} from '@nestjs/common';
+import * as fs from 'fs';
+import {join} from 'path';
+import {In, Not} from 'typeorm';
 import {CustomUtils} from '../../utils/custom-utils';
+import {Category} from '../category/category.entity';
 import {CategoryService} from '../category/category.service';
 import {ImageThemeEnum} from './enums/image-theme.enum';
 import {ImageLoaderService} from './image-modules/image-loader/image-loader.service';
 import {ImageRepository} from './image.repository';
 import {CreateImageDto} from './models/create-image.dto';
 import {Image} from './models/image.entity';
-import {In, Not} from "typeorm";
 
 @Injectable()
 export class ImageService {
@@ -100,8 +103,46 @@ export class ImageService {
     }
 
     private getCategoryValue(path: string) {
-        const pathParts = path.split('/');
+        const pathParts = path.split('\\');
         return pathParts[pathParts.length - 2];
+    }
+
+    public async loadFromLocal() {
+        const files = ImageService.getAllFiles('D:\\I`min\\host\\hetzner\\images',[])
+            .map( imgPath => imgPath.replace('D:\\I`min\\host\\hetzner', ''));
+        const images = files.map( imagePath => ({
+            path: imagePath.replace('\\','/').replace('\\','/').replace('\\','/'),
+            category: this.getCategoryValue(imagePath)
+        }));
+        const categoryValueToId = CustomUtils.getUniqueMapBy(await this.categoryService.getCategoriesByValue([...new Set([...images.map(im => im.category)])]), 'value');
+        const imagesToInsert = [];
+        images.forEach( (img, index) => {
+            const imgDb = new Image();
+            imgDb.uri = process.env.HOST + img.path;
+            imgDb.category = categoryValueToId.get(img.category) as Category;
+            imgDb.isActive = true;
+            imgDb.theme = ImageThemeEnum.LIGHT;
+            imgDb.externalId = index;
+            imagesToInsert.push(imgDb);
+        });
+        await Image.save(imagesToInsert);
+
+
+
+    }
+    private static getAllFiles(dirPath, arrayOfFiles) {
+        let files = fs.readdirSync(dirPath)
+
+        arrayOfFiles = arrayOfFiles || []
+
+        files.forEach(function(file) {
+            if (fs.statSync(dirPath + "/" + file).isDirectory()) {
+                arrayOfFiles = ImageService.getAllFiles(dirPath + "/" + file, arrayOfFiles)
+            } else {
+                arrayOfFiles.push(join(dirPath, "/", file))
+            }
+        })
+        return arrayOfFiles
     }
 
 }
