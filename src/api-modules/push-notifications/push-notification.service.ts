@@ -14,6 +14,7 @@ import {PushNotificationGetByUserRequestDto} from "./models/dto/requests/push-no
 import {PushNotificationCreateManyRequestDto} from "./models/dto/requests/push-notification-create-many-request.dto";
 import {PushNotificationCreateManyAndSendRequestDto} from "./models/dto/requests/push-notification-create-many-and-send-request.dto";
 import {PushNotificationCreateSendRequestDto} from "./models/dto/requests/push-notification-create-send-request.dto";
+import {Event} from "../event/models/event.entity";
 
 @Injectable()
 export class PushNotificationService {
@@ -48,7 +49,9 @@ export class PushNotificationService {
 
         const sender = new PushNotifications(this.options);
 
-        return await sender.send(tokens, {...data, title, body: message, custom: data.parameters})
+        const event = await Event.findOne(data.eventId, {relations: ['image']})
+
+        return await sender.send(tokens, {...data, title, body: message, custom: data.parameters, icon: event!.image.uri})
     }
 
     public async createNotification(_newNotification: PushNotificationCreateRequestDto) {
